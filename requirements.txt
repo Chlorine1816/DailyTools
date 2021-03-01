@@ -2,3 +2,4 @@ pillow
 requests
 bs4
 lxml
+requests_toolbelt
