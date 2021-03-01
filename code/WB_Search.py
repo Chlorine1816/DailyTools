@@ -12,7 +12,7 @@ agentid=os.environ['AGENTID']  #机器人id
 corpsecret=os.environ['CORPSECRET']  #机器人secret
 touser=os.environ['TOUSER']  #接收id
 
-def get_token(corpid=None,corpsecret=None):
+def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}
     token_url = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken'
     r = requests.get(url=token_url, params=payload_access_token,headers=headers)
@@ -28,7 +28,7 @@ def upload_file(filepath,filename,access_token):
     return (r['media_id'])
 
 #发送图文信息
-def send_mpnews(media_id,access_token,touser):
+def send_mpnews(title,media_id,content,digest):
     url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
     data = {
         "touser":touser, #接收消息人员id
@@ -37,11 +37,11 @@ def send_mpnews(media_id,access_token,touser):
         'mpnews': {
             'articles':[
                 {
-                    "title": "🚀微博热搜", #必须
+                    "title": title, #必须
                     "thumb_media_id": media_id, #必须
                     "author": "Chlorine", #非必须 作者
-                    "content": '详情', #必须 不超过666 K个字节
-                    "digest": "图文消息的描述" #非必须 不超过512个字节
+                    "content": content, #必须 不超过666 K个字节
+                    "digest": digest #非必须 不超过512个字节
                 }
             ]
             },
@@ -92,7 +92,7 @@ def get_wb(top_num):
 if __name__=='__main__': 
     filepath=f'./data/'
     filename=f'qq.jpg' 
-    access_token=get_token(corpid=corpid,corpsecret=corpsecret)
+    access_token=get_token()
     media_id=upload_file(filepath,filename,access_token)
     title,content,digest=get_wb(top_num=50)
-    send_mpnews(media_id,title,content,digest)
+    send_mpnews(title,media_id,content,digest)
