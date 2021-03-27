@@ -21,7 +21,7 @@ title=f'天翼云盘签到'
 #图文消息的描述，不超过512个字节
 sio_digest=StringIO('')
 sio_digest.write(time.strftime("%Y年%m月%d日", time.localtime())+'\n')
-sio_digest.write(f'Sleep {sleep_time} S 🔥 \nFrom {username[-4:]} 🔥\n点击查看更多...')
+sio_digest.write(f'⏳ {sleep_time} s 🔥 \n📱 {username[-4:]} 🔥\n点击查看更多...')
 #图文消息的内容，支持html标签，不超过666 K个字节
 sio=StringIO('')
 
@@ -96,7 +96,7 @@ def main(arg1,arg2):
     response = s.get(url,headers=headers)
     if ("errorCode" in response.text):
         if(response.json()['errorCode'] == "User_Not_Chance"):
-            sio.write(f'<div>第一次抽奖：抽奖次数不足</div>')
+            sio.write(f'<div><font color=\"warning\">第一次抽奖：抽奖次数不足</font></div>')
         else:
             sio.write(f'<div>第一次抽奖失败</div><div>{response.text}</div>')
     else:
@@ -106,7 +106,7 @@ def main(arg1,arg2):
     response = s.get(url2,headers=headers)
     if ("errorCode" in response.text):
         if(response.json()['errorCode'] == "User_Not_Chance"):
-            sio.write(f'<div>第二次抽奖：抽奖次数不足</div>')
+            sio.write(f'<div><font color=\"warning\">第二次抽奖：抽奖次数不足</font></div>')
         else:
             sio.write(f'<div>第二次抽奖失败</div><div>{response.text}</div>')
     else:
@@ -186,11 +186,11 @@ def login(username, password):
     r = s.post(url, data=data, headers=headers, timeout=5)
     if(r.json()['result'] == 0):
         message=r.json()['msg']
-        sio.write(f'<div>登录提示：</div><div>{message}</div>')
+        sio.write(f'<div>登录提示：{message}</div>')
     else:
         if(corpid == "")or(agentid=='')or(corpsecret==''):
             message=r.json()['msg']
-            sio.write(f'<div>登录提示：</div><div>{message}</div>')
+            sio.write(f'<div>登录提示：{message}</div>')
         else:
             message = r.json()['msg']
             sio.write(f'<div>签到失败：登录出错！</div><div>错误提示：</div><div>{message}</div>')
@@ -202,7 +202,7 @@ def login(username, password):
 # 微信推送
 def pushWechat(sio_content):
     if '失败' in sio_content :
-        sio_content=(f'天翼云盘签到失败！\n')
+        sio_content=(f'<div><font color=\"warning\">天翼云盘签到失败！</font></div>')
     time.sleep(2) #延迟2秒推送    
     send_mpnews(title,sio_content,sio_digest.getvalue())
 

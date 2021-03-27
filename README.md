@@ -1,7 +1,30 @@
 # DailyTools
 
 【日常使用的工具集合】
+## Secret
 
-WB_Search 微博热搜（利用企业微信进行推送）
+- USERNAME
+  天翼云帐号
+- PASSWORD
+  天翼云密码
+- CORPID
+  公司id
+- AGENTID
+  机器人id
+- CORPSECRET
+  机器人secret
+- TOUSER
+  接收id
+- MEDIA
+  图片id
+- PAT 
+  上游自动同步
+  此处PAT需要申请，教程详见：https://www.jianshu.com/p/bb82b3ad1d11
 
-TY_Pan 天翼云盘签到 （利用企业微信进行推送）
+### WB_Search 
+
+微博热搜
+
+### TY_Pan 
+
+天翼云盘签到 
