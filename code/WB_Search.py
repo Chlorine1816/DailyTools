@@ -91,8 +91,8 @@ def get_wb(top_num):
     return (title,sio_content.getvalue(),sio_digest.getvalue())
 
 if __name__=='__main__': 
-    filepath=f'./data/'
-    filename=f'qq.jpg' 
+    #filepath=f'./data/'
+    #filename=f'qq.jpg' 
     access_token=get_token()
     #media_id=upload_file(filepath,filename,access_token)
     title,content,digest=get_wb(top_num=50)
