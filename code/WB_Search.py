@@ -29,7 +29,7 @@ def upload_file(filepath,filename,access_token):
     return (r['media_id'])
 
 #发送图文信息
-def send_mpnews(title,media_id,content,digest):
+def send_mpnews(title,content,digest):
     url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
     data = {
         "touser":touser, #接收消息人员id
@@ -96,4 +96,4 @@ if __name__=='__main__':
     access_token=get_token()
     #media_id=upload_file(filepath,filename,access_token)
     title,content,digest=get_wb(top_num=50)
-    send_mpnews(title,media_id,content,digest)
+    send_mpnews(title,content,digest)

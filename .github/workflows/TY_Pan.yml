@@ -24,10 +24,12 @@ jobs:
       
       - name: Working
         env:
+          USERNAME: ${{secrets.USERNAME}}
+          PASSWORD: ${{secrets.PASSWORD}}
           CORPID: ${{secrets.CORPID}}
           AGENTID: ${{secrets.AGENTID}}
           CORPSECRET: ${{secrets.CORPSECRET}}
           TOUSER: ${{secrets.TOUSER}}
           MEDIA: ${{secrets.MEDIA}}
         run: 
-          python ./code/Test.py
+          python ./code/TY_Pan.py
