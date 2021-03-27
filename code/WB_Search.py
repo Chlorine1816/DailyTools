@@ -73,10 +73,9 @@ def get_wb(top_num):
     #图文消息的描述，不超过512个字节
     sio_digest=StringIO('')
     sio_digest.write(time.strftime("%Y年%m月%d日", time.localtime())+'\n')
-    sio_digest.write(f'🔥'+txt[1].text+'\n')
-    sio_digest.write(f'🔥'+txt[2].text+'\n')
-    sio_digest.write(f'🔥'+txt[3].text+'\n')
-    sio_digest.write(f'点击查看更多...')
+    for i in range(1,22):
+        sio_digest.write(f'🔥'+txt[i].text+'\n')
+    sio_digest.write(f'查看详情...')
     #图文消息的内容，支持html标签，不超过666 K个字节
     sio_content=StringIO('')
     for i in range(top_num):
