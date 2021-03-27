@@ -72,7 +72,7 @@ def get_wb(top_num):
     title=f'微博热搜'
     #图文消息的描述，不超过512个字节
     sio_digest=StringIO('')
-    sio_digest.write(time.strftime("%Y-%m-%d %H:%M", time.localtime())+'\n')
+    sio_digest.write(time.strftime("%Y-%m-%d", time.localtime())+'\n')
     sio_digest.write(f'🔥'+txt[1].text+'\n')
     sio_digest.write(f'🔥'+txt[2].text+'\n')
     sio_digest.write(f'🔥'+txt[3].text+'\n')
