@@ -29,5 +29,6 @@ jobs:
           AGENTID: ${{secrets.AGENTID}}
           CORPSECRET: ${{secrets.CORPSECRET}}
           TOUSER: ${{secrets.TOUSER}}
+          MEDIA: ${{secrets.MEDIA}}
         run: 
           python ./code/WB_Search.py

@@ -11,6 +11,7 @@ corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
 corpsecret=os.environ['CORPSECRET']  #机器人secret
 touser=os.environ['TOUSER']  #接收id
+media_id=os.environ['MEDIA'] #图片id
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}
@@ -93,6 +94,6 @@ if __name__=='__main__':
     filepath=f'./data/'
     filename=f'qq.jpg' 
     access_token=get_token()
-    media_id=upload_file(filepath,filename,access_token)
+    #media_id=upload_file(filepath,filename,access_token)
     title,content,digest=get_wb(top_num=50)
     send_mpnews(title,media_id,content,digest)
