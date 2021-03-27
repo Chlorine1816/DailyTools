@@ -21,7 +21,7 @@ title=f'天翼云盘签到'
 #图文消息的描述，不超过512个字节
 sio_digest=StringIO('')
 sio_digest.write(time.strftime("%Y年%m月%d日", time.localtime())+'\n')
-sio_digest.write(f'⏳ {sleep_time} s 🔥 \n📱 {username[-4:]} 🔥\n点击查看更多...')
+sio_digest.write(f'⏳ {sleep_time} s \n📱 {username[-4:]}\n')
 #图文消息的内容，支持html标签，不超过666 K个字节
 sio=StringIO('')
 
@@ -84,8 +84,10 @@ def main(arg1,arg2):
     netdiskBonus = response.json()['netdiskBonus']
     if(response.json()['isSign'] == "false"):
         sio.write(f'<div>签到提示：未签到，获得{netdiskBonus}M 🎉</div>')
+        sio_digest.write(f'🚀 {netdiskBonus} M')
     else:
         sio.write(f'<div>签到提示：已签到，获得{netdiskBonus}M 🎉</div>')
+        sio_digest.write(f'🚀 {netdiskBonus} M')
     headers = {
         'User-Agent':'Mozilla/5.0 (Linux; Android 5.1.1; SM-G930K Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.136 Mobile Safari/537.36 Ecloud/8.6.3 Android/22 clientId/355325117317828 clientModel/SM-G930K imsi/460071114317824 clientChannelId/qq proVersion/1.0.6',
         "Referer" : "https://m.cloud.189.cn/zhuanti/2016/sign/index.jsp?albumBackupOpened=1",
@@ -96,7 +98,7 @@ def main(arg1,arg2):
     response = s.get(url,headers=headers)
     if ("errorCode" in response.text):
         if(response.json()['errorCode'] == "User_Not_Chance"):
-            sio.write(f'<div><font color=\"warning\">第一次抽奖：抽奖次数不足</font></div>')
+            sio.write(f'<font color=\"warning\">第一次抽奖：抽奖次数不足</font>')
         else:
             sio.write(f'<div>第一次抽奖失败</div><div>{response.text}</div>')
     else:
@@ -106,7 +108,7 @@ def main(arg1,arg2):
     response = s.get(url2,headers=headers)
     if ("errorCode" in response.text):
         if(response.json()['errorCode'] == "User_Not_Chance"):
-            sio.write(f'<div><font color=\"warning\">第二次抽奖：抽奖次数不足</font></div>')
+            sio.write(f'<font color=\"warning\">第二次抽奖：抽奖次数不足</font>')
         else:
             sio.write(f'<div>第二次抽奖失败</div><div>{response.text}</div>')
     else:
@@ -187,13 +189,16 @@ def login(username, password):
     if(r.json()['result'] == 0):
         message=r.json()['msg']
         sio.write(f'<div>登录提示：{message}</div>')
+        sio_digest.write(f'登录提示：{message}\n')
     else:
         if(corpid == "")or(agentid=='')or(corpsecret==''):
             message=r.json()['msg']
             sio.write(f'<div>登录提示：{message}</div>')
+            sio_digest.write(f'登录提示：{message}\n')
         else:
             message = r.json()['msg']
             sio.write(f'<div>签到失败：登录出错！</div><div>错误提示：</div><div>{message}</div>')
+            sio_digest.write(f'签到失败：登录出错！\n')
         return "error"
     redirect_url = r.json()['toUrl']
     r = s.get(redirect_url)
@@ -202,7 +207,7 @@ def login(username, password):
 # 微信推送
 def pushWechat(sio_content):
     if '失败' in sio_content :
-        sio_content=(f'<div><font color=\"warning\">天翼云盘签到失败！</font></div>')
+        sio_content=(f'<font color=\"warning\">天翼云盘签到失败！</font>')
     time.sleep(2) #延迟2秒推送    
     send_mpnews(title,sio_content,sio_digest.getvalue())
 
