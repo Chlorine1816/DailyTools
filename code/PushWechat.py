@@ -38,10 +38,3 @@ def send_mpnews(title,content,digest):
         }
     data = json.dumps(data, ensure_ascii=False)
     requests.post(url=url, data=data.encode("utf-8").decode("latin1"))
-
-def send_message(message):
-    access_token=get_token()
-    url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
-    data = {"touser":'@all', "msgtype": "text", "agentid": agentid, "text": {"content": message}, "safe": 0}
-    data = json.dumps(data, ensure_ascii=False)
-    r = requests.post(url=url, data=data.encode("utf-8").decode("latin1"))
