@@ -15,3 +15,6 @@
 ## Code
 - WB_Search : 微博热搜
 - TY_Pan  : 天翼云盘签到 
+
+## Pull
+- 安装[pull插件](https://github.com/apps/pull)
