@@ -30,4 +30,4 @@ jobs:
           TOUSER: ${{secrets.TOUSER}}
           MEDIA: ${{secrets.MEDIA}}
         run: 
-          python ./code/test.py
+          python ./code/Test.py
