@@ -1,9 +1,9 @@
-name: Test
+name: 天翼云盘
 
 on: 
   workflow_dispatch:
   schedule:
-    - cron: '0 10  *  *  *'
+    - cron: '22 22  *  *  *'
 
 jobs:
   run-tool:
