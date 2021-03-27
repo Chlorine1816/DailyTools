@@ -1,7 +1,7 @@
-name: 自动同步-Actions
+name: 自动同步上游仓库
 on:
   schedule:
-    - cron: '22 22 * * *'
+    - cron: '11 11 * * *'
   workflow_dispatch:
   watch:
     types: started
@@ -10,7 +10,7 @@ on:
 jobs:
   repo-sync:
     env:
-      PAT: ${{ secrets.PAT || github.event.client_payload.PAT }} #此处PAT需要申请，教程详见：https://www.jianshu.com/p/bb82b3ad1d11
+      PAT: ${{ secrets.PAT || github.event.client_payload.PAT }}
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
@@ -22,7 +22,7 @@ jobs:
         uses: repo-sync/github-sync@v2
         if: env.PAT
         with:
-          source_repo: "https://github.com/BlueskyClouds/My-Actions.git"
+          source_repo: "https://github.com/Chlorine1816/DailyTools.git"
           source_branch: "master"
           destination_branch: "master"
           github_token: ${{ secrets.PAT || github.event.client_payload.PAT }}
