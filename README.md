@@ -13,8 +13,9 @@
 - PAT : (上游自动同步,此处PAT需要申请，教程详见：https://www.jianshu.com/p/bb82b3ad1d11)
 
 ## Code
-- WB_Search : 微博热搜
-- TY_Pan  : 天翼云盘签到 
+- WB_Search ： 微博热搜
+- TY_Pan ： 天翼云盘签到 
+- Fund ： 基金操作参考
 
 ## Pull
 - 安装[pull插件](https://github.com/apps/pull)

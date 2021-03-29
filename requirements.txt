@@ -3,3 +3,5 @@ bs4
 lxml
 requests_toolbelt
 rsa
+numpy
+pandas

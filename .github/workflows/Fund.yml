@@ -1,0 +1,33 @@
+name: 基金操作参考
+
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron: '0 10  *  *  *'
+
+jobs:
+  run-tool:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./requirements.txt
+      
+      - name: Working
+        env:
+          CORPID: ${{secrets.CORPID}}
+          AGENTID: ${{secrets.AGENTID}}
+          CORPSECRET: ${{secrets.CORPSECRET}}
+          TOUSER: ${{secrets.TOUSER}}
+          MEDIA: ${{secrets.MEDIA}}
+        run: 
+          python ./code/Fund.py
