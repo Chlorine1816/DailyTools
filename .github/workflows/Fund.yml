@@ -3,11 +3,12 @@ name: 基金操作参考
 on: 
   workflow_dispatch:
   schedule:
-    - cron: '35 7 * * 1,2,3,4,5'
+    - cron: '0 8 * * 1,2,3,4,5'
 
 jobs:
   run-tool:
     runs-on: ubuntu-latest
+    environment: Production
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
