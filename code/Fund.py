@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-  
 import time,re,requests,os,json,random
 import pandas as pd
 from bs4 import BeautifulSoup
