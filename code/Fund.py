@@ -168,7 +168,7 @@ def working(code):
         writing('天天基金 估值：',jz_data[-1],gszf2)
         writing('均值修正 估值：',jz_data[-1],(gszf1+gszf2)/2)
         name=name.split('(')[0]
-        sio_digest.write(f'{name} 💕\n')
+        sio_digest.write(f'💕{name}\n')
     elif (today_lj > num_mean) and (today_lj < q3):
         sio_content.write(f'<div>💗</div>')
         sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
@@ -177,7 +177,7 @@ def working(code):
         writing('天天基金 估值：',jz_data[-1],gszf2)
         writing('均值修正 估值：',jz_data[-1],(gszf1+gszf2)/2)
         name=name.split('(')[0]
-        sio_digest.write(f'{name} 💗\n')
+        sio_digest.write(f'💗{name}\n')
     elif (today_lj > q4):
         sio_content.write(f'<div>🚀</div>')
         sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
@@ -186,7 +186,7 @@ def working(code):
         writing('天天基金 估值：',jz_data[-1],gszf2)
         writing('均值修正 估值：',jz_data[-1],(gszf1+gszf2)/2)
         name=name.split('(')[0]
-        sio_digest.write(f'{name} 🚀\n')
+        sio_digest.write(f'🚀{name}\n')
     else:
         sio_content.write(f'<div>💚</div>')
         sio_content.write(f'<div>{name}</div>')
