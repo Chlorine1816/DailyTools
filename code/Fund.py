@@ -197,12 +197,12 @@ def working(code):
     return None
 
 if __name__=='__main__':
-    time.process_time()
+    start=time.perf_counter()
     fund_list=pd.read_excel('./data/FundList.xlsx',dtype={'ID': 'string'})
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
         working(code)
     sio_digest.write(f'more 👉')
-    sio_content.write(f'运行时间：{time.process_time()} 秒')
+    sio_content.write(f'运行时间：{round((time.perf_counter()-start)/60,2)} 分')
     send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())
