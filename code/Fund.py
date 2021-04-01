@@ -17,7 +17,7 @@ media_id=os.environ['MEDIA'] #图片id
 title=f'基金操作参考'
 #图文消息的描述，不超过512个字节
 sio_digest=StringIO('')
-sio_digest.write(time.strftime("%Y年%m月%d日 %H:%M:%S", time.localtime())+'\n')
+sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
 #图文消息的内容，支持html标签，不超过666 K个字节
 sio_content=StringIO('')
 
@@ -204,5 +204,5 @@ if __name__=='__main__':
         code=fund_list['ID'].values[i]
         working(code)
     sio_digest.write(f'more 👉')
-    sio_content.write(f'运行时间：{round((time.perf_counter()-start)/60,2)} 分')
+    sio_content.write(f'<div>⏱</div>运行时间：{round((time.perf_counter()-start)/60,2)} 分钟')
     send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())
