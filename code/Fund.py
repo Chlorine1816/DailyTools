@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-  
-import time,re,requests,os,json,random
+import time,re,requests,os,json
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
@@ -17,7 +17,7 @@ media_id=os.environ['MEDIA'] #图片id
 title=f'基金操作参考'
 #图文消息的描述，不超过512个字节
 sio_digest=StringIO('')
-sio_digest.write(time.strftime("%Y年%m月%d日", time.localtime())+'\n')
+sio_digest.write(time.strftime("%Y年%m月%d日 %H:%M:%S", time.localtime())+'\n')
 #图文消息的内容，支持html标签，不超过666 K个字节
 sio_content=StringIO('')
 
@@ -197,11 +197,12 @@ def working(code):
     return None
 
 if __name__=='__main__':
-    time.sleep(random.randint(11,22))
+    time.process_time()
     fund_list=pd.read_excel('./data/FundList.xlsx',dtype={'ID': 'string'})
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
         working(code)
     sio_digest.write(f'more 👉')
+    sio_content.write(f'运行时间：{time.process_time()} 秒')
     send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())
