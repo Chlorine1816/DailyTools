@@ -156,7 +156,8 @@ def working(code):
     num_mean=round(np.mean(jz_data),4) #前50天净值均值
     q1=round(np.quantile(jz_data,0.2),4) #前50天净值下五分位数
     q3=round(np.quantile(jz_data,0.75),4) #前50天净值上四分位数
-    q4=round(np.quantile(jz_data,0.8),4) #前50天净值上五分位数
+    #q4=round(np.quantile(jz_data,0.8),4) #前50天净值上五分位数
+    max_q=round(np.max(jz_data),4) #前50天净值最大值
     gszf1=get_fund1(code)
     name,gszf2=get_fund2(code)
     today_lj=round(jz_data[-1]*(1+(gszf1+gszf2)/2/100),4)
@@ -178,10 +179,10 @@ def working(code):
         writing('均值修正 估值：',jz_data[-1],(gszf1+gszf2)/2)
         name=name.split('(')[0]
         sio_digest.write(f'💗{name}\n')
-    elif (today_lj > q4):
+    elif (today_lj > max_q):
         sio_content.write(f'<div>🚀</div>')
         sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
-        sio_content.write(f'<div>净值参考 上五：{q4} 均值：{num_mean}</div>')
+        sio_content.write(f'<div>净值参考 上限：{max_q} 均值：{num_mean}</div>')
         writing('基金速查 估值：',jz_data[-1],gszf1)
         writing('天天基金 估值：',jz_data[-1],gszf2)
         writing('均值修正 估值：',jz_data[-1],(gszf1+gszf2)/2)
