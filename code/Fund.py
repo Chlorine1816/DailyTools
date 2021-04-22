@@ -53,6 +53,15 @@ def send_mpnews(title,content,digest):
     data = json.dumps(data, ensure_ascii=False)
     requests.post(url=url, data=data.encode("utf-8").decode("latin1"))
 
+def get_daily_sentence():
+    url = "http://open.iciba.com/dsapi/"
+    r = requests.get(url)
+    r = json.loads(r.text)
+    content = r["content"]
+    note = r["note"]
+    sio_digest.write(f'{content}\n{note}\n')
+    return None
+
 def get_fund(code,per=10,sdate='',edate='',proxies=None):
     url='http://fund.eastmoney.com/f10/F10DataApi.aspx'
     params = {'type': 'lsjz', 'code': code, 'page':1,'per': per, 'sdate': sdate, 'edate': edate}
@@ -200,6 +209,7 @@ def working(code):
 if __name__=='__main__':
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/FundList.xlsx',dtype={'ID': 'string'})
+    get_daily_sentence()
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
