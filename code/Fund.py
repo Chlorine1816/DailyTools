@@ -171,14 +171,14 @@ def working(code):
     name,gszf2=get_fund2(code)
     today_lj=round(jz_data[-1]*(1+(gszf1+gszf2)/2/100),4)
     if (today_lj > q1) and (today_lj <= num_mean):
-        sio_content.write(f'<div>💕</div>')
+        sio_content.write(f'<div>💗💗💗</div>')
         sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
         sio_content.write(f'<div>净值参考 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
         writing('基金速查 估值：',jz_data[-1],gszf1)
         writing('天天基金 估值：',jz_data[-1],gszf2)
         writing('均值修正 估值：',jz_data[-1],(gszf1+gszf2)/2)
     elif (today_lj > num_mean) and (today_lj < q4):
-        sio_content.write(f'<div>💗</div>')
+        sio_content.write(f'<div>💗💗</div>')
         sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
         sio_content.write(f'<div>净值参考 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
         writing('基金速查 估值：',jz_data[-1],gszf1)
@@ -193,6 +193,13 @@ def working(code):
         writing('均值修正 估值：',jz_data[-1],(gszf1+gszf2)/2)
         name=name.split('(')[0]
         sio_digest.write(f'🚀{name}\n')
+    elif (today_lj > q4) and ((gszf1+gszf2)/2 < 0):
+        sio_content.write(f'<div>💗</div>')
+        sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
+        sio_content.write(f'<div>净值参考 上五：{q4} 均值：{num_mean}</div>')
+        writing('基金速查 估值：',jz_data[-1],gszf1)
+        writing('天天基金 估值：',jz_data[-1],gszf2)
+        writing('均值修正 估值：',jz_data[-1],(gszf1+gszf2)/2)
     else:
         sio_content.write(f'<div>💚</div>')
         sio_content.write(f'<div>{name}</div>')
