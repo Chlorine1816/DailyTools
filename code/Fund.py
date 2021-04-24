@@ -168,10 +168,7 @@ def working(code):
     q4=round(np.quantile(jz_data,0.8),4) #前50天净值上五分位数
     max_q=round(np.max(jz_data),4) #前50天净值最大值
     name,gszf2=get_fund2(code)
-    if 'ETF' in name :
-        gszf1=gszf2
-    else:
-        gszf1=get_fund1(code)
+    gszf1=gszf2 if 'ETF' in name else get_fund1(code)
     gszf=round((gszf1+gszf2)/2,4)
     today_lj=round(jz_data[-1]*(1+gszf/100),4)
     if (today_lj > max_q):
