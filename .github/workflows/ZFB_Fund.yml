@@ -1,10 +1,10 @@
-name: 基金操作参考
+name: ZFB基金
 
 on: 
   workflow_dispatch:
   push:
   schedule:
-    - cron: '11 3,6 * * 1,2,3,4,5'
+    - cron: '12 3,6 * * 1,2,3,4,5'
 
 jobs:
   run-tool:
@@ -31,4 +31,4 @@ jobs:
           TOUSER: ${{secrets.TOUSER}}
           MEDIA: ${{secrets.MEDIA}}
         run: 
-          python ./code/Fund.py
+          python ./code/ZFB_Fund.py

@@ -167,52 +167,52 @@ def working(code):
     #q3=round(np.quantile(jz_data,0.75),4) #前50天净值上四分位数
     q4=round(np.quantile(jz_data,0.8),4) #前50天净值上五分位数
     max_q=round(np.max(jz_data),4) #前50天净值最大值
-    name,gszf2=get_fund2(code)
-    gszf1=gszf2 if 'ETF' in name else get_fund1(code)
-    gszf=round((gszf1+gszf2)/2,4)
+    name,gszf=get_fund2(code)
+    #gszf1=gszf2 if 'ETF' in name else get_fund1(code)
+    #gszf=round((gszf1+gszf2)/2,4)
     today_lj=round(jz_data[-1]*(1+gszf/100),4)
     if (today_lj > max_q):
         sio_content.write(f'<div>🚀</div>')
         sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
         sio_content.write(f'<div>净值参考 上限：{max_q} 均值：{num_mean}</div>')
-        writing('基金速查 估值：',jz_data[-1],gszf1)
-        writing('天天基金 估值：',jz_data[-1],gszf2)
-        writing('均值修正 估值：',jz_data[-1],gszf)
+        #writing('基金速查 估值：',jz_data[-1],gszf1)
+        writing('天天基金 估值：',jz_data[-1],gszf)
+        #writing('均值修正 估值：',jz_data[-1],gszf)
         name=name.split('(')[0]
         sio_digest.write(f'🚀{name}\n')
     elif ((q1 <= today_lj <= q4 ) and (gszf > 0)) or ((today_lj > q4) and (gszf < 0)):
         sio_content.write(f'<div>💗</div>')
         sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
         sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing('基金速查 估值：',jz_data[-1],gszf1)
-        writing('天天基金 估值：',jz_data[-1],gszf2)
-        writing('均值修正 估值：',jz_data[-1],gszf)
+        #writing('基金速查 估值：',jz_data[-1],gszf1)
+        writing('天天基金 估值：',jz_data[-1],gszf)
+        #writing('均值修正 估值：',jz_data[-1],gszf)
     elif (num_mean < today_lj <= q4):
         sio_content.write(f'<div>💗💗</div>')
         sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
         sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing('基金速查 估值：',jz_data[-1],gszf1)
-        writing('天天基金 估值：',jz_data[-1],gszf2)
-        writing('均值修正 估值：',jz_data[-1],gszf)
+        #writing('基金速查 估值：',jz_data[-1],gszf1)
+        writing('天天基金 估值：',jz_data[-1],gszf)
+        #writing('均值修正 估值：',jz_data[-1],gszf)
     elif (q1 <= today_lj <= num_mean):
         sio_content.write(f'<div>💗💗💗</div>')
         sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
         sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing('基金速查 估值：',jz_data[-1],gszf1)
-        writing('天天基金 估值：',jz_data[-1],gszf2)
-        writing('均值修正 估值：',jz_data[-1],gszf)
+        #writing('基金速查 估值：',jz_data[-1],gszf1)
+        writing('天天基金 估值：',jz_data[-1],gszf)
+        #writing('均值修正 估值：',jz_data[-1],gszf)
     else:
         sio_content.write(f'<div>💚</div>')
         sio_content.write(f'<div>{name}</div>')
         sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing('基金速查 估值：',jz_data[-1],gszf1)
-        writing('天天基金 估值：',jz_data[-1],gszf2)
-        writing('均值修正 估值：',jz_data[-1],gszf)
+        #writing('基金速查 估值：',jz_data[-1],gszf1)
+        writing('天天基金 估值：',jz_data[-1],gszf)
+        #writing('均值修正 估值：',jz_data[-1],gszf)
     return None
 
 if __name__=='__main__':
     start=time.perf_counter()
-    fund_list=pd.read_excel('./data/FundList.xlsx',dtype={'ID': 'string'})
+    fund_list=pd.read_excel('./data/ZFB_FundList.xlsx',dtype={'ID': 'string'})
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
