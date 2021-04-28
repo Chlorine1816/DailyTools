@@ -1,4 +1,4 @@
-name: ZFB_Fund
+name: OnSite_Fund
 
 on: 
   workflow_dispatch:
@@ -31,4 +31,4 @@ jobs:
           TOUSER: ${{secrets.TOUSER}}
           MEDIA: ${{secrets.MEDIA}}
         run: 
-          python ./code/ZFB_Fund.py
+          python ./code/OnSite_Fund.py
