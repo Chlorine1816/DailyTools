@@ -120,18 +120,16 @@ def get_fund2(fund_id):
     jz=BeautifulSoup(str(jz),'lxml')
     #名称
     name=jz.find_all('h4',class_='title')[0].text
-    #涨跌
-    fund_gszf=0 if jz.find_all('span',id='fund_gszf')[0].text=='---' else float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
-    return (name,fund_gszf)
+    return (name)
 
-def writing(news,jz,zf):
-    sio_content.write(f'{news}')
+def writing(date,lj,jz,zf):
+    sio_content.write(f'{date} 单位净值：{jz} 累计净值：')
     if zf<0:
-        sio_content.write(f'<font color=\"info\">{round(jz*(1+zf/100),4)} {zf}%</font>')
+        sio_content.write(f'<font color=\"info\">{lj} {zf}%</font>')
     elif zf==0:
-        sio_content.write(f'{round(jz*(1+zf/100),4)} {round(zf,4)}%')
+        sio_content.write(f'{lj} {zf}%')
     else:
-        sio_content.write(f'<font color=\"warning\">{round(jz*(1+zf/100),4)} {zf}%</font>')
+        sio_content.write(f'<font color=\"warning\">{lj} {zf}%</font>')
     sio_content.write(f'<div> </div>')
     return None
 
@@ -146,41 +144,43 @@ def working(code):
     # 按照日期升序排序并重建索引
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
-    jz_data=data['累计净值'].values[-50:]
-    num_mean=round(np.mean(jz_data),4) #前50天净值均值
-    q1=round(np.quantile(jz_data,0.2),4) #前50天净值下五分位数
-    q4=round(np.quantile(jz_data,0.8),4) #前50天净值上五分位数
-    max_q=round(np.max(jz_data),4) #上限
-    name,gszf=get_fund2(code)
-    today_lj=round(jz_data[-1]*(1+gszf/100),4)
 
-    if (today_lj >= max_q):
-        sio_content.write(f'<div>🚀</div>')
+    jz_date=data['净值日期'].values[-1]
+    lj_data=data['累计净值'].values[-50:]
+    jz_data=data['单位净值'].values[-1]
+    zf_data=data['日增长率'].values[-1]
+
+    num_mean=round(np.mean(lj_data),4) #前50天净值均值
+    q1=round(np.quantile(lj_data,0.2),4) #前50天净值下五分位数
+    q4=round(np.quantile(lj_data,0.8),4) #前50天净值上五分位数
+    max_q=round(np.max(lj_data),4) #上限
+    name=get_fund2(code)
+
+    if (lj_data[-1] >= max_q):
+        sio_content.write(f'<div>💗💗💗💗🚀</div>')
         sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
         sio_content.write(f'<div>净值参考 上限：{max_q} 均值：{num_mean}</div>')
-        writing('天天基金 估值：',jz_data[-1],gszf)
-        name=name.split('(')[0]
-        sio_digest.write(f'🚀{name}\n')
-    elif (today_lj >= q4):
-        sio_content.write(f'<div>🔥🔥🔥</div>')
+        writing(jz_date,lj_data[-1],jz_data,zf_data)
+    elif (lj_data[-1] >= q4):
+        sio_content.write(f'<div>💗💗💗💚🚀</div>')
         sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
         sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing('天天基金 估值：',jz_data[-1],gszf)
-    elif (today_lj >= num_mean ):
-        sio_content.write(f'<div>🔥🔥</div>')
+        writing(jz_date,lj_data[-1],jz_data,zf_data)
+    elif (lj_data[-1] >= num_mean ):
+        sio_content.write(f'<div>💗💗💚💚🚀</div>')
         sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
         sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing('天天基金 估值：',jz_data[-1],gszf)
-    elif (today_lj >= q1):
-        sio_content.write(f'<div>🔥</div>')
+        writing(jz_date,lj_data[-1],jz_data,zf_data)
+    elif (lj_data[-1] >= q1):
+        sio_content.write(f'<div>💗💚💚💚🚀</div>')
         sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
         sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing('天天基金 估值：',jz_data[-1],gszf)
+        writing(jz_date,lj_data[-1],jz_data,zf_data)
     else:
-        sio_content.write(f'<div>💚</div>')
+        sio_content.write(f'<div>💚💚💚💚🚀</div>')
         sio_content.write(f'<div>{name}</div>')
         sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing('天天基金 估值：',jz_data[-1],gszf)
+        writing(jz_date,lj_data[-1],jz_data,zf_data)
     return None
 
 if __name__=='__main__':
@@ -190,7 +190,6 @@ if __name__=='__main__':
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
-        print(code)
         working(code)
     sio_digest.write(f'more 👉')
     sio_content.write(f'<div>⏱</div>运行时间：{round((time.perf_counter()-start)/60,1)} 分钟')
