@@ -30,7 +30,7 @@ def get_token():
 
 #发送图文信息
 def send_mpnews(title,content,digest):
-    time.sleep(2)
+    time.sleep(0.2)
     access_token=get_token()
     url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
     data = {
@@ -122,16 +122,26 @@ def get_fund2(fund_id):
     name=jz.find_all('h4',class_='title')[0].text
     return (name)
 
-def writing(date,lj,jz,zf):
-    sio_content.write(f'{date} 单位净值：{jz} 累计净值：')
-    if zf<0:
-        sio_content.write(f'<font color=\"info\">{lj} {zf}%</font>')
-    elif zf==0:
-        sio_content.write(f'{lj} {zf}%')
-    else:
-        sio_content.write(f'<font color=\"warning\">{lj} {zf}%</font>')
-    sio_content.write(f'<div> </div>')
+def writing1(title,name,news,mean5,mean10,mean30,max_q,q4,mean50,q1):
+    sio_content.write(f'<div>{title}</div>')
+    sio_content.write(f'<div>{name}</div>')
+    sio_content.write(f'{news}')
+    sio_content.write(f'<div>均值5：{mean5} 均值10：{mean10} 均值30：{mean30}</div>')
+    sio_content.write(f'<div>50日 上限：{max_q} 上五：{q4} 均值：{mean50} 下五：{q1}</div>')
     return None
+
+def writing2(date,lj,jz,zf,up):
+    up2,up1,down1,down2=updown(jz)
+    sio_content.write(f'<div>{date} 收盘价：{round(jz,3)} 累计净值：{round(lj,3)} {zf}%</div>')
+    sio_content.write(f'<div>UP：{up}</div>')
+    sio_content.write(f'<div><font color=\"warning\">涨 2% {up2}</font></div>')
+    sio_content.write(f'<div><font color=\"warning\">涨 1% {up1}</font></div>')
+    sio_content.write(f'<div><font color=\"info\">跌 1% {down1}</font></div>')
+    sio_content.write(f'<div><font color=\"info\">跌 2% {down2}</font></div>')
+    return None
+
+def updown(jz):
+    return(round(jz*1.02,3),round(jz*1.01,3),round(jz*0.99,3),round(jz*0.98,3))
 
 def working(code):
     #获取净值信息
@@ -148,39 +158,48 @@ def working(code):
     jz_date=data['净值日期'].values[-1]
     lj_data=data['累计净值'].values[-50:]
     jz_data=data['单位净值'].values[-1]
-    zf_data=data['日增长率'].values[-1]
+    zf_data=data['日增长率'].values[-50:]
 
-    num_mean=round(np.mean(lj_data),4) #前50天净值均值
-    q1=round(np.quantile(lj_data,0.2),4) #前50天净值下五分位数
-    q4=round(np.quantile(lj_data,0.8),4) #前50天净值上五分位数
-    max_q=round(np.max(lj_data),4) #上限
-    name=get_fund2(code)
+    mean5=round(np.mean(lj_data[-5:]),3) #前5天净值均值
+    mean10=round(np.mean(lj_data[-10:]),3)#前10天净值均值
+    mean30=round(np.mean(lj_data[-30:]),3)#前30天净值均值
+
+    if (mean5 > mean10 > mean30):
+        news=f'<div><font color=\"warning\">大幅上涨</font></div>'
+    elif (mean5 < mean10 < mean30):
+        news=f'<div><font color=\"info\">大幅下跌</font></div>'
+    elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
+        news=f'<div><font color=\"warning\">上涨</font></div>'
+    elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
+        news=f'<div><font color=\"info\">下跌</font></div>'
+    else:
+        news=f'<div>未知</div>'
+
+    mean50=round(np.mean(lj_data),3) #前50天净值均值
+    q1=round(np.quantile(lj_data,0.2),3) #前50天净值下五分位数
+    q4=round(np.quantile(lj_data,0.8),3) #前50天净值上五分位数
+    max_q=round(np.max(lj_data),3) #上限 #上限
 
     if (lj_data[-1] >= max_q):
-        sio_content.write(f'<div>💗💗💗💗🚀</div>')
-        sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
-        sio_content.write(f'<div>净值参考 上限：{max_q} 均值：{num_mean}</div>')
-        writing(jz_date,lj_data[-1],jz_data,zf_data)
+        writing1('💗💗💗💗🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
+        up='超过最大值！'
+        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1],up)
     elif (lj_data[-1] >= q4):
-        sio_content.write(f'<div>💗💗💗💚🚀</div>')
-        sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
-        sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing(jz_date,lj_data[-1],jz_data,zf_data)
-    elif (lj_data[-1] >= num_mean ):
-        sio_content.write(f'<div>💗💗💚💚🚀</div>')
-        sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
-        sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing(jz_date,lj_data[-1],jz_data,zf_data)
+        writing1('💗💗💗💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
+        up=round(jz_data*((max_q-lj_data[-1])/lj_data[-1]+1),3)
+        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1],up)
+    elif (lj_data[-1] >= mean50 ):
+        writing1('💗💗💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
+        up=round(jz_data*((q4-lj_data[-1])/lj_data[-1]+1),3)
+        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1],up)
     elif (lj_data[-1] >= q1):
-        sio_content.write(f'<div>💗💚💚💚🚀</div>')
-        sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
-        sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing(jz_date,lj_data[-1],jz_data,zf_data)
+        writing1('💗💚💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
+        up=round(jz_data*((mean50-lj_data[-1])/lj_data[-1]+1),3)
+        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1],up)
     else:
-        sio_content.write(f'<div>💚💚💚💚🚀</div>')
-        sio_content.write(f'<div>{name}</div>')
-        sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        writing(jz_date,lj_data[-1],jz_data,zf_data)
+        writing1('💚💚💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
+        up=round(jz_data*((q1-lj_data[-1])/lj_data[-1]+1),3)
+        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1],up)
     return None
 
 if __name__=='__main__':
@@ -190,6 +209,7 @@ if __name__=='__main__':
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
+        print(code)
         working(code)
     sio_digest.write(f'more 👉')
     sio_content.write(f'<div>⏱</div>运行时间：{round((time.perf_counter()-start)/60,1)} 分钟')
