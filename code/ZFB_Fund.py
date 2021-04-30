@@ -30,7 +30,7 @@ def get_token():
 
 #发送图文信息
 def send_mpnews(title,content,digest):
-    time.sleep(2)
+    time.sleep(0.2)
     access_token=get_token()
     url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
     data = {
@@ -109,7 +109,7 @@ def get_fund1(fund_id):
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
     time.sleep(0.2)
     try:
-        req=requests.get(url=url,headers=headers,timeout=22)
+        req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
         if req.status_code==200:
             html=req.text
@@ -124,7 +124,7 @@ def get_fund2(fund_id):
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
     time.sleep(0.2)
     try:
-        req=requests.get(url=url,headers=headers,timeout=22)
+        req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
         if req.status_code==200:
             html=req.text
@@ -135,19 +135,27 @@ def get_fund2(fund_id):
     jz=BeautifulSoup(str(jz),'lxml')
     #名称
     name=jz.find_all('h4',class_='title')[0].text
+    #估值
+    fund_gsz=float(jz.find_all('span',id='fund_gsz')[0].text)
     #涨跌
     fund_gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
-    return (name,fund_gszf)
+    return (name,fund_gsz,fund_gszf)
 
-def writing(news,jz,zf):
+def writing1(title,name,news,mean5,mean10,mean30,max_q,q4,mean50,q1):
+    sio_content.write(f'<div>{title}</div>')
+    sio_content.write(f'<div>{name}</div>')
     sio_content.write(f'{news}')
-    if zf<0:
-        sio_content.write(f'<font color=\"info\">{round(jz*(1+zf/100),4)} {round(zf,4)}%</font>')
-    elif zf==0:
-        sio_content.write(f'{round(jz*(1+zf/100),4)} {round(zf,4)}%')
+    sio_content.write(f'<div>均值5：{mean5} 均值10：{mean10} 均值30：{mean30}</div>')
+    sio_content.write(f'<div>50日 上限：{max_q} 上五：{q4} 均值：{mean50} 下五：{q1}</div>')
+    return None
+
+def writing2(jz,lj,zf):
+    if (zf > 0):
+        sio_content.write(f'<div>估值 单位净值：<font color=\"warning\">{jz}</font> 累计净值：<font color=\"warning\">{lj}</font> 涨幅：<font color=\"warning\">{zf}%</font></div>')
+    elif (zf < 0):
+        sio_content.write(f'<div>估值 单位净值：<font color=\"info\">{jz}</font> 累计净值：<font color=\"info\">{lj}</font> 涨幅：<font color=\"info\">{zf}%</font></div>')
     else:
-        sio_content.write(f'<font color=\"warning\">{round(jz*(1+zf/100),4)} {round(zf,4)}%</font>')
-    sio_content.write(f'<div> </div>')
+        sio_content.write(f'<div>估值 单位净值：{jz} 累计净值：{lj} 涨幅：{zf}%</div>')
     return None
 
 def working(code):
@@ -161,53 +169,45 @@ def working(code):
     # 按照日期升序排序并重建索引
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
-    jz_data=data['累计净值'].values[-50:]
-    num_mean=round(np.mean(jz_data),4) #前50天净值均值
-    q1=round(np.quantile(jz_data,0.2),4) #前50天净值下五分位数
-    #q3=round(np.quantile(jz_data,0.75),4) #前50天净值上四分位数
-    q4=round(np.quantile(jz_data,0.8),4) #前50天净值上五分位数
-    max_q=round(np.max(jz_data),4) #前50天净值最大值
-    name,gszf=get_fund2(code)
-    #gszf1=gszf2 if 'ETF' in name else get_fund1(code)
-    #gszf=round((gszf1+gszf2)/2,4)
-    today_lj=round(jz_data[-1]*(1+gszf/100),4)
-    if (today_lj > max_q):
-        sio_content.write(f'<div>🚀</div>')
-        sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
-        sio_content.write(f'<div>净值参考 上限：{max_q} 均值：{num_mean}</div>')
-        #writing('基金速查 估值：',jz_data[-1],gszf1)
-        writing('天天基金 估值：',jz_data[-1],gszf)
-        #writing('均值修正 估值：',jz_data[-1],gszf)
-        name=name.split('(')[0]
-        sio_digest.write(f'🚀{name}\n')
-    elif ((q1 <= today_lj <= q4 ) and (gszf > 0)) or ((today_lj > q4) and (gszf < 0)):
-        sio_content.write(f'<div>💗</div>')
-        sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
-        sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        #writing('基金速查 估值：',jz_data[-1],gszf1)
-        writing('天天基金 估值：',jz_data[-1],gszf)
-        #writing('均值修正 估值：',jz_data[-1],gszf)
-    elif (num_mean < today_lj <= q4):
-        sio_content.write(f'<div>💗💗</div>')
-        sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
-        sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        #writing('基金速查 估值：',jz_data[-1],gszf1)
-        writing('天天基金 估值：',jz_data[-1],gszf)
-        #writing('均值修正 估值：',jz_data[-1],gszf)
-    elif (q1 <= today_lj <= num_mean):
-        sio_content.write(f'<div>💗💗💗</div>')
-        sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
-        sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        #writing('基金速查 估值：',jz_data[-1],gszf1)
-        writing('天天基金 估值：',jz_data[-1],gszf)
-        #writing('均值修正 估值：',jz_data[-1],gszf)
+    lj_data=data['累计净值'].values[-50:]
+    mean5=round(np.mean(lj_data[-5:]),3) #前5天净值均值
+    mean10=round(np.mean(lj_data[-10:]),3)#前10天净值均值
+    mean30=round(np.mean(lj_data[-30:]),3)#前30天净值均值
+
+    if (mean5 > mean10 > mean30):
+        news=f'<div><font color=\"warning\">大幅上涨</font></div>'
+    elif (mean5 < mean10 < mean30):
+        news=f'<div><font color=\"info\">大幅下跌</font></div>'
+    elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
+        news=f'<div><font color=\"warning\">上涨</font></div>'
+    elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
+        news=f'<div><font color=\"info\">下跌</font></div>'
     else:
-        sio_content.write(f'<div>💚</div>')
-        sio_content.write(f'<div>{name}</div>')
-        sio_content.write(f'<div>净值参考 上限：{max_q} 上五：{q4} 均值：{num_mean} 下五：{q1}</div>')
-        #writing('基金速查 估值：',jz_data[-1],gszf1)
-        writing('天天基金 估值：',jz_data[-1],gszf)
-        #writing('均值修正 估值：',jz_data[-1],gszf)
+        news=f'<div>未知</div>'
+
+    mean50=round(np.mean(lj_data),3) #前50天净值均值
+    q1=round(np.quantile(lj_data,0.2),3) #前50天净值下五分位数
+    q4=round(np.quantile(lj_data,0.8),3) #前50天净值上五分位数
+    max_q=round(np.max(lj_data),3) #上限
+
+    name,gsz,gszf=get_fund2(code)
+    today_lj=round(lj_data[-1]*(1+gszf/100),4)
+
+    if (today_lj >= max_q):
+        writing1('💗💗💗💗🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
+        writing2(gsz,today_lj,gszf)
+    elif (today_lj >= q4):
+        writing1('💗💗💗💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
+        writing2(gsz,today_lj,gszf)
+    elif (today_lj >= mean50 ):
+        writing1('💗💗💚💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
+        writing2(gsz,today_lj,gszf)
+    elif (today_lj >= q1):
+        writing1('💗💚💚💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
+        writing2(gsz,today_lj,gszf)
+    else:
+        writing1('💚💚💚💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
+        writing2(gsz,today_lj,gszf)
     return None
 
 if __name__=='__main__':
@@ -217,6 +217,7 @@ if __name__=='__main__':
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
+        print(code)
         working(code)
     sio_digest.write(f'more 👉')
     sio_content.write(f'<div>⏱</div>运行时间：{round((time.perf_counter()-start)/60,1)} 分钟')
