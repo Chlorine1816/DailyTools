@@ -169,10 +169,18 @@ def working(code):
     # 按照日期升序排序并重建索引
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
-    lj_data=data['累计净值'].values[-50:]
-    mean5=round(np.mean(lj_data[-5:]),3) #前5天净值均值
-    mean10=round(np.mean(lj_data[-10:]),3)#前10天净值均值
-    mean30=round(np.mean(lj_data[-30:]),3)#前30天净值均值
+    lj_data=data['累计净值'].values[-49:]
+    name,gsz,gszf=get_fund2(code) #获取当日估值 涨幅
+    today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
+    lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
+
+    mean5=round(np.mean(lj_data[-5:]),3) #5日均值
+    mean10=round(np.mean(lj_data[-10:]),3)#10日均值
+    mean30=round(np.mean(lj_data[-30:]),3)#30日均值
+    mean50=round(np.mean(lj_data),3) #50日均值
+    q1=round(np.quantile(lj_data,0.2),3) #50日下五分位数
+    q4=round(np.quantile(lj_data,0.8),3) #50日上五分位数
+    max_q=round(np.max(lj_data),3) #50日最大值
 
     if (mean5 > mean10 > mean30):
         news=f'<div><font color=\"warning\">大幅上涨</font></div>'
@@ -184,14 +192,6 @@ def working(code):
         news=f'<div><font color=\"info\">下跌</font></div>'
     else:
         news=f'<div>未知</div>'
-
-    mean50=round(np.mean(lj_data),3) #前50天净值均值
-    q1=round(np.quantile(lj_data,0.2),3) #前50天净值下五分位数
-    q4=round(np.quantile(lj_data,0.8),3) #前50天净值上五分位数
-    max_q=round(np.max(lj_data),3) #上限
-
-    name,gsz,gszf=get_fund2(code)
-    today_lj=round(lj_data[-1]*(1+gszf/100),4)
 
     if (today_lj >= max_q):
         writing1('💗💗💗💗🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
