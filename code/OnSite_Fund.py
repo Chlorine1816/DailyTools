@@ -124,24 +124,24 @@ def get_fund2(fund_id):
 
 def writing1(title,name,news,mean5,mean10,mean30,max_q,q4,mean50,q1):
     sio_content.write(f'<div>{title}</div>')
-    sio_content.write(f'<div>{name}</div>')
+    sio_content.write(f'<div><font color=\"comment\">{name}</font></div>')
     sio_content.write(f'{news}')
-    sio_content.write(f'<div>均值5：{mean5} 均值10：{mean10} 均值30：{mean30}</div>')
+    sio_content.write(f'<div>均5：{mean5} 均10：{mean10} 均30：{mean30}</div>')
     sio_content.write(f'<div>50日 上限：{max_q} 上五：{q4} 均值：{mean50} 下五：{q1}</div>')
     return None
 
-def writing2(date,lj,jz,zf,up):
-    up2,up1,down1,down2=updown(jz)
+def writing2(date,lj,jz,zf):
+    up2,up1,down1,down2,down3=updown(jz)
     sio_content.write(f'<div>{date} 收盘价：{round(jz,3)} 累计净值：{round(lj,3)} {zf}%</div>')
-    sio_content.write(f'<div>UP：{up}</div>')
     sio_content.write(f'<div><font color=\"warning\">涨 2% {up2}</font></div>')
     sio_content.write(f'<div><font color=\"warning\">涨 1% {up1}</font></div>')
     sio_content.write(f'<div><font color=\"info\">跌 1% {down1}</font></div>')
     sio_content.write(f'<div><font color=\"info\">跌 2% {down2}</font></div>')
+    sio_content.write(f'<div><font color=\"info\">跌 3% {down3}</font></div>')
     return None
 
 def updown(jz):
-    return(round(jz*1.02,3),round(jz*1.01,3),round(jz*0.99,3),round(jz*0.98,3))
+    return(round(jz*1.02,3),round(jz*1.01,3),round(jz*0.99,3),round(jz*0.98,3),round(jz*0.97,3))
 
 def working(code):
     #获取净值信息
@@ -182,24 +182,19 @@ def working(code):
 
     if (lj_data[-1] >= max_q):
         writing1('💗💗💗💗🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        up='超过最大值！'
-        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1],up)
+        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1])
     elif (lj_data[-1] >= q4):
         writing1('💗💗💗💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        up=round(jz_data*((max_q-lj_data[-1])/lj_data[-1]+1),3)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1],up)
+        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1])
     elif (lj_data[-1] >= mean50 ):
         writing1('💗💗💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        up=round(jz_data*((q4-lj_data[-1])/lj_data[-1]+1),3)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1],up)
+        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1])
     elif (lj_data[-1] >= q1):
         writing1('💗💚💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        up=round(jz_data*((mean50-lj_data[-1])/lj_data[-1]+1),3)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1],up)
+        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1])
     else:
         writing1('💚💚💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        up=round(jz_data*((q1-lj_data[-1])/lj_data[-1]+1),3)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1],up)
+        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1])
     return None
 
 if __name__=='__main__':
