@@ -147,7 +147,7 @@ def working(code):
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
     sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-6666666))
-    data=get_fund(code,per=49,sdate=sdate,edate=edate)
+    data=get_fund(code,per=22,sdate=sdate,edate=edate)
     data['单位净值']=data['单位净值'].astype(float)
     data['累计净值']=data['累计净值'].astype(float)
     data['日增长率']=data['日增长率'].str.strip('%').astype(float)
@@ -156,9 +156,11 @@ def working(code):
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
 
     jz_date=data['净值日期'].values[-1]
+    num=len(data['累计净值'].values)
+    lj_data=data['累计净值'].values[-50:] if num > 50 else data['累计净值'].values[-(num-1):]
     lj_data=data['累计净值'].values[-50:]
     jz_data=data['单位净值'].values[-1]
-    zf_data=data['日增长率'].values[-50:]
+    zf_data=data['日增长率'].values[-1:]
 
     mean5=round(np.mean(lj_data[-5:]),3) #前5天净值均值
     mean10=round(np.mean(lj_data[-10:]),3)#前10天净值均值
@@ -182,19 +184,19 @@ def working(code):
 
     if (lj_data[-1] >= max_q):
         writing1('💗💗💗💗🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1])
+        writing2(jz_date,lj_data[-1],jz_data,zf_data)
     elif (lj_data[-1] >= q4):
         writing1('💗💗💗💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1])
+        writing2(jz_date,lj_data[-1],jz_data,zf_data)
     elif (lj_data[-1] >= mean50 ):
         writing1('💗💗💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1])
+        writing2(jz_date,lj_data[-1],jz_data,zf_data)
     elif (lj_data[-1] >= q1):
         writing1('💗💚💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1])
+        writing2(jz_date,lj_data[-1],jz_data,zf_data)
     else:
         writing1('💚💚💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data[-1])
+        writing2(jz_date,lj_data[-1],jz_data,zf_data)
     return None
 
 if __name__=='__main__':
