@@ -160,7 +160,7 @@ def working(code):
     lj_data=data['累计净值'].values[-50:] if num > 50 else data['累计净值'].values[-(num-1):]
     lj_data=data['累计净值'].values[-50:]
     jz_data=data['单位净值'].values[-1]
-    zf_data=data['日增长率'].values[-1:]
+    zf_data=data['日增长率'].values[-1]
 
     mean5=round(np.mean(lj_data[-5:]),3) #前5天净值均值
     mean10=round(np.mean(lj_data[-10:]),3)#前10天净值均值
