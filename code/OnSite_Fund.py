@@ -123,9 +123,9 @@ def get_fund2(fund_id):
     return (name)
 
 def writing1(name,jz,rq):
-    sio_content.write(f'<div>可以操作</div>')
-    sio_content.write(f'<div><font color=\"comment\">{name}</font></div>')
     sio_content.write(f'<div>{rq}</div>')
+    sio_content.write(f'<div>{name}</div>')
+    sio_content.write(f'<div><font color=\"comment\">可以操作！</font></div>')
     up3,up2,up1,down1,down2,down3=updown(jz)
     sio_content.write(f'<div><font color=\"warning\">涨 3% {up3}</font></div>')
     sio_content.write(f'<div><font color=\"warning\">涨 2% {up2}</font></div>')
@@ -135,9 +135,10 @@ def writing1(name,jz,rq):
     sio_content.write(f'<div><font color=\"info\">跌 3% {down3}</font></div>')
     return None
 
-def writing2(name):
-    sio_content.write(f'<div>停止操作！</div>')
-    sio_content.write(f'<div><font color=\"comment\">{name}</font></div>')
+def writing2(name,rq):
+    sio_content.write(f'<div>{rq}</div>')
+    sio_content.write(f'<div>{name}</div>')
+    sio_content.write(f'<div><font color=\"comment\">停止操作！</font></div>')
     return None
 
 def updown(jz):
@@ -166,7 +167,7 @@ def working(code):
     if ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30))or(mean5 > mean10 > mean30):
         writing1(name,jz_data,jz_date)
     else:
-        writing2(name)
+        writing2(name,jz_date)
 
     '''
     if (mean5 > mean10 > mean30):

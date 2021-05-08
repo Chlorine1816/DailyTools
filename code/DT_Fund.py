@@ -167,15 +167,19 @@ def working(code):
 
     if (mean5 > mean10 > mean30):
         news=f'<div><font color=\"warning\">大幅上涨</font></div>'
+        name=f'<div><font color=\"warning\">{name}</font></div>'
         writing('💗',name,news)
     elif (mean5 < mean10 < mean30):
         news=f'<div><font color=\"info\">大幅下跌</font></div>'
+        name=f'<div><font color=\"info\">{name}</font></div>'
         writing('💚',name,news)
     elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
         news=f'<div><font color=\"warning\">上涨</font></div>'
+        name=f'<div><font color=\"warning\">{name}</font></div>'
         writing('💗',name,news)
     elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
         news=f'<div><font color=\"info\">下跌</font></div>'
+        name=f'<div><font color=\"info\">{name}</font></div>'
         writing('💚',name,news)
     else:
         news=f'<div>未知</div>'
