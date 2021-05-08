@@ -14,7 +14,7 @@ touser=os.environ['TOUSER']  #接收id
 media_id=os.environ['MEDIA'] #图片id
 
 #图文图文消息的标题
-title=f'ZFB_Fund'
+title=f'DT_Fund'
 #图文消息的描述，不超过512个字节
 sio_digest=StringIO('')
 sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
@@ -135,27 +135,14 @@ def get_fund2(fund_id):
     jz=BeautifulSoup(str(jz),'lxml')
     #名称
     name=jz.find_all('h4',class_='title')[0].text
-    #估值
-    fund_gsz=float(jz.find_all('span',id='fund_gsz')[0].text)
     #涨跌
     fund_gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
-    return (name,fund_gsz,fund_gszf)
+    return (name,fund_gszf)
 
-def writing1(title,name,news,mean5,mean10,mean30,max_q,q4,mean50,q1):
+def writing(title,name,news):
     sio_content.write(f'<div>{title}</div>')
     sio_content.write(f'<div>{name}</div>')
     sio_content.write(f'{news}')
-    sio_content.write(f'<div>均值5：{mean5} 均值10：{mean10} 均值30：{mean30}</div>')
-    sio_content.write(f'<div>50日 上限：{max_q} 上五：{q4} 均值：{mean50} 下五：{q1}</div>')
-    return None
-
-def writing2(jz,lj,zf):
-    if (zf > 0):
-        sio_content.write(f'<div>估值 单位净值：<font color=\"warning\">{jz}</font> 累计净值：<font color=\"warning\">{lj}</font> 涨幅：<font color=\"warning\">{zf}%</font></div>')
-    elif (zf < 0):
-        sio_content.write(f'<div>估值 单位净值：<font color=\"info\">{jz}</font> 累计净值：<font color=\"info\">{lj}</font> 涨幅：<font color=\"info\">{zf}%</font></div>')
-    else:
-        sio_content.write(f'<div>估值 单位净值：{jz} 累计净值：{lj} 涨幅：{zf}%</div>')
     return None
 
 def working(code):
@@ -170,49 +157,34 @@ def working(code):
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
     lj_data=data['累计净值'].values[-49:]
-    name,gsz,gszf=get_fund2(code) #获取当日估值 涨幅
+    name,gszf=get_fund2(code) #获取当日估值 涨幅
     today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
     mean5=round(np.mean(lj_data[-5:]),3) #5日均值
     mean10=round(np.mean(lj_data[-10:]),3)#10日均值
     mean30=round(np.mean(lj_data[-30:]),3)#30日均值
-    mean50=round(np.mean(lj_data),3) #50日均值
-    q1=round(np.quantile(lj_data,0.2),3) #50日下五分位数
-    q4=round(np.quantile(lj_data,0.8),3) #50日上五分位数
-    max_q=round(np.max(lj_data),3) #50日最大值
 
     if (mean5 > mean10 > mean30):
         news=f'<div><font color=\"warning\">大幅上涨</font></div>'
+        writing('💗',name,news)
     elif (mean5 < mean10 < mean30):
         news=f'<div><font color=\"info\">大幅下跌</font></div>'
+        writing('💚',name,news)
     elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
         news=f'<div><font color=\"warning\">上涨</font></div>'
+        writing('💗',name,news)
     elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
         news=f'<div><font color=\"info\">下跌</font></div>'
+        writing('💚',name,news)
     else:
         news=f'<div>未知</div>'
-
-    if (today_lj >= max_q):
-        writing1('💗💗💗💗🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(gsz,today_lj,gszf)
-    elif (today_lj >= q4):
-        writing1('💗💗💗💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(gsz,today_lj,gszf)
-    elif (today_lj >= mean50 ):
-        writing1('💗💗💚💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(gsz,today_lj,gszf)
-    elif (today_lj >= q1):
-        writing1('💗💚💚💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(gsz,today_lj,gszf)
-    else:
-        writing1('💚💚💚💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(gsz,today_lj,gszf)
+        writing('未知',name,news)
     return None
 
 if __name__=='__main__':
     start=time.perf_counter()
-    fund_list=pd.read_excel('./data/ZFB_FundList.xlsx',dtype={'ID': 'string'})
+    fund_list=pd.read_excel('./data/DT_FundList.xlsx',dtype={'ID': 'string'})
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)

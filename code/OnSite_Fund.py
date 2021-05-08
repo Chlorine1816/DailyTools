@@ -122,17 +122,12 @@ def get_fund2(fund_id):
     name=jz.find_all('h4',class_='title')[0].text
     return (name)
 
-def writing1(title,name,news,mean5,mean10,mean30,max_q,q4,mean50,q1):
-    sio_content.write(f'<div>{title}</div>')
+def writing1(name,jz,rq):
+    sio_content.write(f'<div>可以操作</div>')
     sio_content.write(f'<div><font color=\"comment\">{name}</font></div>')
-    sio_content.write(f'{news}')
-    sio_content.write(f'<div>均5：{mean5} 均10：{mean10} 均30：{mean30}</div>')
-    sio_content.write(f'<div>50日 上限：{max_q} 上五：{q4} 均值：{mean50} 下五：{q1}</div>')
-    return None
-
-def writing2(date,lj,jz,zf):
-    up2,up1,down1,down2,down3=updown(jz)
-    sio_content.write(f'<div>{date} 收盘价：{round(jz,3)} 累计净值：{round(lj,3)} {zf}%</div>')
+    sio_content.write(f'<div>{rq}</div>')
+    up3,up2,up1,down1,down2,down3=updown(jz)
+    sio_content.write(f'<div><font color=\"warning\">涨 3% {up3}</font></div>')
     sio_content.write(f'<div><font color=\"warning\">涨 2% {up2}</font></div>')
     sio_content.write(f'<div><font color=\"warning\">涨 1% {up1}</font></div>')
     sio_content.write(f'<div><font color=\"info\">跌 1% {down1}</font></div>')
@@ -140,8 +135,13 @@ def writing2(date,lj,jz,zf):
     sio_content.write(f'<div><font color=\"info\">跌 3% {down3}</font></div>')
     return None
 
+def writing2(name):
+    sio_content.write(f'<div>停止操作！</div>')
+    sio_content.write(f'<div><font color=\"comment\">{name}</font></div>')
+    return None
+
 def updown(jz):
-    return(round(jz*1.02,3),round(jz*1.01,3),round(jz*0.99,3),round(jz*0.98,3),round(jz*0.97,3))
+    return(round(jz*1.03,3),round(jz*1.02,3),round(jz*1.01,3),round(jz*0.99,3),round(jz*0.98,3),round(jz*0.97,3))
 
 def working(code):
     #获取净值信息
@@ -154,18 +154,21 @@ def working(code):
     # 按照日期升序排序并重建索引
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
-
+    name=get_fund2(code)
     jz_date=data['净值日期'].values[-1]
-    num=len(data['累计净值'].values)
-    lj_data=data['累计净值'].values[-50:] if num > 50 else data['累计净值'].values[-(num-1):]
-    lj_data=data['累计净值'].values[-50:]
+    lj_data=data['累计净值'].values[-33:]
     jz_data=data['单位净值'].values[-1]
-    zf_data=data['日增长率'].values[-1]
 
     mean5=round(np.mean(lj_data[-5:]),3) #前5天净值均值
     mean10=round(np.mean(lj_data[-10:]),3)#前10天净值均值
     mean30=round(np.mean(lj_data[-30:]),3)#前30天净值均值
 
+    if ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30))or(mean5 > mean10 > mean30):
+        writing1(name,jz_data,jz_date)
+    else:
+        writing2(name)
+
+    '''
     if (mean5 > mean10 > mean30):
         news=f'<div><font color=\"warning\">大幅上涨</font></div>'
     elif (mean5 < mean10 < mean30):
@@ -176,12 +179,12 @@ def working(code):
         news=f'<div><font color=\"info\">下跌</font></div>'
     else:
         news=f'<div>未知</div>'
-
+    
     mean50=round(np.mean(lj_data),3) #前50天净值均值
     q1=round(np.quantile(lj_data,0.2),3) #前50天净值下五分位数
     q4=round(np.quantile(lj_data,0.8),3) #前50天净值上五分位数
     max_q=round(np.max(lj_data),3) #上限 #上限
-
+    
     if (lj_data[-1] >= max_q):
         writing1('💗💗💗💗🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
         writing2(jz_date,lj_data[-1],jz_data,zf_data)
@@ -197,6 +200,7 @@ def working(code):
     else:
         writing1('💚💚💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
         writing2(jz_date,lj_data[-1],jz_data,zf_data)
+    '''
     return None
 
 if __name__=='__main__':
