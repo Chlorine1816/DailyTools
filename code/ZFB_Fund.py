@@ -144,19 +144,25 @@ def get_fund2(fund_id):
 def writing1(name,money):
     sio_content.write(f'<div>💚</div>')
     sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div>买入<font color=\"info\">{money}</font>元！</div>')
+    sio_content.write(f'<div>买入<font color=\"info\">{money}</font>元</div>')
     return None
 
 def writing2(name,money):
     sio_content.write(f'<div>💗</div>')
     sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div>买出<font color=\"warning\">{money}</font>份！</div>')
+    sio_content.write(f'<div>买出<font color=\"warning\">{money}</font>份</div>')
     return None
 
 def writing3(name):
     sio_content.write(f'<div>❌</div>')
     sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div>不操作！</div>')
+    sio_content.write(f'<div>不操作</div>')
+    return None
+
+def writing4(name):
+    sio_content.write(f'<div>❌</div>')
+    sio_content.write(f'<div>{name}</div>')
+    sio_content.write(f'<div>下跌</div>')
     return None
 
 def working(code):
@@ -189,7 +195,7 @@ def working(code):
         else:
             writing3(name)
     else:
-        writing3(name)
+        writing4(name)
     return None
 
 if __name__=='__main__':
