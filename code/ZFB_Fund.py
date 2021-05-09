@@ -141,21 +141,22 @@ def get_fund2(fund_id):
     fund_gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
     return (name,fund_gsz,fund_gszf)
 
-def writing1(title,name,news,mean5,mean10,mean30,max_q,q4,mean50,q1):
-    sio_content.write(f'<div>{title}</div>')
+def writing1(name,money):
+    sio_content.write(f'<div>💚</div>')
     sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'{news}')
-    sio_content.write(f'<div>均值5：{mean5} 均值10：{mean10} 均值30：{mean30}</div>')
-    sio_content.write(f'<div>50日 上限：{max_q} 上五：{q4} 均值：{mean50} 下五：{q1}</div>')
+    sio_content.write(f'<div>买入<font color=\"info\">{money}</font>元！</div>')
     return None
 
-def writing2(jz,lj,zf):
-    if (zf > 0):
-        sio_content.write(f'<div>估值 单位净值：<font color=\"warning\">{jz}</font> 累计净值：<font color=\"warning\">{lj}</font> 涨幅：<font color=\"warning\">{zf}%</font></div>')
-    elif (zf < 0):
-        sio_content.write(f'<div>估值 单位净值：<font color=\"info\">{jz}</font> 累计净值：<font color=\"info\">{lj}</font> 涨幅：<font color=\"info\">{zf}%</font></div>')
-    else:
-        sio_content.write(f'<div>估值 单位净值：{jz} 累计净值：{lj} 涨幅：{zf}%</div>')
+def writing2(name,money):
+    sio_content.write(f'<div>💗</div>')
+    sio_content.write(f'<div>{name}</div>')
+    sio_content.write(f'<div>买出<font color=\"warning\">{money}</font>份！</div>')
+    return None
+
+def writing3(name):
+    sio_content.write(f'<div>❌</div>')
+    sio_content.write(f'<div>{name}</div>')
+    sio_content.write(f'<div>不操作！</div>')
     return None
 
 def working(code):
@@ -177,37 +178,18 @@ def working(code):
     mean5=round(np.mean(lj_data[-5:]),3) #5日均值
     mean10=round(np.mean(lj_data[-10:]),3)#10日均值
     mean30=round(np.mean(lj_data[-30:]),3)#30日均值
-    mean50=round(np.mean(lj_data),3) #50日均值
-    q1=round(np.quantile(lj_data,0.2),3) #50日下五分位数
-    q4=round(np.quantile(lj_data,0.8),3) #50日上五分位数
-    max_q=round(np.max(lj_data),3) #50日最大值
 
-    if (mean5 > mean10 > mean30):
-        news=f'<div><font color=\"warning\">大幅上涨</font></div>'
-    elif (mean5 < mean10 < mean30):
-        news=f'<div><font color=\"info\">大幅下跌</font></div>'
-    elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
-        news=f'<div><font color=\"warning\">上涨</font></div>'
-    elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
-        news=f'<div><font color=\"info\">下跌</font></div>'
+    if ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30))or(mean5 > mean10 > mean30):
+        if (gszf <= -1):
+            money=int(400*(1-gszf/100))
+            writing1(name,money)
+        elif (gszf >= 1):
+            money=int((300*(1+gszf/100)/gsz))
+            writing2(name,money)
+        else:
+            writing3(name)
     else:
-        news=f'<div>未知</div>'
-
-    if (today_lj >= max_q):
-        writing1('💗💗💗💗🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(gsz,today_lj,gszf)
-    elif (today_lj >= q4):
-        writing1('💗💗💗💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(gsz,today_lj,gszf)
-    elif (today_lj >= mean50 ):
-        writing1('💗💗💚💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(gsz,today_lj,gszf)
-    elif (today_lj >= q1):
-        writing1('💗💚💚💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(gsz,today_lj,gszf)
-    else:
-        writing1('💚💚💚💚🚀',name,news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(gsz,today_lj,gszf)
+        writing3(name)
     return None
 
 if __name__=='__main__':

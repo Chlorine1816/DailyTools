@@ -123,9 +123,9 @@ def get_fund2(fund_id):
     return (name)
 
 def writing1(name,jz,rq):
+    sio_content.write(f'<div>💗</div>')
     sio_content.write(f'<div>{rq}</div>')
     sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div><font color=\"comment\">可以操作！</font></div>')
     up3,up2,up1,down1,down2,down3=updown(jz)
     sio_content.write(f'<div><font color=\"warning\">涨 3% {up3}</font></div>')
     sio_content.write(f'<div><font color=\"warning\">涨 2% {up2}</font></div>')
@@ -136,9 +136,9 @@ def writing1(name,jz,rq):
     return None
 
 def writing2(name,rq):
+    sio_content.write(f'<div>💚</div>')
     sio_content.write(f'<div>{rq}</div>')
     sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div><font color=\"comment\">停止操作！</font></div>')
     return None
 
 def updown(jz):
@@ -168,40 +168,6 @@ def working(code):
         writing1(name,jz_data,jz_date)
     else:
         writing2(name,jz_date)
-
-    '''
-    if (mean5 > mean10 > mean30):
-        news=f'<div><font color=\"warning\">大幅上涨</font></div>'
-    elif (mean5 < mean10 < mean30):
-        news=f'<div><font color=\"info\">大幅下跌</font></div>'
-    elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
-        news=f'<div><font color=\"warning\">上涨</font></div>'
-    elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
-        news=f'<div><font color=\"info\">下跌</font></div>'
-    else:
-        news=f'<div>未知</div>'
-    
-    mean50=round(np.mean(lj_data),3) #前50天净值均值
-    q1=round(np.quantile(lj_data,0.2),3) #前50天净值下五分位数
-    q4=round(np.quantile(lj_data,0.8),3) #前50天净值上五分位数
-    max_q=round(np.max(lj_data),3) #上限 #上限
-    
-    if (lj_data[-1] >= max_q):
-        writing1('💗💗💗💗🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data)
-    elif (lj_data[-1] >= q4):
-        writing1('💗💗💗💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data)
-    elif (lj_data[-1] >= mean50 ):
-        writing1('💗💗💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data)
-    elif (lj_data[-1] >= q1):
-        writing1('💗💚💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data)
-    else:
-        writing1('💚💚💚💚🚀',get_fund2(code),news,mean5,mean10,mean30,max_q,q4,mean50,q1)
-        writing2(jz_date,lj_data[-1],jz_data,zf_data)
-    '''
     return None
 
 if __name__=='__main__':
