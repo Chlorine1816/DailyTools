@@ -1,10 +1,10 @@
-name: DT_Fund
+name: Invest_Fund
 
 on: 
   workflow_dispatch:
   push:
   schedule:
-    - cron: '15 6 * * 1,2,3,4,5'
+    - cron: '15 3,6 * * 1,2,3,4,5'
 
 jobs:
   run-tool:
@@ -28,7 +28,6 @@ jobs:
           CORPID: ${{secrets.CORPID}}
           AGENTID: ${{secrets.AGENTID}}
           CORPSECRET: ${{secrets.CORPSECRET}}
-          TOUSER: ${{secrets.TOUSER}}
           MEDIA: ${{secrets.MEDIA}}
         run: 
-          python ./code/DT_Fund.py
+          python ./code/Invest_Fund.py

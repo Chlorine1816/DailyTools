@@ -17,7 +17,7 @@
 - TY_Pan ： 天翼云盘签到 
 - ZFB_Fund ： ZFB基金
 - OnSite_Fund： 场内基金
-- DT_Fund: 定投基金
+- Invest_Fund: 定投基金
 
 ## Pull
 - 安装[pull插件](https://github.com/apps/pull)

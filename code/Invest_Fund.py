@@ -10,11 +10,11 @@ headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537
 corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
 corpsecret=os.environ['CORPSECRET']  #机器人secret
-touser=os.environ['TOUSER']  #接收id
 media_id=os.environ['MEDIA'] #图片id
+touser=f'@all'  #接收id
 
 #图文图文消息的标题
-title=f'DT_Fund'
+title=f'Invest Fund'
 #图文消息的描述，不超过512个字节
 sio_digest=StringIO('')
 sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
