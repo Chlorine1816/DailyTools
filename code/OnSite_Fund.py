@@ -122,8 +122,8 @@ def get_fund2(fund_id):
     name=jz.find_all('h4',class_='title')[0].text
     return (name)
 
-def writing1(name,jz,rq):
-    sio_content.write(f'<div>💗</div>')
+def writing1(state,rq,name,jz):
+    sio_content.write(f'<div>{state}</div>')
     sio_content.write(f'<div>{rq}</div>')
     sio_content.write(f'<div>{name}</div>')
     up3,up2,up1,down1,down2,down3=updown(jz)
@@ -135,14 +135,30 @@ def writing1(name,jz,rq):
     sio_content.write(f'<div><font color=\"info\">跌 3% {down3}</font></div>')
     return None
 
-def writing2(name,rq):
-    sio_content.write(f'<div>💚</div>')
+def writing2(state,rq,name):
+    sio_content.write(f'<div>{state}</div>')
     sio_content.write(f'<div>{rq}</div>')
     sio_content.write(f'<div>{name}</div>')
     return None
 
 def updown(jz):
     return(round(jz*1.03,3),round(jz*1.02,3),round(jz*1.01,3),round(jz*0.99,3),round(jz*0.98,3),round(jz*0.97,3))
+
+def pd_jz(lj_data,jz):
+    q1=round(np.quantile(lj_data,0.2),3) #50日五分位数
+    q2=round(np.quantile(lj_data,0.4),3) #50日五分位数
+    q3=round(np.quantile(lj_data,0.6),3) #50日五分位数
+    q4=round(np.quantile(lj_data,0.8),3) #50日五分位数
+    if (jz >= q4):
+        return ('💗💗💗💗')
+    elif (jz >= q3):
+        return ('💗💗💗💚')
+    elif (jz >= q2):
+        return ('💗💗💚💚')
+    elif (jz >= q1):
+        return ('💗💚💚💚')
+    else:
+        return ('💚💚💚💚')
 
 def working(code):
     #获取净值信息
@@ -157,17 +173,19 @@ def working(code):
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
     name=get_fund2(code)
     jz_date=data['净值日期'].values[-1]
-    lj_data=data['累计净值'].values[-33:]
+    lj_data=data['累计净值'].values[-50:]
     jz_data=data['单位净值'].values[-1]
 
     mean5=round(np.mean(lj_data[-5:]),3) #前5天净值均值
     mean10=round(np.mean(lj_data[-10:]),3)#前10天净值均值
     mean30=round(np.mean(lj_data[-30:]),3)#前30天净值均值
 
+    state=pd_jz(lj_data,lj_data[-1])
+
     if ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30))or(mean5 > mean10 > mean30):
-        writing1(name,jz_data,jz_date)
+        writing1(state,jz_data,name,jz_date)
     else:
-        writing2(name,jz_date)
+        writing2(state,jz_date,name)
     return None
 
 if __name__=='__main__':

@@ -141,29 +141,45 @@ def get_fund2(fund_id):
     fund_gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
     return (name,fund_gsz,fund_gszf)
 
-def writing1(name,money):
-    sio_content.write(f'<div>💚</div>')
+def writing1(state,name,money):
+    sio_content.write(f'<div>{state}</div>')
     sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
-    sio_content.write(f'<div>买入 <font color=\"info\">{money}</font> 元</div>')
+    sio_content.write(f'<div>💚买入 <font color=\"info\">{money}</font> 元</div>')
     return None
 
-def writing2(name,money):
-    sio_content.write(f'<div>💗</div>')
+def writing2(state,name,money):
+    sio_content.write(f'<div>{state}</div>')
     sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
-    sio_content.write(f'<div>买出 <font color=\"warning\">{money}</font> 份</div>')
+    sio_content.write(f'<div>💗买出 <font color=\"warning\">{money}</font> 份</div>')
     return None
 
-def writing3(name):
-    sio_content.write(f'<div>❌</div>')
+def writing3(state,name):
+    sio_content.write(f'<div>{state}</div>')
     sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div>不操作</div>')
+    sio_content.write(f'<div>❌不操作</div>')
     return None
 
-def writing4(name):
-    sio_content.write(f'<div>❌</div>')
+def writing4(state,name):
+    sio_content.write(f'<div>{state}</div>')
     sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div>下跌</div>')
+    sio_content.write(f'<div>❌下跌</div>')
     return None
+
+def pd_jz(lj_data,jz):
+    q1=round(np.quantile(lj_data,0.2),3) #50日五分位数
+    q2=round(np.quantile(lj_data,0.4),3) #50日五分位数
+    q3=round(np.quantile(lj_data,0.6),3) #50日五分位数
+    q4=round(np.quantile(lj_data,0.8),3) #50日五分位数
+    if (jz >= q4):
+        return ('💗💗💗💗')
+    elif (jz >= q3):
+        return ('💗💗💗💚')
+    elif (jz >= q2):
+        return ('💗💗💚💚')
+    elif (jz >= q1):
+        return ('💗💚💚💚')
+    else:
+        return ('💚💚💚💚')
 
 def working(code):
     #获取净值信息
@@ -185,17 +201,19 @@ def working(code):
     mean10=round(np.mean(lj_data[-10:]),3)#10日均值
     mean30=round(np.mean(lj_data[-30:]),3)#30日均值
 
+    state=pd_jz(lj_data,today_lj)
+
     if ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30))or(mean5 > mean10 > mean30):
         if (gszf <= -1):
             money=int(400*(1-gszf/100))
-            writing1(name,money)
+            writing1(state,name,money)
         elif (gszf >= 1):
             money=int((300*(1+gszf/100)/gsz))
-            writing2(name,money)
+            writing2(state,name,money)
         else:
-            writing3(name)
+            writing3(state,name)
     else:
-        writing4(name)
+        writing4(state,name)
     return None
 
 if __name__=='__main__':

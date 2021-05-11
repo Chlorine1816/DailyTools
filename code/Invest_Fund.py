@@ -145,6 +145,22 @@ def writing(title,name,news):
     sio_content.write(f'{news}')
     return None
 
+def pd_jz(lj_data,jz):
+    q1=round(np.quantile(lj_data,0.2),3) #50日五分位数
+    q2=round(np.quantile(lj_data,0.4),3) #50日五分位数
+    q3=round(np.quantile(lj_data,0.6),3) #50日五分位数
+    q4=round(np.quantile(lj_data,0.8),3) #50日五分位数
+    if (jz >= q4):
+        return ('💗💗💗💗')
+    elif (jz >= q3):
+        return ('💗💗💗💚')
+    elif (jz >= q2):
+        return ('💗💗💚💚')
+    elif (jz >= q1):
+        return ('💗💚💚💚')
+    else:
+        return ('💚💚💚💚')
+
 def working(code):
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
@@ -165,30 +181,32 @@ def working(code):
     mean10=round(np.mean(lj_data[-10:]),3)#10日均值
     mean30=round(np.mean(lj_data[-30:]),3)#30日均值
 
+    state=pd_jz(lj_data,today_lj)
+
     if (mean5 > mean10 > mean30):
         news=f'<div><font color=\"warning\">大幅上涨</font></div>'
         name=f'<div><font color=\"warning\">{name}</font></div>'
-        writing('💗',name,news)
+        writing(state,name,news)
     elif (mean5 < mean10 < mean30):
         news=f'<div><font color=\"info\">大幅下跌</font></div>'
         name=f'<div><font color=\"info\">{name}</font></div>'
-        writing('💚',name,news)
+        writing(state,name,news)
     elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
         news=f'<div><font color=\"warning\">上涨</font></div>'
         name=f'<div><font color=\"warning\">{name}</font></div>'
-        writing('💗',name,news)
+        writing(state,name,news)
     elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
         news=f'<div><font color=\"info\">下跌</font></div>'
         name=f'<div><font color=\"info\">{name}</font></div>'
-        writing('💚',name,news)
+        writing(state,name,news)
     else:
         news=f'<div>未知</div>'
-        writing('未知',name,news)
+        writing(state,name,news)
     return None
 
 if __name__=='__main__':
     start=time.perf_counter()
-    fund_list=pd.read_excel('./data/DT_FundList.xlsx',dtype={'ID': 'string'})
+    fund_list=pd.read_excel('./data/Invest_FundList.xlsx',dtype={'ID': 'string'})
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
