@@ -166,20 +166,26 @@ def writing4(state,name):
     return None
 
 def pd_jz(lj_data,jz):
+    q0=round(np.min(lj_data),3) #50日最小值
     q1=round(np.quantile(lj_data,0.2),3) #50日五分位数
     q2=round(np.quantile(lj_data,0.4),3) #50日五分位数
     q3=round(np.quantile(lj_data,0.6),3) #50日五分位数
     q4=round(np.quantile(lj_data,0.8),3) #50日五分位数
-    if (jz >= q4):
-        return ('💗💗💗💗')
+    q5=round(np.max(lj_data),3) #50日最大值
+    if (jz >= q5):
+        return ('💗💗💗💗💗💗')
+    elif (jz >= q4):
+        return ('💗💗💗💗💗💚')
     elif (jz >= q3):
-        return ('💗💗💗💚')
+        return ('💗💗💗💗💚💚')
     elif (jz >= q2):
-        return ('💗💗💚💚')
+        return ('💗💗💗💚💚💚')
     elif (jz >= q1):
-        return ('💗💚💚💚')
+        return ('💗💗💚💚💚💚')
+    elif (jz >= q0):
+        return ('💗💚💚💚💚💚')
     else:
-        return ('💚💚💚💚')
+        return ('💚💚💚💚💚💚')
 
 def working(code):
     #获取净值信息
@@ -224,6 +230,5 @@ if __name__=='__main__':
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
         working(code)
-    sio_digest.write(f'more 👉')
-    sio_content.write(f'<div>⏱</div>运行时间：{round((time.perf_counter()-start)/60,1)} 分钟')
+    sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())

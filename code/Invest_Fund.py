@@ -146,20 +146,26 @@ def writing(title,name,news):
     return None
 
 def pd_jz(lj_data,jz):
+    q0=round(np.min(lj_data),3) #50日最小值
     q1=round(np.quantile(lj_data,0.2),3) #50日五分位数
     q2=round(np.quantile(lj_data,0.4),3) #50日五分位数
     q3=round(np.quantile(lj_data,0.6),3) #50日五分位数
     q4=round(np.quantile(lj_data,0.8),3) #50日五分位数
-    if (jz >= q4):
-        return ('💗💗💗💗')
+    q5=round(np.max(lj_data),3) #50日最大值
+    if (jz >= q5):
+        return ('💗💗💗💗💗💗')
+    elif (jz >= q4):
+        return ('💗💗💗💗💗💚')
     elif (jz >= q3):
-        return ('💗💗💗💚')
+        return ('💗💗💗💗💚💚')
     elif (jz >= q2):
-        return ('💗💗💚💚')
+        return ('💗💗💗💚💚💚')
     elif (jz >= q1):
-        return ('💗💚💚💚')
+        return ('💗💗💚💚💚💚')
+    elif (jz >= q0):
+        return ('💗💚💚💚💚💚')
     else:
-        return ('💚💚💚💚')
+        return ('💚💚💚💚💚💚')
 
 def working(code):
     #获取净值信息
@@ -173,8 +179,9 @@ def working(code):
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
     lj_data=data['累计净值'].values[-49:]
-    name,gszf=get_fund2(code) #获取当日估值 涨幅
-    today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
+    gszf1=get_fund1(code) #基金速查网 估值涨幅
+    name,gszf2=get_fund2(code) #天天基金网 估值涨幅
+    today_lj=round(lj_data[-1]*(1+(gszf1+gszf2)/2/100),4) #当日累计估值
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
     mean5=round(np.mean(lj_data[-5:]),3) #5日均值
@@ -212,6 +219,5 @@ if __name__=='__main__':
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
         working(code)
-    sio_digest.write(f'more 👉')
-    sio_content.write(f'<div>⏱</div>运行时间：{round((time.perf_counter()-start)/60,1)} 分钟')
+    sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())
