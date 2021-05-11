@@ -27,10 +27,10 @@ jobs:
         env:
           USERNAME: ${{secrets.USERNAME}}
           PASSWORD: ${{secrets.PASSWORD}}
-          CORPID: ${{secrets.CORPID}}
+          CORPID: ${{secrets.CZID}}
           AGENTID: ${{secrets.AGENTID}}
-          CORPSECRET: ${{secrets.CORPSECRET}}
+          CORPSECRET: ${{secrets.CZSECRET}}
           TOUSER: ${{secrets.TOUSER}}
-          MEDIA: ${{secrets.MEDIA}}
+          MEDIA: ${{secrets.CZMEDIA}}
         run: 
           python ./code/TY_Pan.py

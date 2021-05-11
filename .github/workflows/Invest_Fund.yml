@@ -25,9 +25,9 @@ jobs:
       
       - name: Working
         env:
-          CORPID: ${{secrets.CORPID}}
+          CORPID: ${{secrets.CTID}}
           AGENTID: ${{secrets.AGENTID}}
-          CORPSECRET: ${{secrets.CORPSECRET}}
-          MEDIA: ${{secrets.MEDIA}}
+          CORPSECRET: ${{secrets.CTSECRET}}
+          MEDIA: ${{secrets.CTMEDIA}}
         run: 
           python ./code/Invest_Fund.py

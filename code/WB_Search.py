@@ -10,8 +10,8 @@ data={'cate':'realtimehot'}
 corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
 corpsecret=os.environ['CORPSECRET']  #机器人secret
-touser=os.environ['TOUSER']  #接收id
 media_id=os.environ['MEDIA'] #图片id
+touser=f'@all'  #接收id
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}

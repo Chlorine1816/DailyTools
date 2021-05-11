@@ -25,10 +25,10 @@ jobs:
       
       - name: Working
         env:
-          CORPID: ${{secrets.CORPID}}
+          CORPID: ${{secrets.CTID}}
           AGENTID: ${{secrets.AGENTID}}
-          CORPSECRET: ${{secrets.CORPSECRET}}
+          CORPSECRET: ${{secrets.CTSECRET}}
           TOUSER: ${{secrets.TOUSER}}
-          MEDIA: ${{secrets.MEDIA}}
+          MEDIA: ${{secrets.CTMEDIA}}
         run: 
           python ./code/OnSite_Fund.py

@@ -142,7 +142,7 @@ def writing2(state,rq,name):
     return None
 
 def updown(jz):
-    return(round(jz*1.03,3),round(jz*1.02,3),round(jz*1.01,3),round(jz*0.99,3),round(jz*0.98,3),round(jz*0.97,3))
+    return(round(jz*1.03,3)+0.001,round(jz*1.02,3)+0.001,round(jz*1.01,3)+0.001,round(jz*0.99,3)-0.001,round(jz*0.98,3)-0.001,round(jz*0.97,3)-0.001)
 
 def pd_jz(lj_data,jz):
     q1=round(np.quantile(lj_data,0.2),3) #50日五分位数
@@ -183,7 +183,7 @@ def working(code):
     state=pd_jz(lj_data,lj_data[-1])
 
     if ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30))or(mean5 > mean10 > mean30):
-        writing1(state,jz_data,name,jz_date)
+        writing1(state,jz_date,name,jz_data)
     else:
         writing2(state,jz_date,name)
     return None

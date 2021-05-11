@@ -25,10 +25,9 @@ jobs:
       
       - name: Working
         env:
-          CORPID: ${{secrets.CORPID}}
+          CORPID: ${{secrets.CZID}}
           AGENTID: ${{secrets.AGENTID}}
-          CORPSECRET: ${{secrets.CORPSECRET}}
-          TOUSER: ${{secrets.TOUSER}}
-          MEDIA: ${{secrets.MEDIA}}
+          CORPSECRET: ${{secrets.CZSECRET}}
+          MEDIA: ${{secrets.CZMEDIA}}
         run: 
           python ./code/WB_Search.py
