@@ -27,8 +27,8 @@ jobs:
         env:
           USERNAME: ${{secrets.USERNAME}}
           PASSWORD: ${{secrets.PASSWORD}}
-          CORPID: ${{secrets.CZID}}
-          AGENTID: ${{secrets.AGENTID}}
+          CORPID: ${{secrets.CORPID}}
+          AGENTID: ${{secrets.CZID}}
           CORPSECRET: ${{secrets.CZSECRET}}
           TOUSER: ${{secrets.TOUSER}}
           MEDIA: ${{secrets.CZMEDIA}}
