@@ -142,7 +142,7 @@ def writing2(state,rq,name):
     return None
 
 def updown(jz):
-    return(round(jz*1.03,3)+0.001,round(jz*1.02,3)+0.001,round(jz*1.01,3)+0.001,round(jz*0.99,3)-0.001,round(jz*0.98,3)-0.001,round(jz*0.97,3)-0.001)
+    return(round(jz*1.03+0.001,3),round(jz*1.02+0.001,3),round(jz*1.01+0.001,3),round(jz*0.99-0.001,3),round(jz*0.98-0.001,3),round(jz*0.97-0.001,3))
 
 def pd_jz(lj_data,jz):
     q1=round(np.quantile(lj_data,0.2),3) #50日五分位数
