@@ -167,7 +167,7 @@ def working(code):
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
     sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-6666666))
-    data=get_fund(code,per=22,sdate=sdate,edate=edate)
+    data=get_fund(code,per=49,sdate=sdate,edate=edate)
     data['单位净值']=data['单位净值'].astype(float)
     data['累计净值']=data['累计净值'].astype(float)
     data['日增长率']=data['日增长率'].str.strip('%').astype(float)
