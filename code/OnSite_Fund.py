@@ -198,7 +198,6 @@ if __name__=='__main__':
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
-        print(code)
         working(code)
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())
