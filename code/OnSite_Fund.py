@@ -145,26 +145,23 @@ def updown(jz):
     return(round(jz*1.03+0.001,3),round(jz*1.02+0.001,3),round(jz*1.01+0.001,3),round(jz*0.99-0.001,3),round(jz*0.98-0.001,3),round(jz*0.97-0.001,3))
 
 def pd_jz(lj_data,jz):
-    q0=round(np.min(lj_data),3) #50日最小值
-    q1=round(np.quantile(lj_data,0.2),3) #50日五分位数
-    q2=round(np.quantile(lj_data,0.4),3) #50日五分位数
-    q3=round(np.quantile(lj_data,0.6),3) #50日五分位数
-    q4=round(np.quantile(lj_data,0.8),3) #50日五分位数
+    q1=round(np.min(lj_data),3) #50日最小值
+    q2=round(np.quantile(lj_data,0.25),3) #50日四分位数
+    q3=round(np.quantile(lj_data,0.5),3) #50日四分位数
+    q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
     q5=round(np.max(lj_data),3) #50日最大值
     if (jz >= q5):
-        return ('💗💗💗💗💗💗')
+        return ('💗💗💗💗💗')
     elif (jz >= q4):
-        return ('💗💗💗💗💗💚')
+        return ('💗💗💗💗💚')
     elif (jz >= q3):
-        return ('💗💗💗💗💚💚')
+        return ('💗💗💗💚💚')
     elif (jz >= q2):
-        return ('💗💗💗💚💚💚')
+        return ('💗💗💚💚💚')
     elif (jz >= q1):
-        return ('💗💗💚💚💚💚')
-    elif (jz >= q0):
-        return ('💗💚💚💚💚💚')
+        return ('💗💚💚💚💚')
     else:
-        return ('💚💚💚💚💚💚')
+        return ('💚💚💚💚💚')
 
 def working(code):
     #获取净值信息
