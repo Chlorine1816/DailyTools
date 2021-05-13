@@ -208,10 +208,10 @@ def working(code):
 
     if ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30))or(mean5 > mean10 > mean30):
         if (gszf <= -1):
-            money=int(400*(1-gszf/100))
+            money=round(400-gszf,0)
             writing1(state,name,money)
         elif (gszf >= 1):
-            money=int((300*(1+gszf/100)/gsz))
+            money=round((300+gszf)/gsz,0)
             writing2(state,name,money)
         else:
             writing3(state,name)
