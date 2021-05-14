@@ -139,11 +139,43 @@ def get_fund2(fund_id):
     fund_gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
     return (name,fund_gszf)
 
-def writing(title,name,news,tip1,tip2):
+def get_money(tip1,tip2,rate):
+    tip=tip1+tip2
+    if tip==0:
+        return (f'<div>不操作</div>')
+    if (rate==0.15):
+        if tip==1:
+            return (f'<div>买入 <font color=\"info\">10</font> 元 </div>')
+        elif tip==2:
+            return (f'<div>买入 <font color=\"info\">23</font> 元 </div>')
+        else:
+            return (f'<div>买入 <font color=\"info\">29</font> 元 </div>')
+    elif (rate==0.12):
+        if tip==1:
+            return (f'<div>买入 <font color=\"info\">12</font> 元 </div>')
+        elif tip==2:
+            return (f'<div>买入 <font color=\"info\">29</font> 元 </div>')
+        else:
+            return (f'<div>买入 <font color=\"info\">37</font> 元 </div>')
+    elif (rate==0.1):
+        if tip==1:
+            return (f'<div>买入 <font color=\"info\">15</font> 元 </div>')
+        elif tip==2:
+            return (f'<div>买入 <font color=\"info\">25</font> 元 </div>')
+        else:
+            return (f'<div>买入 <font color=\"info\">35</font> 元 </div>')
+    elif (rate==0.08):
+        if tip==1:
+            return (f'<div>买入 <font color=\"info\">18</font> 元 </div>')
+        elif tip==2:
+            return (f'<div>买入 <font color=\"info\">31</font> 元 </div>')
+        else:
+            return (f'<div>买入 <font color=\"info\">43</font> 元 </div>')
+
+def writing(title,name,money):
     sio_content.write(f'<div>{title}</div>')
     sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div>{news}</div>')
-    sio_content.write(f'<div>买入 {tip1+tip2} 元</div>')
+    sio_content.write(f'<div>{money}</div>')
     return None
 
 def pd_jz(lj_data,jz):
@@ -161,11 +193,11 @@ def pd_jz(lj_data,jz):
     elif (jz >= q2):
         return ('💗💗💚💚💚',0)
     elif (jz >= q1):
-        return ('💗💚💚💚💚',10)
+        return ('💗💚💚💚💚',1)
     else:
-        return ('💚💚💚💚💚',10)
+        return ('💚💚💚💚💚',1)
 
-def working(code):
+def working(code,rate):
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
     sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-6666666))
@@ -182,42 +214,32 @@ def working(code):
     today_lj=round(lj_data[-1]*(1+(gszf1+gszf2)/2/100),4) #当日累计估值
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
-    mean5=round(np.mean(lj_data[-5:]),3) #5日均值
-    mean10=round(np.mean(lj_data[-10:]),3)#10日均值
-    mean30=round(np.mean(lj_data[-30:]),3)#30日均值
+    mean5=round(np.mean(lj_data[-5:]),4) #5日均值
+    mean10=round(np.mean(lj_data[-10:]),4)#10日均值
+    mean30=round(np.mean(lj_data[-30:]),4)#30日均值
 
     state,tip1=pd_jz(lj_data,today_lj)
 
-    if (mean5 > mean10 > mean30):
-        news=f'<div><font color=\"warning\">大幅上涨</font></div>'
-        name=f'<div><font color=\"warning\">{name}</font></div>'
-        tip2=0
-    elif (mean5 < mean10 < mean30):
-        news=f'<div><font color=\"info\">大幅下跌</font></div>'
+    if (mean5 < mean10 < mean30):
         name=f'<div><font color=\"info\">{name}</font></div>'
-        tip2=20
-    elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
-        news=f'<div><font color=\"warning\">上涨</font></div>'
-        name=f'<div><font color=\"warning\">{name}</font></div>'
-        tip2=0
+        tip2=2
     elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
-        news=f'<div><font color=\"info\">下跌</font></div>'
         name=f'<div><font color=\"info\">{name}</font></div>'
-        tip2=10
+        tip2=1
     else:
-        news=f'<div>未知</div>'
         name=f'<div>{name}</div>'
         tip2=0
-    writing(state,name,news,tip1,tip2)
+    writing(state,name,get_money(tip1,tip2,rate))
     return None
 
 if __name__=='__main__':
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/Invest_FundList.xlsx',dtype={'ID': 'string'})
+    code=fund_list['ID'].values
+    rate=fund_list['Rate'].values
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
-        code=fund_list['ID'].values[i]
-        working(code)
+        working(code[i],rate[i])
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())
