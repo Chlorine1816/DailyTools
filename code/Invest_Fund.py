@@ -139,10 +139,11 @@ def get_fund2(fund_id):
     fund_gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
     return (name,fund_gszf)
 
-def writing(title,name,news):
+def writing(title,name,news,tip1,tip2):
     sio_content.write(f'<div>{title}</div>')
     sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'{news}')
+    sio_content.write(f'<div>{news}</div>')
+    sio_content.write(f'<div>买入 {tip1+tip2} 元</div>')
     return None
 
 def pd_jz(lj_data,jz):
@@ -152,17 +153,17 @@ def pd_jz(lj_data,jz):
     q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
     q5=round(np.max(lj_data),3) #50日最大值
     if (jz >= q5):
-        return ('💗💗💗💗💗')
+        return ('💗💗💗💗💗',0)
     elif (jz >= q4):
-        return ('💗💗💗💗💚')
+        return ('💗💗💗💗💚',0)
     elif (jz >= q3):
-        return ('💗💗💗💚💚')
+        return ('💗💗💗💚💚',0)
     elif (jz >= q2):
-        return ('💗💗💚💚💚')
+        return ('💗💗💚💚💚',0)
     elif (jz >= q1):
-        return ('💗💚💚💚💚')
+        return ('💗💚💚💚💚',10)
     else:
-        return ('💚💚💚💚💚')
+        return ('💚💚💚💚💚',10)
 
 def working(code):
     #获取净值信息
@@ -185,27 +186,29 @@ def working(code):
     mean10=round(np.mean(lj_data[-10:]),3)#10日均值
     mean30=round(np.mean(lj_data[-30:]),3)#30日均值
 
-    state=pd_jz(lj_data,today_lj)
+    state,tip1=pd_jz(lj_data,today_lj)
 
     if (mean5 > mean10 > mean30):
         news=f'<div><font color=\"warning\">大幅上涨</font></div>'
         name=f'<div><font color=\"warning\">{name}</font></div>'
-        writing(state,name,news)
+        tip2=0
     elif (mean5 < mean10 < mean30):
         news=f'<div><font color=\"info\">大幅下跌</font></div>'
         name=f'<div><font color=\"info\">{name}</font></div>'
-        writing(state,name,news)
+        tip2=20
     elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
         news=f'<div><font color=\"warning\">上涨</font></div>'
         name=f'<div><font color=\"warning\">{name}</font></div>'
-        writing(state,name,news)
+        tip2=0
     elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
         news=f'<div><font color=\"info\">下跌</font></div>'
         name=f'<div><font color=\"info\">{name}</font></div>'
-        writing(state,name,news)
+        tip2=10
     else:
         news=f'<div>未知</div>'
-        writing(state,name,news)
+        name=f'<div>{name}</div>'
+        tip2=0
+    writing(state,name,news,tip1,tip2)
     return None
 
 if __name__=='__main__':
