@@ -140,6 +140,8 @@ def get_fund2(fund_id):
     return (name,fund_gszf)
 
 def get_money(tip,rate):
+    if tip==0:
+        return (f'<div>不操作</div>')
     if (rate==0.15):
         if tip==1:
             return (f'<div>买入 <font color=\"info\">23</font> 元 </div>')
