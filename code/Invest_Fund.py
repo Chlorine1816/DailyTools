@@ -139,44 +139,35 @@ def get_fund2(fund_id):
     fund_gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
     return (name,fund_gszf)
 
-def get_money(tip1,tip2,rate):
-    tip=tip1+tip2
-    if tip==0:
-        return (f'<div>不操作</div>')
+def get_money(tip,rate):
     if (rate==0.15):
         if tip==1:
-            return (f'<div>买入 <font color=\"info\">10</font> 元 </div>')
-        elif tip==2:
             return (f'<div>买入 <font color=\"info\">23</font> 元 </div>')
+        elif tip==2:
+            return (f'<div>买入 <font color=\"info\">50</font> 元 </div>')
         else:
-            return (f'<div>买入 <font color=\"info\">29</font> 元 </div>')
+            return (f'<div>买入 <font color=\"info\">100</font> 元 </div>')
     elif (rate==0.12):
         if tip==1:
-            return (f'<div>买入 <font color=\"info\">12</font> 元 </div>')
+            return (f'<div>买入 <font color=\"info\">20</font> 元 </div>')
         elif tip==2:
-            return (f'<div>买入 <font color=\"info\">29</font> 元 </div>')
+            return (f'<div>买入 <font color=\"info\">45</font> 元 </div>')
         else:
-            return (f'<div>买入 <font color=\"info\">37</font> 元 </div>')
+            return (f'<div>买入 <font color=\"info\">87</font> 元 </div>')
     elif (rate==0.1):
         if tip==1:
             return (f'<div>买入 <font color=\"info\">15</font> 元 </div>')
         elif tip==2:
-            return (f'<div>买入 <font color=\"info\">25</font> 元 </div>')
-        else:
             return (f'<div>买入 <font color=\"info\">35</font> 元 </div>')
+        else:
+            return (f'<div>买入 <font color=\"info\">65</font> 元 </div>')
     elif (rate==0.08):
         if tip==1:
             return (f'<div>买入 <font color=\"info\">18</font> 元 </div>')
         elif tip==2:
             return (f'<div>买入 <font color=\"info\">31</font> 元 </div>')
         else:
-            return (f'<div>买入 <font color=\"info\">43</font> 元 </div>')
-
-def writing(title,name,money):
-    sio_content.write(f'<div>{title}</div>')
-    sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div>{money}</div>')
-    return None
+            return (f'<div>买入 <font color=\"info\">68</font> 元 </div>')
 
 def pd_jz(lj_data,jz):
     q1=round(np.min(lj_data),3) #50日最小值
@@ -189,13 +180,23 @@ def pd_jz(lj_data,jz):
     elif (jz >= q4):
         return ('💗💗💗💗💚',0)
     elif (jz >= q3):
-        return ('💗💗💗💚💚',0)
+        return ('💗💗💗💚💚',1)
     elif (jz >= q2):
-        return ('💗💗💚💚💚',0)
-    elif (jz >= q1):
-        return ('💗💚💚💚💚',1)
+        return ('💗💗💚💚💚',2)
     else:
-        return ('💚💚💚💚💚',1)
+        return ('💗💚💚💚💚',3)
+
+def get_color(mean5,mean10,mean30):
+    if (mean5 < mean10 < mean30):
+        return ('大绿')
+    elif (mean5 > mean10 > mean30):
+        return ('大红')
+    elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
+        return ('绿')
+    elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
+        return ('红')
+    else:
+        return ('未知')
 
 def working(code,rate):
     #获取净值信息
@@ -218,18 +219,17 @@ def working(code,rate):
     mean10=round(np.mean(lj_data[-10:]),4)#10日均值
     mean30=round(np.mean(lj_data[-30:]),4)#30日均值
 
-    state,tip1=pd_jz(lj_data,today_lj)
+    tip1=get_color(mean5,mean10,mean30)
+    state,tip2=pd_jz(lj_data,today_lj)
 
-    if (mean5 < mean10 < mean30):
-        name=f'<div><font color=\"info\">{name}</font></div>'
-        tip2=2
-    elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
-        name=f'<div><font color=\"info\">{name}</font></div>'
-        tip2=1
+    if ((gszf1+gszf2)/2 < 0)and('绿' in tip1):
+        sio_content.write(f'<div>{state}</div>')
+        sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
+        sio_content.write(f'<div>{get_money(tip2,rate)}</div>')
     else:
-        name=f'<div>{name}</div>'
-        tip2=0
-    writing(state,name,get_money(tip1,tip2,rate))
+        sio_content.write(f'<div>{state}</div>')
+        sio_content.write(f'<div>{name}</div>')
+        sio_content.write(f'<div>不操作</div>')
     return None
 
 if __name__=='__main__':
