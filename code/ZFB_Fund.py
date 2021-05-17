@@ -124,7 +124,7 @@ def get_fund2(fund_id):
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
     time.sleep(0.2)
     try:
-        req=requests.get(url=url,headers=headers)
+        req=requests.get(url=url,headers=headers,timeout=22)
         req.encoding='utf-8'
         if req.status_code==200:
             html=req.text
