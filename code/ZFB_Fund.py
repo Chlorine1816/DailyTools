@@ -171,18 +171,30 @@ def pd_jz(lj_data,jz):
     q3=round(np.quantile(lj_data,0.5),3) #50日四分位数
     q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
     q5=round(np.max(lj_data),3) #50日最大值
-    if (jz >= q5):
-        return ('💗💗💗💗💗')
-    elif (jz >= q4):
-        return ('💗💗💗💗💚')
-    elif (jz >= q3):
-        return ('💗💗💗💚💚')
-    elif (jz >= q2):
-        return ('💗💗💚💚💚')
-    elif (jz >= q1):
-        return ('💗💚💚💚💚')
+    if (jz == q5):
+        return ('📈')
+    elif (jz > q4):
+        return ('💗💗💗')
+    elif (jz > q3):
+        return ('💗💗💚')
+    elif (jz > q2):
+        return ('💗💚💚')
+    elif (jz > q1):
+        return ('💚💚💚')
     else:
-        return ('💚💚💚💚💚')
+        return ('📉')
+
+def get_color(mean5,mean10,mean30):
+    if (mean5 < mean10 < mean30):
+        return ('大绿')
+    elif (mean5 > mean10 > mean30):
+        return ('大红')
+    elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
+        return ('绿')
+    elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
+        return ('红')
+    else:
+        return ('未知')
 
 def working(code):
     #获取净值信息
@@ -204,9 +216,10 @@ def working(code):
     mean10=round(np.mean(lj_data[-10:]),3)#10日均值
     mean30=round(np.mean(lj_data[-30:]),3)#30日均值
 
+    tip1=get_color(mean5,mean10,mean30)
     state=pd_jz(lj_data,today_lj)
 
-    if ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30))or(mean5 > mean10 > mean30):
+    if ('红' in tip1):
         if (gszf <= -1):
             money=round(400-gszf,0)
             writing1(state,name,money)

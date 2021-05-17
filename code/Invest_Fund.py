@@ -147,29 +147,37 @@ def get_money(tip,rate):
             return (f'<div>买入 <font color=\"info\">23</font> 元 </div>')
         elif tip==2:
             return (f'<div>买入 <font color=\"info\">50</font> 元 </div>')
-        else:
+        elif tip==3:
             return (f'<div>买入 <font color=\"info\">100</font> 元 </div>')
+        else:
+            return (f'<div>买入 <font color=\"info\">10</font> 元 </div>')
     elif (rate==0.12):
         if tip==1:
             return (f'<div>买入 <font color=\"info\">20</font> 元 </div>')
         elif tip==2:
             return (f'<div>买入 <font color=\"info\">45</font> 元 </div>')
-        else:
+        elif tip==3:
             return (f'<div>买入 <font color=\"info\">87</font> 元 </div>')
+        else:
+            return (f'<div>买入 <font color=\"info\">12</font> 元 </div>')
     elif (rate==0.1):
         if tip==1:
             return (f'<div>买入 <font color=\"info\">15</font> 元 </div>')
         elif tip==2:
             return (f'<div>买入 <font color=\"info\">35</font> 元 </div>')
-        else:
+        elif tip==3:
             return (f'<div>买入 <font color=\"info\">65</font> 元 </div>')
+        else:
+            return (f'<div>买入 <font color=\"info\">15</font> 元 </div>')
     elif (rate==0.08):
         if tip==1:
             return (f'<div>买入 <font color=\"info\">18</font> 元 </div>')
         elif tip==2:
             return (f'<div>买入 <font color=\"info\">31</font> 元 </div>')
-        else:
+        elif tip==3:
             return (f'<div>买入 <font color=\"info\">68</font> 元 </div>')
+        else:
+            return (f'<div>买入 <font color=\"info\">18</font> 元 </div>')
 
 def pd_jz(lj_data,jz):
     q1=round(np.min(lj_data),3) #50日最小值
@@ -177,16 +185,18 @@ def pd_jz(lj_data,jz):
     q3=round(np.quantile(lj_data,0.5),3) #50日四分位数
     q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
     q5=round(np.max(lj_data),3) #50日最大值
-    if (jz >= q5):
-        return ('💗💗💗💗💗',0)
-    elif (jz >= q4):
-        return ('💗💗💗💗💚',0)
-    elif (jz >= q3):
-        return ('💗💗💗💚💚',1)
-    elif (jz >= q2):
-        return ('💗💗💚💚💚',2)
+    if (jz == q5):
+        return ('📈',0)
+    elif (jz > q4):
+        return ('💗💗💗',0)
+    elif (jz > q3):
+        return ('💗💗💚',1)
+    elif (jz > q2):
+        return ('💗💚💚',2)
+    elif (jz > q1):
+        return ('💚💚💚',3)
     else:
-        return ('💗💚💚💚💚',3)
+        return ('📉',3)
 
 def get_color(mean5,mean10,mean30):
     if (mean5 < mean10 < mean30):
@@ -228,6 +238,10 @@ def working(code,rate):
         sio_content.write(f'<div>{state}</div>')
         sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
         sio_content.write(f'<div>{get_money(tip2,rate)}</div>')
+    elif ((gszf1+gszf2)/2 < 0)and('大红' in tip1)and(tip2!=0):
+        sio_content.write(f'<div>{state}</div>')
+        sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
+        sio_content.write(f'<div>{get_money(-1,rate)}</div>')
     else:
         sio_content.write(f'<div>{state}</div>')
         sio_content.write(f'<div>{name}</div>')
