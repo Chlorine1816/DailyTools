@@ -136,11 +136,12 @@ def get_fund2(fund_id):
     #名称
     name=jz.find_all('h4',class_='title')[0].text
     #涨跌
-    if jz.find_all('span',id='fund_gszf')[0].text.strip('%') == '---':
+    gszf=jz.find_all('span',id='fund_gszf')[0].text.strip('%')
+    if (gszf == '---'):
         sio_digest.write(f'{name} Fund1\n')
         return (name,get_fund1(fund_id))
     else:
-        return (name,float(jz.find_all('span',id='fund_gszf')[0].text.strip('%')))
+        return (name,float(gszf))
 
 def get_money(tip,rate):
     if tip==0:
@@ -227,7 +228,8 @@ def working(code,rate):
     lj_data=data['累计净值'].values[-49:]
     gszf1=get_fund1(code) #基金速查网 估值涨幅
     name,gszf2=get_fund2(code) #天天基金网 估值涨幅
-    today_lj=round(lj_data[-1]*(1+(gszf1+gszf2)/2/100),4) #当日累计估值
+    gszf=round((gszf1+gszf2)/2/100,2) #均值
+    today_lj=round(lj_data[-1]*(1+gszf),4) #当日累计估值
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
     mean5=round(np.mean(lj_data[-5:]),4) #5日均值
@@ -237,13 +239,15 @@ def working(code,rate):
     tip1=get_color(mean5,mean10,mean30)
     state,tip2=pd_jz(lj_data,today_lj)
 
-    if ((gszf1+gszf2)/2 < 0)and('绿' in tip1):
+    if (gszf < 0)and('绿' in tip1):
         sio_content.write(f'<div>{state}</div>')
         sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
+        sio_content.write(f'<div>涨幅 <font color=\"info\">{gszf}%</font></div>')
         sio_content.write(f'<div>{get_money(tip2,rate)}</div>')
-    elif ((gszf1+gszf2)/2 < 0)and('大红' in tip1)and(tip2!=0):
+    elif (gszf < 0)and('大红' in tip1)and(tip2!=0):
         sio_content.write(f'<div>{state}</div>')
         sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
+        sio_content.write(f'<div>涨幅 <font color=\"info\">{gszf}%</font></div>')
         sio_content.write(f'<div>{get_money(-1,rate)}</div>')
     else:
         sio_content.write(f'<div>{state}</div>')

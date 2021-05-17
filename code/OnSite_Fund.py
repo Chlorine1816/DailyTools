@@ -139,7 +139,7 @@ def writing2(state,rq,name,jz):
     sio_content.write(f'<div>{state}</div>')
     sio_content.write(f'<div>{rq}</div>')
     sio_content.write(f'<div>{name}</div>')
-    up1,down1,down2=updown(jz)
+    up3,up2,up1,down1,down2,down3=updown(jz)
     sio_content.write(f'<div><font color=\"warning\">涨 1% {up1}</font></div>')
     sio_content.write(f'<div><font color=\"info\">跌 1% {down1}</font></div>')
     sio_content.write(f'<div><font color=\"info\">跌 2% {down2}</font></div>')
