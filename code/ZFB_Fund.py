@@ -159,12 +159,6 @@ def writing3(state,name):
     sio_content.write(f'<div>不操作</div>')
     return None
 
-def writing4(state,name):
-    sio_content.write(f'<div>{state}</div>')
-    sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div>下跌</div>')
-    return None
-
 def pd_jz(lj_data,jz):
     q1=round(np.min(lj_data),3) #50日最小值
     q2=round(np.quantile(lj_data,0.25),3) #50日四分位数
@@ -219,17 +213,14 @@ def working(code):
     tip1=get_color(mean5,mean10,mean30)
     state=pd_jz(lj_data,today_lj)
 
-    if ('红' in tip1):
-        if (gszf <= -1):
-            money=round(400-gszf,0)
-            writing1(state,name,money)
-        elif (gszf >= 1):
-            money=round((300+gszf)/gsz,0)
-            writing2(state,name,money)
-        else:
-            writing3(state,name)
+    if (gszf <= -1)and('绿' in tip1):
+        money=int(100-gszf)
+        writing1(state,name,money)
+    elif (gszf > 0)and('红' in tip1):
+        money=int((90+gszf)/gsz)
+        writing2(state,name,money)
     else:
-        writing4(state,name)
+        writing3(state,name)
     return None
 
 if __name__=='__main__':

@@ -136,8 +136,11 @@ def get_fund2(fund_id):
     #名称
     name=jz.find_all('h4',class_='title')[0].text
     #涨跌
-    fund_gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
-    return (name,fund_gszf)
+    if jz.find_all('span',id='fund_gszf')[0].text.strip('%') == '---':
+        sio_digest.write(f'{name} Fund1\n')
+        return (name,get_fund1(fund_id))
+    else:
+        return (name,float(jz.find_all('span',id='fund_gszf')[0].text.strip('%')))
 
 def get_money(tip,rate):
     if tip==0:

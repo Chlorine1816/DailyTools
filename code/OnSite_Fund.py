@@ -135,10 +135,14 @@ def writing1(state,rq,name,jz):
     sio_content.write(f'<div><font color=\"info\">跌 3% {down3}</font></div>')
     return None
 
-def writing2(state,rq,name):
+def writing2(state,rq,name,jz):
     sio_content.write(f'<div>{state}</div>')
     sio_content.write(f'<div>{rq}</div>')
     sio_content.write(f'<div>{name}</div>')
+    up1,down1,down2=updown(jz)
+    sio_content.write(f'<div><font color=\"warning\">涨 1% {up1}</font></div>')
+    sio_content.write(f'<div><font color=\"info\">跌 1% {down1}</font></div>')
+    sio_content.write(f'<div><font color=\"info\">跌 2% {down2}</font></div>')
     return None
 
 def updown(jz):
@@ -150,18 +154,30 @@ def pd_jz(lj_data,jz):
     q3=round(np.quantile(lj_data,0.5),3) #50日四分位数
     q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
     q5=round(np.max(lj_data),3) #50日最大值
-    if (jz >= q5):
-        return ('💗💗💗💗💗')
-    elif (jz >= q4):
-        return ('💗💗💗💗💚')
-    elif (jz >= q3):
-        return ('💗💗💗💚💚')
-    elif (jz >= q2):
-        return ('💗💗💚💚💚')
-    elif (jz >= q1):
-        return ('💗💚💚💚💚')
+    if (jz == q5):
+        return ('📈')
+    elif (jz > q4):
+        return ('💗💗💗')
+    elif (jz > q3):
+        return ('💗💗💚')
+    elif (jz > q2):
+        return ('💗💚💚')
+    elif (jz > q1):
+        return ('💚💚💚')
     else:
-        return ('💚💚💚💚💚')
+        return ('📉')
+
+def get_color(mean5,mean10,mean30):
+    if (mean5 < mean10 < mean30):
+        return ('大绿')
+    elif (mean5 > mean10 > mean30):
+        return ('大红')
+    elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
+        return ('绿')
+    elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
+        return ('红')
+    else:
+        return ('未知')
 
 def working(code):
     #获取净值信息
@@ -183,12 +199,13 @@ def working(code):
     mean10=round(np.mean(lj_data[-10:]),3)#前10天净值均值
     mean30=round(np.mean(lj_data[-30:]),3)#前30天净值均值
 
+    tip1=get_color(mean5,mean10,mean30)
     state=pd_jz(lj_data,lj_data[-1])
 
-    if ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30))or(mean5 > mean10 > mean30):
+    if ('红' in tip1):
         writing1(state,jz_date,name,jz_data)
-    else:
-        writing2(state,jz_date,name)
+    elif ('绿' in tip1):
+        writing2(state,jz_date,name,jz_data)
     return None
 
 if __name__=='__main__':
