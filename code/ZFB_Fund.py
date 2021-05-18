@@ -142,21 +142,21 @@ def get_fund2(fund_id):
     return (name,fund_gsz,fund_gszf)
 
 def writing1(state,name,money):
-    sio_content.write(f'<div>{state}</div>')
-    sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
-    sio_content.write(f'<div>买入 <font color=\"info\">{money}</font> 元</div>')
+    sio_content.write(f'<p>{state}</p>')
+    sio_content.write(f'<p><strong><font color="green">{name}</font></strong></p>')
+    sio_content.write(f'<p>买入 <font color="green">{money}</font> 元</p>')
     return None
 
 def writing2(state,name,money):
-    sio_content.write(f'<div>{state}</div>')
-    sio_content.write(f'<div><font color=\"warning\">{name}</font></div>')
-    sio_content.write(f'<div>买出 <font color=\"warning\">{money}</font> 份</div>')
+    sio_content.write(f'<p>{state}</p>')
+    sio_content.write(f'<p><strong><font color="red">{name}</strong></font></p>')
+    sio_content.write(f'<p>卖出 <font color="red">{money}</font> 份</p>')
     return None
 
 def writing3(state,name):
-    sio_content.write(f'<div>{state}</div>')
-    sio_content.write(f'<div>{name}</div>')
-    sio_content.write(f'<div>不操作</div>')
+    sio_content.write(f'<p>{state}</p>')
+    sio_content.write(f'<p>{name}</p>')
+    sio_content.write(f'<p>不操作</p>')
     return None
 
 def pd_jz(lj_data,jz):

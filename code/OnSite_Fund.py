@@ -123,26 +123,27 @@ def get_fund2(fund_id):
     return (name)
 
 def writing1(state,rq,name,jz):
-    sio_content.write(f'<div>{state}</div>')
-    sio_content.write(f'<div>{rq}</div>')
-    sio_content.write(f'<div>{name}</div>')
+    sio_content.write(f'<p>{state}</p>')
+    sio_content.write(f'<p>{rq}</p>')
+    sio_content.write(f'<p>{name}</p>')
     up3,up2,up1,down1,down2,down3=updown(jz)
-    sio_content.write(f'<div><font color=\"warning\">涨 3% {up3}</font></div>')
-    sio_content.write(f'<div><font color=\"warning\">涨 2% {up2}</font></div>')
-    sio_content.write(f'<div><font color=\"warning\">涨 1% {up1}</font></div>')
-    sio_content.write(f'<div><font color=\"info\">跌 1% {down1}</font></div>')
-    sio_content.write(f'<div><font color=\"info\">跌 2% {down2}</font></div>')
-    sio_content.write(f'<div><font color=\"info\">跌 3% {down3}</font></div>')
+    sio_content.write(f'<p><font color="red">涨 3% {up3}</font></p>')
+    sio_content.write(f'<p><font color="red">涨 2% {up2}</font></p>')
+    sio_content.write(f'<p><font color="red">涨 1% {up1}</font></p>')
+    sio_content.write(f'<p><font color="green">跌 1% {down1}</font></p>')
+    sio_content.write(f'<p><font color="green">跌 2% {down2}</font></p>')
+    sio_content.write(f'<p><font color="green">跌 3% {down3}</font></p>')
     return None
 
 def writing2(state,rq,name,jz):
-    sio_content.write(f'<div>{state}</div>')
-    sio_content.write(f'<div>{rq}</div>')
-    sio_content.write(f'<div>{name}</div>')
+    sio_content.write(f'<p>{state}</p>')
+    sio_content.write(f'<p>{rq}</p>')
+    sio_content.write(f'<p>{name}</p>')
     up3,up2,up1,down1,down2,down3=updown(jz)
-    sio_content.write(f'<div><font color=\"warning\">涨 1% {up1}</font></div>')
-    sio_content.write(f'<div><font color=\"info\">跌 1% {down1}</font></div>')
-    sio_content.write(f'<div><font color=\"info\">跌 2% {down2}</font></div>')
+    sio_content.write(f'<p><font color="red">涨 1% {up1}</font></p>')
+    sio_content.write(f'<p><font color="green">跌 1% {down1}</font></p>')
+    sio_content.write(f'<p><font color="green">跌 2% {down2}</font></p>')
+    sio_content.write(f'<p><font color="green">跌 3% {down3}</font></p>')
     return None
 
 def updown(jz):

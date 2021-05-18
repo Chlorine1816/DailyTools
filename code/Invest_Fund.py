@@ -144,44 +144,42 @@ def get_fund2(fund_id):
         return (name,float(gszf))
 
 def get_money(tip,rate):
-    if tip==0:
-        return (f'<div>不操作</div>')
     if (rate==0.15):
         if tip==1:
-            return (f'<div>买入 <font color=\"info\">23</font> 元 </div>')
+            return (f'<p>买入 <font color="green">23</font> 元 </p>')
         elif tip==2:
-            return (f'<div>买入 <font color=\"info\">50</font> 元 </div>')
+            return (f'<p>买入 <font color="green">50</font> 元 </p>')
         elif tip==3:
-            return (f'<div>买入 <font color=\"info\">100</font> 元 </div>')
+            return (f'<p>买入 <font color="green">100</font> 元 </p>')
         else:
-            return (f'<div>买入 <font color=\"info\">10</font> 元 </div>')
+            return (f'<p>买入 <font color="green">10</font> 元 </p>')
     elif (rate==0.12):
         if tip==1:
-            return (f'<div>买入 <font color=\"info\">20</font> 元 </div>')
+            return (f'<p>买入 <font color="green">20</font> 元 </p>')
         elif tip==2:
-            return (f'<div>买入 <font color=\"info\">45</font> 元 </div>')
+            return (f'<p>买入 <font color="green">45</font> 元 </p>')
         elif tip==3:
-            return (f'<div>买入 <font color=\"info\">87</font> 元 </div>')
+            return (f'<p>买入 <font color="green">87</font> 元 </p>')
         else:
-            return (f'<div>买入 <font color=\"info\">12</font> 元 </div>')
+            return (f'<p>买入 <font color="green">12</font> 元 </p>')
     elif (rate==0.1):
         if tip==1:
-            return (f'<div>买入 <font color=\"info\">15</font> 元 </div>')
+            return (f'<p>买入 <font color="green">15</font> 元 </p>')
         elif tip==2:
-            return (f'<div>买入 <font color=\"info\">35</font> 元 </div>')
+            return (f'<p>买入 <font color="green">35</font> 元 </p>')
         elif tip==3:
-            return (f'<div>买入 <font color=\"info\">65</font> 元 </div>')
+            return (f'<p>买入 <font color="green">65</font> 元 </p>')
         else:
-            return (f'<div>买入 <font color=\"info\">15</font> 元 </div>')
+            return (f'<p>买入 <font color="green">15</font> 元 </p>')
     elif (rate==0.08):
         if tip==1:
-            return (f'<div>买入 <font color=\"info\">18</font> 元 </div>')
+            return (f'<p>买入 <font color="green">18</font> 元 </p>')
         elif tip==2:
-            return (f'<div>买入 <font color=\"info\">31</font> 元 </div>')
+            return (f'<p>买入 <font color="green">31</font> 元 </p>')
         elif tip==3:
-            return (f'<div>买入 <font color=\"info\">68</font> 元 </div>')
+            return (f'<p>买入 <font color="green">68</font> 元 </p>')
         else:
-            return (f'<div>买入 <font color=\"info\">18</font> 元 </div>')
+            return (f'<p>买入 <font color="green">18</font> 元 </p>')
 
 def pd_jz(lj_data,jz):
     q1=round(np.min(lj_data),3) #50日最小值
@@ -226,10 +224,8 @@ def working(code,rate):
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
     lj_data=data['累计净值'].values[-49:]
-    gszf1=get_fund1(code) #基金速查网 估值涨幅
-    name,gszf2=get_fund2(code) #天天基金网 估值涨幅
-    gszf=round((gszf1+gszf2)/2/100,2) #均值
-    today_lj=round(lj_data[-1]*(1+gszf),4) #当日累计估值
+    name,gszf=get_fund2(code) #天天基金网 估值涨幅
+    today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
     mean5=round(np.mean(lj_data[-5:]),4) #5日均值
@@ -239,20 +235,18 @@ def working(code,rate):
     tip1=get_color(mean5,mean10,mean30)
     state,tip2=pd_jz(lj_data,today_lj)
 
-    if (gszf < 0)and('绿' in tip1):
-        sio_content.write(f'<div>{state}</div>')
-        sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
-        sio_content.write(f'<div>涨幅 <font color=\"info\">{gszf}%</font></div>')
-        sio_content.write(f'<div>{get_money(tip2,rate)}</div>')
-    elif (gszf < 0)and('大红' in tip1)and(tip2!=0):
-        sio_content.write(f'<div>{state}</div>')
-        sio_content.write(f'<div><font color=\"info\">{name}</font></div>')
-        sio_content.write(f'<div>涨幅 <font color=\"info\">{gszf}%</font></div>')
-        sio_content.write(f'<div>{get_money(-1,rate)}</div>')
+    if (gszf < 0)and('绿' in tip1)and(tip2!=0):
+        sio_content.write(f'<p>{state}</p>')
+        sio_content.write(f'<p><strong><font color="green">{name}</font></strong><small><font color="green"> {gszf}%</font></small></p>')
+        sio_content.write(f'{get_money(tip2,rate)}')  
+    elif (gszf < 0)and('红' in tip1)and(tip2!=0):
+        sio_content.write(f'<p>{state}</p>')
+        sio_content.write(f'<p><strong><font color="green">{name}</font></strong><small><font color="green"> {gszf}%</font></small></p>')
+        sio_content.write(f'{get_money(-1,rate)}')
     else:
-        sio_content.write(f'<div>{state}</div>')
-        sio_content.write(f'<div>{name}</div>')
-        sio_content.write(f'<div>不操作</div>')
+        sio_content.write(f'<p>{state}</p>')
+        sio_content.write(f'<p>{name}<small> {gszf}%</small></p>')
+        sio_content.write(f'<p>不操作</p>')
     return None
 
 if __name__=='__main__':
