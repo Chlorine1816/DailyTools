@@ -141,24 +141,6 @@ def get_fund2(fund_id):
     fund_gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
     return (name,fund_gsz,fund_gszf)
 
-def writing1(state,name,money):
-    sio_content.write(f'<p>{state}</p>')
-    sio_content.write(f'<p><strong><font color="green">{name}</font></strong></p>')
-    sio_content.write(f'<p>买入 <font color="green">{money}</font> 元</p>')
-    return None
-
-def writing2(state,name,money):
-    sio_content.write(f'<p>{state}</p>')
-    sio_content.write(f'<p><strong><font color="red">{name}</strong></font></p>')
-    sio_content.write(f'<p>卖出 <font color="red">{money}</font> 份</p>')
-    return None
-
-def writing3(state,name):
-    sio_content.write(f'<p>{state}</p>')
-    sio_content.write(f'<p>{name}</p>')
-    sio_content.write(f'<p>不操作</p>')
-    return None
-
 def pd_jz(lj_data,jz):
     q1=round(np.min(lj_data),3) #50日最小值
     q2=round(np.quantile(lj_data,0.25),3) #50日四分位数
@@ -212,15 +194,21 @@ def working(code):
 
     tip1=get_color(mean5,mean10,mean30)
     state=pd_jz(lj_data,today_lj)
-
+    color='red' if gszf > 0 else 'green'
     if (gszf <= -1)and('绿' in tip1):
         money=int(100-gszf)
-        writing1(state,name,money)
+        sio_content.write(f'<p>{state}</p>')
+        sio_content.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content.write(f'<p>买入 <font color="green">{money}</font> 元</p>')
     elif (gszf > 0)and('红' in tip1):
         money=int((90+gszf)/gsz)
-        writing2(state,name,money)
+        sio_content.write(f'<p>{state}</p>')
+        sio_content.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content.write(f'<p>卖出 <font color="red">{money}</font> 份</p>')
     else:
-        writing3(state,name)
+        sio_content.write(f'<p>{state}</p>')
+        sio_content.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
+        sio_content.write(f'<p>不操作</p>')
     return None
 
 if __name__=='__main__':

@@ -234,19 +234,19 @@ def working(code,rate):
 
     tip1=get_color(mean5,mean10,mean30)
     state,tip2=pd_jz(lj_data,today_lj)
-
-    if (gszf < 0)and('绿' in tip1)and(tip2!=0):
+    color='red' if gszf > 0 else 'green'
+    if (gszf > 0)or(tip2==0):
         sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p><strong><font color="green">{name}</font></strong><small><font color="green"> {gszf}%</font></small></p>')
-        sio_content.write(f'{get_money(tip2,rate)}')  
-    elif (gszf < 0)and('红' in tip1)and(tip2!=0):
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p><strong><font color="green">{name}</font></strong><small><font color="green"> {gszf}%</font></small></p>')
-        sio_content.write(f'{get_money(-1,rate)}')
-    else:
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p>{name}<small> {gszf}%</small></p>')
+        sio_content.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content.write(f'<p>不操作</p>')
+    elif (gszf <= 0)and('绿' in tip1)and(tip2!=0):
+        sio_content.write(f'<p>{state}</p>')
+        sio_content.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content.write(f'{get_money(tip2,rate)}')  
+    elif (gszf <= 0)and('红' in tip1)and(tip2!=0):
+        sio_content.write(f'<p>{state}</p>')
+        sio_content.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content.write(f'{get_money(-1,rate)}')
     return None
 
 if __name__=='__main__':
