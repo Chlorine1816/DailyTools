@@ -123,8 +123,8 @@ def get_fund2(fund_id):
     return (name)
 
 def writing1(state,rq,name,jz):
-    sio_content.write(f'<p>{state}</p>')
     sio_content.write(f'<p>{rq}</p>')
+    sio_content.write(f'<p>{state}</p>')
     sio_content.write(f'<p>{name}</p>')
     up3,up2,up1,down1,down2,down3=updown(jz)
     sio_content.write(f'<p><font color="red">涨 3% {up3}</font></p>')
@@ -136,8 +136,8 @@ def writing1(state,rq,name,jz):
     return None
 
 def writing2(state,rq,name,jz):
-    sio_content.write(f'<p>{state}</p>')
     sio_content.write(f'<p>{rq}</p>')
+    sio_content.write(f'<p>{state}</p>')
     sio_content.write(f'<p>{name}</p>')
     up3,up2,up1,down1,down2,down3=updown(jz)
     sio_content.write(f'<p><font color="red">涨 1% {up1}</font></p>')
@@ -158,13 +158,13 @@ def pd_jz(lj_data,lj,jz):
     if (lj == q5):
         return (f'📈')
     elif (lj > q4):
-        return (f'<font color="green"><small>{round((q4*jz/lj)-0.001,3)}</small></font> 💗💗💗 <font color="red"><small>{round((q5*jz/lj),3)}</small></font>')
+        return (f'<font color="green"><small>{round((q4*jz/lj)-0.001,3)}</small></font> 💗💗💗 <font color="red"><small>{round((q5*jz/lj)+0.001,3)}</small></font>')
     elif (lj > q3):
-        return (f'<font color="green"><small>{round((q3*jz/lj)-0.001,3)}</small></font> 💗💗💚 <font color="red"><small>{round((q4*jz/lj),3)}</small></font>')
+        return (f'<font color="green"><small>{round((q3*jz/lj)-0.001,3)}</small></font> 💗💗💚 <font color="red"><small>{round((q4*jz/lj)+0.001,3)}</small></font>')
     elif (lj > q2):
-        return (f'<font color="green"><small>{round((q2*jz/lj)-0.001,3)}</small></font> 💗💚💚 <font color="red"><small>{round((q3*jz/lj),3)}</small></font>')
+        return (f'<font color="green"><small>{round((q2*jz/lj)-0.001,3)}</small></font> 💗💚💚 <font color="red"><small>{round((q3*jz/lj)+0.001,3)}</small></font>')
     elif (lj > q1):
-        return (f'<font color="green"><small>{round((q1*jz/lj)-0.001,3)}</small></font> 💚💚💚 <font color="red"><small> {round((q2*jz/lj),3)}</small></font>')
+        return (f'<font color="green"><small>{round((q1*jz/lj)-0.001,3)}</small></font> 💚💚💚 <font color="red"><small> {round((q2*jz/lj)+0.001,3)}</small></font>')
     else:
         return (f'📉')
 
