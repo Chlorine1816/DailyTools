@@ -201,7 +201,7 @@ def working(code):
     mean30=round(np.mean(lj_data[-30:]),3)#前30天净值均值
 
     tip1=get_color(mean5,mean10,mean30)
-    state=pd_jz(lj_data,lj_data[-1],jz_data[-1])
+    state=pd_jz(lj_data,lj_data[-1],jz_data)
 
     if ('红' in tip1):
         writing1(state,jz_date,name,jz_data)
