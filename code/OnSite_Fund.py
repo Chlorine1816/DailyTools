@@ -149,24 +149,24 @@ def writing2(state,rq,name,jz):
 def updown(jz):
     return(round(jz*1.03+0.001,3),round(jz*1.02+0.001,3),round(jz*1.01+0.001,3),round(jz*0.99-0.001,3),round(jz*0.98-0.001,3),round(jz*0.97-0.001,3))
 
-def pd_jz(lj_data,jz):
+def pd_jz(lj_data,lj,jz):
     q1=round(np.min(lj_data),3) #50日最小值
     q2=round(np.quantile(lj_data,0.25),3) #50日四分位数
     q3=round(np.quantile(lj_data,0.5),3) #50日四分位数
     q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
     q5=round(np.max(lj_data),3) #50日最大值
-    if (jz == q5):
-        return ('📈')
-    elif (jz > q4):
-        return ('💗💗💗')
-    elif (jz > q3):
-        return ('💗💗💚')
-    elif (jz > q2):
-        return ('💗💚💚')
-    elif (jz > q1):
-        return ('💚💚💚')
+    if (lj == q5):
+        return (f'📈')
+    elif (lj > q4):
+        return (f'💗💗💗<font color="green"><small> {round((q4*jz/lj)-0.001,3)}</small></font>')
+    elif (lj > q3):
+        return (f'💗💗💚<font color="green"><small> {round((q3*jz/lj)-0.001,3)}</small></font><font color="red"><small> {round((q4*jz/lj),3)}</small></font>')
+    elif (lj > q2):
+        return (f'💗💚💚<font color="green"><small> {round((q2*jz/lj)-0.001,3)}</small></font><font color="red"><small> {round((q3*jz/lj),3)}</small></font>')
+    elif (lj > q1):
+        return (f'💚💚💚<font color="red"><small> {round((q2*jz/lj),3)}</small></font>')
     else:
-        return ('📉')
+        return (f'📉')
 
 def get_color(mean5,mean10,mean30):
     if (mean5 < mean10 < mean30):
@@ -201,7 +201,7 @@ def working(code):
     mean30=round(np.mean(lj_data[-30:]),3)#前30天净值均值
 
     tip1=get_color(mean5,mean10,mean30)
-    state=pd_jz(lj_data,lj_data[-1])
+    state=pd_jz(lj_data,lj_data[-1],jz_data[-1])
 
     if ('红' in tip1):
         writing1(state,jz_date,name,jz_data)
