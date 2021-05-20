@@ -123,9 +123,9 @@ def get_fund2(fund_id):
     return (name)
 
 def writing1(state,rq,name,jz):
-    sio_content.write(f'<p>{rq}</p>')
+    sio_content.write(f'<p><strong>{rq}</strong></p>')
+    sio_content.write(f'<p><strong>{name}</strong></p>')
     sio_content.write(f'<p>{state}</p>')
-    sio_content.write(f'<p>{name}</p>')
     up3,up2,up1,down1,down2,down3=updown(jz)
     sio_content.write(f'<p><font color="red">涨 3% {up3}</font></p>')
     sio_content.write(f'<p><font color="red">涨 2% {up2}</font></p>')
@@ -136,9 +136,9 @@ def writing1(state,rq,name,jz):
     return None
 
 def writing2(state,rq,name,jz):
-    sio_content.write(f'<p>{rq}</p>')
+    sio_content.write(f'<p><strong>{rq}</strong></p>')
+    sio_content.write(f'<p><strong>{name}</strong></p>')
     sio_content.write(f'<p>{state}</p>')
-    sio_content.write(f'<p>{name}</p>')
     up3,up2,up1,down1,down2,down3=updown(jz)
     sio_content.write(f'<p><font color="red">涨 1% {up1}</font></p>')
     sio_content.write(f'<p><font color="green">跌 1% {down1}</font></p>')

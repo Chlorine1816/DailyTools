@@ -138,8 +138,7 @@ def get_fund2(fund_id):
     #涨跌
     gszf=jz.find_all('span',id='fund_gszf')[0].text.strip('%')
     if (gszf == '---'):
-        sio_digest.write(f'{name} Fund1\n')
-        return (name,get_fund1(fund_id))
+        return get_fund2(fund_id)
     else:
         return (name,float(gszf))
 

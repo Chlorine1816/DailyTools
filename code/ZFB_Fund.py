@@ -136,10 +136,13 @@ def get_fund2(fund_id):
     #名称
     name=jz.find_all('h4',class_='title')[0].text
     #估值
-    fund_gsz=float(jz.find_all('span',id='fund_gsz')[0].text)
+    gsz=jz.find_all('span',id='fund_gsz')[0].text
     #涨跌
-    fund_gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
-    return (name,fund_gsz,fund_gszf)
+    gszf=jz.find_all('span',id='fund_gszf')[0].text.strip('%')
+    if (gszf == '---'):
+        return(get_fund2(fund_id))
+    else:
+        return (name,float(gsz),float(gszf))
 
 def pd_jz(lj_data,jz):
     q1=round(np.min(lj_data),3) #50日最小值
