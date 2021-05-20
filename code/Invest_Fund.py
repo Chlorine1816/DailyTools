@@ -19,7 +19,8 @@ title=f'Invest Fund'
 sio_digest=StringIO('')
 sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
 #图文消息的内容，支持html标签，不超过666 K个字节
-sio_content=StringIO('')
+sio_content0=StringIO('') #不操作
+sio_content1=StringIO('') #操作
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}
@@ -235,17 +236,17 @@ def working(code,rate):
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
     if (gszf > 0)or(tip2==0):
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content.write(f'<p>不操作</p>')
+        sio_content0.write(f'<p>{state}</p>')
+        sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
+        sio_content0.write(f'<p>不操作</p>')
     elif (gszf <= 0)and('绿' in tip1)and(tip2!=0):
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content.write(f'{get_money(tip2,rate)}')  
+        sio_content1.write(f'<p>{state}</p>')
+        sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content1.write(f'{get_money(tip2,rate)}')  
     elif (gszf <= 0)and('红' in tip1)and(tip2!=0):
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content.write(f'{get_money(-1,rate)}')
+        sio_content1.write(f'<p>{state}</p>')
+        sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content1.write(f'{get_money(-1,rate)}')
     return None
 
 if __name__=='__main__':
@@ -258,4 +259,4 @@ if __name__=='__main__':
         time.sleep(0.2)
         working(code[i],rate[i])
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
-    send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())
+    send_mpnews(title,sio_content1.getvalue()+sio_content0.getvalue(),sio_digest.getvalue())
