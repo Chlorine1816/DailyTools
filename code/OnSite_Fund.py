@@ -147,7 +147,7 @@ def writing2(state,rq,name,jz):
     return None
 
 def updown(jz):
-    return(round(jz*1.03+0.001,3),round(jz*1.02+0.001,3),round(jz*1.01+0.001,3),round(jz*0.99-0.001,3),round(jz*0.98-0.001,3),round(jz*0.97-0.001,3))
+    return(round(jz*1.031,3),round(jz*1.021,3),round(jz*1.011,3),round(jz*0.989,3),round(jz*0.979,3),round(jz*0.969,3))
 
 def pd_jz(lj_data,lj,jz):
     q1=round(np.min(lj_data),3) #50日最小值
