@@ -224,7 +224,7 @@ def working(code,rate):
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
     lj_data=data['累计净值'].values[-49:]
-    name,gszf=get_fund2(code) #天天基金网 估值涨幅
+    name,gszf=get_fund2(code) #天天基金 估值涨幅
     today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
