@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
   schedule:
-    - cron: '0 13,23 * * 1,2,3,4,5'
+    - cron: '0 13,23 * * Mon,Tue,Wed,Thu,Fri'
 
 jobs:
   run-tool:
