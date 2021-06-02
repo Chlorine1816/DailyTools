@@ -155,7 +155,7 @@ def pd_jz(lj_data,lj,jz):
     q3=round(np.quantile(lj_data,0.5),3) #50日四分位数
     q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
     q5=round(np.max(lj_data),3) #50日最大值
-    if (lj == q5):
+    if (lj >= q5):
         return (f'📈')
     elif (lj > q4):
         return (f'<font color="green"><small>{round((q4*jz/lj)-0.001,3)}</small></font> 💗💗💗 <font color="red"><small>{round((q5*jz/lj)+0.001,3)}</small></font>')

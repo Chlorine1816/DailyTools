@@ -150,7 +150,7 @@ def pd_jz(lj_data,jz):
     q3=round(np.quantile(lj_data,0.5),3) #50日四分位数
     q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
     q5=round(np.max(lj_data),3) #50日最大值
-    if (jz == q5):
+    if (jz >= q5):
         return ('📈')
     elif (jz > q4):
         return ('💗💗💗')
