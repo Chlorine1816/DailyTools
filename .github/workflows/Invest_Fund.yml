@@ -3,7 +3,7 @@ name: Invest_Fund
 on: 
   workflow_dispatch:
   schedule:
-    - cron: '03 03 03 * * MON-FRI *'
+    - cron: 22 03 * * MON-FRI
 
 jobs:
   run-tool:
