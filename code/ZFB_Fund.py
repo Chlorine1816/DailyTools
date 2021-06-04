@@ -203,13 +203,13 @@ def working(code):
     if (tip2==-1):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content2.write(f'<p>You can take <font color="red">20%</font> from me</p>')
+        sio_content2.write(f'<p>You can take <font color="red">25%</font> from me</p>')
     elif (gszf <= -1)and('绿' in tip1)and(tip2 > 0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>Please give me RMB <font color="green">{tip2}</font></p>')
     elif (gszf > 0)and('红' in tip1)and(tip2==0):
-        money=int(50/gsz)
+        money=int(50/gsz) if gszf > 1 else 10
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p>You can take <font color="red">{money}</font> from me</p>')
