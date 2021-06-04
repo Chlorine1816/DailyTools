@@ -204,19 +204,16 @@ def working(code):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p>You can take <font color="red">25%</font> from me</p>')
-    elif (gszf <= -1)and('绿' in tip1)and(tip2 > 0):
+    elif (gszf <= 0)and(tip2 > 0):
+        money=tip2 if '绿' in tip1 else 10
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>Please give me RMB <font color="green">{tip2}</font></p>')
+        sio_content1.write(f'<p>Please give me RMB <font color="green">{money}</font></p>')
     elif (gszf > 0)and('红' in tip1)and(tip2==0):
-        money=int(50/gsz) if gszf > 1 else 10
+        money=int(30/gsz*(1+gszf/10))
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p>You can take <font color="red">{money}</font> from me</p>')
-    elif (gszf < 0)and(tip2 > 0):
-        sio_content1.write(f'<p>{state}</p>')
-        sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>Please give me RMB <font color="green">10</font></p>')
     else:
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
