@@ -14,12 +14,14 @@ touser=os.environ['TOUSER']  #接收id
 media_id=os.environ['MEDIA'] #图片id
 
 #图文图文消息的标题
-title=f'ZFB_Fund'
+title=f'ZFB Fund'
 #图文消息的描述，不超过512个字节
 sio_digest=StringIO('')
 sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
 #图文消息的内容，支持html标签，不超过666 K个字节
-sio_content=StringIO('')
+sio_content0=StringIO('') #不操作
+sio_content1=StringIO('') #买入
+sio_content2=StringIO('') #卖出
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}
@@ -151,17 +153,17 @@ def pd_jz(lj_data,jz):
     q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
     q5=round(np.max(lj_data),3) #50日最大值
     if (jz >= q5):
-        return ('📈')
+        return ('📈',-1)
     elif (jz > q4):
-        return ('💗💗💗')
+        return ('💗💗💗',0)
     elif (jz > q3):
-        return ('💗💗💚')
+        return ('💗💗💚',25)
     elif (jz > q2):
-        return ('💗💚💚')
+        return ('💗💚💚',50)
     elif (jz > q1):
-        return ('💚💚💚')
+        return ('💚💚💚',100)
     else:
-        return ('📉')
+        return ('📉',100)
 
 def get_color(mean5,mean10,mean30):
     if (mean5 < mean10 < mean30):
@@ -196,22 +198,29 @@ def working(code):
     mean30=round(np.mean(lj_data[-30:]),3) #30日均值
 
     tip1=get_color(mean5,mean10,mean30)
-    state=pd_jz(lj_data,today_lj)
+    state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
-    if (gszf <= -1)and('绿' in tip1):
-        money=int(100-gszf)
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content.write(f'<p>买入 <font color="green">{money}</font> 元</p>')
-    elif (gszf > 0)and('红' in tip1):
-        money=int((90+gszf)/gsz)
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content.write(f'<p>卖出 <font color="red">{money}</font> 份</p>')
+    if (tip2==-1):
+        sio_content2.write(f'<p>{state}</p>')
+        sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content2.write(f'<p>You can take <font color="red">20%</font> from me</p>')
+    elif (gszf <= -1)and('绿' in tip1)and(tip2 > 0):
+        sio_content1.write(f'<p>{state}</p>')
+        sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content1.write(f'<p>Please give me RMB <font color="green">{tip2}</font></p>')
+    elif (gszf > 0)and('红' in tip1)and(tip2==0):
+        money=int(50/gsz)
+        sio_content2.write(f'<p>{state}</p>')
+        sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content2.write(f'<p>You can take <font color="red">{money}</font> from me</p>')
+    elif (gszf < 0)and(tip2 > 0):
+        sio_content1.write(f'<p>{state}</p>')
+        sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content1.write(f'<p>Please give me RMB <font color="green">10</font></p>')
     else:
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content.write(f'<p>不操作</p>')
+        sio_content0.write(f'<p>{state}</p>')
+        sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
+        sio_content0.write(f'<p>Calm down</p>')
     return None
 
 if __name__=='__main__':
@@ -223,4 +232,4 @@ if __name__=='__main__':
         code=fund_list['ID'].values[i]
         working(code)
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
-    send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())
+    send_mpnews(title,sio_content1.getvalue()+sio_content2.getvalue()+sio_content0.getvalue(),sio_digest.getvalue())

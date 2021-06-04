@@ -20,7 +20,8 @@ sio_digest=StringIO('')
 sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
 #图文消息的内容，支持html标签，不超过666 K个字节
 sio_content0=StringIO('') #不操作
-sio_content1=StringIO('') #操作
+sio_content1=StringIO('') #买入
+sio_content2=StringIO('') #卖出
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}
@@ -63,8 +64,9 @@ def get_daily_sentence():
     sio_digest.write(f'{content}\n{note}\n')
     return None
 
-def get_fund(code,per=10,sdate='',edate='',proxies=None):
+def get_fund(code,per=30,sdate='',edate=''):
     url='http://fund.eastmoney.com/f10/F10DataApi.aspx'
+    headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'}
     params = {'type': 'lsjz', 'code': code, 'page':1,'per': per, 'sdate': sdate, 'edate': edate}
     req=requests.get(url=url,params=params,headers=headers)
     req.encoding='utf-8'   
@@ -110,7 +112,7 @@ def get_fund1(fund_id):
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
     time.sleep(0.2)
     try:
-        req=requests.get(url=url,headers=headers,timeout=22)
+        req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
         if req.status_code==200:
             html=req.text
@@ -125,7 +127,7 @@ def get_fund2(fund_id):
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
     time.sleep(0.2)
     try:
-        req=requests.get(url=url,headers=headers,timeout=22)
+        req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
         if req.status_code==200:
             html=req.text
@@ -146,49 +148,49 @@ def get_fund2(fund_id):
 def get_money(tip,rate):
     if (rate==0.15):
         if tip==1:
-            return (f'<p>买入 <font color="green">23</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">23</font></p>')
         elif tip==2:
-            return (f'<p>买入 <font color="green">50</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">50</font></p>')
         elif tip==3:
-            return (f'<p>买入 <font color="green">100</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">103</font></p>')
         else:
-            return (f'<p>买入 <font color="green">10</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">10</font></p>')
     elif (rate==0.12):
         if tip==1:
-            return (f'<p>买入 <font color="green">20</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">20</font></p>')
         elif tip==2:
-            return (f'<p>买入 <font color="green">45</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">45</font></p>')
         elif tip==3:
-            return (f'<p>买入 <font color="green">87</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">87</font></p>')
         else:
-            return (f'<p>买入 <font color="green">12</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">12</font></p>')
     elif (rate==0.1):
         if tip==1:
-            return (f'<p>买入 <font color="green">15</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">15</font></p>')
         elif tip==2:
-            return (f'<p>买入 <font color="green">35</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">35</font></p>')
         elif tip==3:
-            return (f'<p>买入 <font color="green">65</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">65</font></p>')
         else:
-            return (f'<p>买入 <font color="green">15</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">15</font></p>')
     elif (rate==0.08):
         if tip==1:
-            return (f'<p>买入 <font color="green">18</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">18</font></p>')
         elif tip==2:
-            return (f'<p>买入 <font color="green">31</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">31</font></p>')
         elif tip==3:
-            return (f'<p>买入 <font color="green">68</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">68</font></p>')
         else:
-            return (f'<p>买入 <font color="green">18</font> 元 </p>')
+            return (f'<p>Please give me RMB <font color="green">18</font></p>')
 
 def pd_jz(lj_data,jz):
     q1=round(np.min(lj_data),3) #50日最小值
     q2=round(np.quantile(lj_data,0.25),3) #50日四分位数
-    q3=round(np.quantile(lj_data,0.5),3) #50日四分位数
+    q3=round(np.quantile(lj_data,0.50),3) #50日四分位数
     q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
     q5=round(np.max(lj_data),3) #50日最大值
     if (jz >= q5):
-        return ('📈',0)
+        return ('📈',-1)
     elif (jz > q4):
         return ('💗💗💗',0)
     elif (jz > q3):
@@ -216,7 +218,7 @@ def working(code,rate):
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
     sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-6666666))
-    data=get_fund(code,per=49,sdate=sdate,edate=edate)
+    data=get_fund(code,per=30,sdate=sdate,edate=edate)
     data['单位净值']=data['单位净值'].astype(float)
     data['累计净值']=data['累计净值'].astype(float)
     data['日增长率']=data['日增长率'].str.strip('%').astype(float)
@@ -224,7 +226,7 @@ def working(code,rate):
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
     lj_data=data['累计净值'].values[-49:]
-    name,gszf=get_fund2(code) #天天基金 估值涨幅
+    name,gszf=get_fund2(code) #天天基金网 估值涨幅
     today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
@@ -235,10 +237,14 @@ def working(code,rate):
     tip1=get_color(mean5,mean10,mean30)
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
-    if (gszf > 0)or(tip2==0):
+    if (tip2==-1):
+        sio_content2.write(f'<p>{state}</p>')
+        sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content2.write(f'<p>You can take RMB from me</p>')
+    elif (gszf > 0)or(tip2==0):
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content0.write(f'<p>不操作</p>')
+        sio_content0.write(f'<p>Calm down</p>')
     elif (gszf <= 0)and('绿' in tip1)and(tip2!=0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
@@ -259,4 +265,4 @@ if __name__=='__main__':
         time.sleep(0.2)
         working(code[i],rate[i])
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
-    send_mpnews(title,sio_content1.getvalue()+sio_content0.getvalue(),sio_digest.getvalue())
+    send_mpnews(title,sio_content1.getvalue()+sio_content2.getvalue()+sio_content0.getvalue(),sio_digest.getvalue())
