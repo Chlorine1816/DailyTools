@@ -203,21 +203,21 @@ def working(code):
     if (tip2==-1):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content2.write(f'<p>You can take <font color="red">25%</font> from me</p>')
+        sio_content2.write(f'<p>建议卖出 <font color="red">25%</font> 的份额</p>')
     elif (gszf <= 0)and(tip2 > 0):
         money=tip2 if '绿' in tip1 else 10
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>Please give me RMB <font color="green">{money}</font></p>')
+        sio_content1.write(f'<p>建议买入 RMB <font color="green">{money}</font> 元</p>')
     elif (gszf > 0)and('红' in tip1)and(tip2==0):
-        money=int(30/gsz*(1+gszf/10))
+        money=int(30*(1+gszf/10)/gsz)
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content2.write(f'<p>You can take <font color="red">{money}</font> from me</p>')
+        sio_content2.write(f'<p>建议卖出 <font color="red">{money}</font> 份</p>')
     else:
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content0.write(f'<p>Calm down</p>')
+        sio_content0.write(f'<p>按兵不动</p>')
     return None
 
 if __name__=='__main__':
