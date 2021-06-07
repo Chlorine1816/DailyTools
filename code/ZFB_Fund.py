@@ -210,7 +210,7 @@ def working(code):
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>建议买入 RMB <font color="green">{money}</font> 元</p>')
     elif (gszf > 0)and('红' in tip1)and(tip2==0):
-        money=int(round(30*(1+gszf/10)/gsz),0)
+        money=int(round(30*(1+gszf/10)/gsz,0))
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p>建议卖出 <font color="red">{money}</font> 份</p>')
