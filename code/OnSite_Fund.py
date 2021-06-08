@@ -225,8 +225,10 @@ def working(code):
         sio_content.write(f'<p><strong>{jz_date}</strong></p>')
         sio_content.write(f'<p><strong>{name}</strong></p>')
         sio_content.write(f'<p>{state}</p>')
+        sio_content.write(f'<p><font color="red">涨 2% {up2}</font></p>')
         sio_content.write(f'<p><font color="red">涨 1% {up1}</font></p>')
         sio_content.write(f'<p><font color="green">跌 1% {down1}</font></p>')
+        sio_content.write(f'<p><font color="green">跌 2% {down2}</font></p>')
 
     return None
 
