@@ -14,7 +14,7 @@ touser=os.environ['TOUSER']  #接收id
 media_id=os.environ['MEDIA'] #图片id
 
 #图文图文消息的标题
-title=f'OnSite_Fund'
+title=f'OnSite Fund (GitHub)'
 #图文消息的描述，不超过512个字节
 sio_digest=StringIO('')
 sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
@@ -121,30 +121,6 @@ def get_fund2(fund_id):
     #名称
     name=jz.find_all('h4',class_='title')[0].text
     return (name)
-
-'''
-def writing1(state,rq,name,jz):
-    sio_content.write(f'<p><strong>{rq}</strong></p>')
-    sio_content.write(f'<p><strong>{name}</strong></p>')
-    sio_content.write(f'<p>{state}</p>')
-    up3,up2,up1,down1,down2,down3=updown(jz)
-    sio_content.write(f'<p><font color="red">涨 3% {up3}</font></p>')
-    sio_content.write(f'<p><font color="red">涨 2% {up2}</font></p>')
-    sio_content.write(f'<p><font color="red">涨 1% {up1}</font></p>')
-    sio_content.write(f'<p><font color="green">跌 1% {down1}</font></p>')
-    return None
-
-def writing2(state,rq,name,jz):
-    sio_content.write(f'<p><strong>{rq}</strong></p>')
-    sio_content.write(f'<p><strong>{name}</strong></p>')
-    sio_content.write(f'<p>{state}</p>')
-    up3,up2,up1,down1,down2,down3=updown(jz)
-    sio_content.write(f'<p><font color="red">涨 1% {up1}</font></p>')
-    sio_content.write(f'<p><font color="green">跌 1% {down1}</font></p>')
-    sio_content.write(f'<p><font color="green">跌 2% {down2}</font></p>')
-    sio_content.write(f'<p><font color="green">跌 3% {down3}</font></p>')
-    return None
-'''
 
 def updown(jz):
     return(round(jz*1.031,3),round(jz*1.021,3),round(jz*1.011,3),round(jz*0.989,3),round(jz*0.979,3),round(jz*0.969,3))

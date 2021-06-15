@@ -17,7 +17,7 @@ media_id=os.environ['MEDIA'] #图片id
 sleep_time=random.randint(11,22)
 
 #图文图文消息的标题
-title=f'天翼云盘签到'
+title=f'天翼云盘 (GitHub)'
 #图文消息的描述，不超过512个字节
 sio_digest=StringIO('')
 sio_digest.write(time.strftime("%Y年%m月%d日", time.localtime())+'\n')

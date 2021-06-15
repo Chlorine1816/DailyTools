@@ -14,7 +14,7 @@ media_id=os.environ['MEDIA'] #图片id
 touser=f'@all'  #接收id
 
 #图文图文消息的标题
-title=f'Invest Fund'
+title=f'Invest Fund (GitHub)'
 #图文消息的描述，不超过512个字节
 sio_digest=StringIO('')
 sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')

@@ -69,7 +69,7 @@ def get_wb(top_num):
     txt=ranktxt.find_all('a')
     num=ranktxt.find_all('span')
     #图文图文消息的标题
-    title=f'微博热搜'
+    title=f'微博热搜 (GitHub)'
     #图文消息的描述，不超过512个字节
     sio_digest=StringIO('')
     sio_digest.write(time.strftime("%Y年%m月%d日", time.localtime())+'\n')
