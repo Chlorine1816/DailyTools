@@ -11,7 +11,8 @@ corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
 corpsecret=os.environ['CORPSECRET']  #机器人secret
 media_id=os.environ['MEDIA'] #图片id
-touser=f'@all'  #接收id
+touser=os.environ['TOUSER']  #接收id
+#touser=f'@all'  #接收id
 
 #图文图文消息的标题
 title=f'Invest Fund (GitHub)'
@@ -145,14 +146,15 @@ def get_fund2(fund_id):
     else:
         return (name,float(gszf))
 
+'''
 def get_money(tip,rate):
     if (rate==0.15):
         if tip==1:
-            return (f'<p>Please give me RMB <font color="green">23</font></p>')
+            return (f'<p>Please give me RMB <font color="green">30</font></p>')
         elif tip==2:
-            return (f'<p>Please give me RMB <font color="green">50</font></p>')
+            return (f'<p>Please give me RMB <font color="green">63</font></p>')
         elif tip==3:
-            return (f'<p>Please give me RMB <font color="green">103</font></p>')
+            return (f'<p>Please give me RMB <font color="green">116</font></p>')
         else:
             return (f'<p>Please give me RMB <font color="green">10</font></p>')
     elif (rate==0.12):
@@ -166,11 +168,11 @@ def get_money(tip,rate):
             return (f'<p>Please give me RMB <font color="green">12</font></p>')
     elif (rate==0.1):
         if tip==1:
-            return (f'<p>Please give me RMB <font color="green">15</font></p>')
+            return (f'<p>Please give me RMB <font color="green">15 (25)</font></p>')
         elif tip==2:
-            return (f'<p>Please give me RMB <font color="green">35</font></p>')
+            return (f'<p>Please give me RMB <font color="green">35 (55)</font></p>')
         elif tip==3:
-            return (f'<p>Please give me RMB <font color="green">65</font></p>')
+            return (f'<p>Please give me RMB <font color="green">65 (105)</font></p>')
         else:
             return (f'<p>Please give me RMB <font color="green">15</font></p>')
     elif (rate==0.08):
@@ -182,6 +184,7 @@ def get_money(tip,rate):
             return (f'<p>Please give me RMB <font color="green">68</font></p>')
         else:
             return (f'<p>Please give me RMB <font color="green">18</font></p>')
+'''
 
 def pd_jz(lj_data,jz):
     q1=round(np.min(lj_data),3) #50日最小值
@@ -214,7 +217,7 @@ def get_color(mean5,mean10,mean30):
     else:
         return ('未知')
 
-def working(code,rate):
+def working(code,moneylist):
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
     sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-6666666))
@@ -251,21 +254,24 @@ def working(code,rate):
     elif (gszf <= 0)and('绿' in tip1)and(tip2!=0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'{get_money(tip2,rate)}')  
+        #sio_content1.write(f'{get_money(tip2,rate)}')
+        sio_content1.write(f'<p>Please give me RMB <font color="green">{moneylist[tip2]}</font></p>')
     elif (gszf <= 0)and('红' in tip1)and(tip2!=0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'{get_money(-1,rate)}')
+        #sio_content1.write(f'{get_money(-1,rate)}')
+        sio_content1.write(f'<p>Please give me RMB <font color="green">{moneylist[0]}</font></p>')
     return None
 
 if __name__=='__main__':
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/Invest_FundList.xlsx',dtype={'ID': 'string'})
     code=fund_list['ID'].values
-    rate=fund_list['Rate'].values
+    #rate=fund_list['Rate'].values
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
-        working(code[i],rate[i])
+        moneylist=[fund_list['0'].values[i],fund_list['1'].values[i],fund_list['2'].values[i],fund_list['3'].values[i]]
+        working(code[i],moneylist)
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content1.getvalue()+sio_content2.getvalue()+sio_content0.getvalue(),sio_digest.getvalue())

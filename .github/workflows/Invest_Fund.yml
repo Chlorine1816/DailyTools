@@ -2,6 +2,7 @@ name: Invest_Fund
 
 on: 
   workflow_dispatch:
+  push:
   schedule:
     - cron: 16 6 * * MON-FRI
 
@@ -29,5 +30,6 @@ jobs:
           AGENTID: ${{secrets.CTID}}
           CORPSECRET: ${{secrets.CTSECRET}}
           MEDIA: ${{secrets.CTMEDIA}}
+          TOUSER: ${{secrets.TOUSER}}
         run: 
           python ./code/Invest_Fund.py
