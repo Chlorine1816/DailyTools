@@ -195,11 +195,11 @@ def pd_jz(lj_data,jz):
     if (jz >= q5):
         return ('📈',-1)
     elif (jz > q4):
-        return ('💗💗💗',0)
+        return ('❤❤❤',0)
     elif (jz > q3):
-        return ('💗💗💚',1)
+        return ('❤❤💚',1)
     elif (jz > q2):
-        return ('💗💚💚',2)
+        return ('❤💚💚',2)
     elif (jz > q1):
         return ('💚💚💚',3)
     else:
