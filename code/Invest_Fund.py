@@ -146,46 +146,6 @@ def get_fund2(fund_id):
     else:
         return (name,float(gszf))
 
-'''
-def get_money(tip,rate):
-    if (rate==0.15):
-        if tip==1:
-            return (f'<p>Please give me RMB <font color="green">30</font></p>')
-        elif tip==2:
-            return (f'<p>Please give me RMB <font color="green">63</font></p>')
-        elif tip==3:
-            return (f'<p>Please give me RMB <font color="green">116</font></p>')
-        else:
-            return (f'<p>Please give me RMB <font color="green">10</font></p>')
-    elif (rate==0.12):
-        if tip==1:
-            return (f'<p>Please give me RMB <font color="green">20</font></p>')
-        elif tip==2:
-            return (f'<p>Please give me RMB <font color="green">45</font></p>')
-        elif tip==3:
-            return (f'<p>Please give me RMB <font color="green">87</font></p>')
-        else:
-            return (f'<p>Please give me RMB <font color="green">12</font></p>')
-    elif (rate==0.1):
-        if tip==1:
-            return (f'<p>Please give me RMB <font color="green">15 (25)</font></p>')
-        elif tip==2:
-            return (f'<p>Please give me RMB <font color="green">35 (55)</font></p>')
-        elif tip==3:
-            return (f'<p>Please give me RMB <font color="green">65 (105)</font></p>')
-        else:
-            return (f'<p>Please give me RMB <font color="green">15</font></p>')
-    elif (rate==0.08):
-        if tip==1:
-            return (f'<p>Please give me RMB <font color="green">18</font></p>')
-        elif tip==2:
-            return (f'<p>Please give me RMB <font color="green">31</font></p>')
-        elif tip==3:
-            return (f'<p>Please give me RMB <font color="green">68</font></p>')
-        else:
-            return (f'<p>Please give me RMB <font color="green">18</font></p>')
-'''
-
 def pd_jz(lj_data,jz):
     q1=round(np.min(lj_data),3) #50日最小值
     q2=round(np.quantile(lj_data,0.25),3) #50日四分位数
@@ -195,13 +155,13 @@ def pd_jz(lj_data,jz):
     if (jz >= q5):
         return ('📈',-1)
     elif (jz > q4):
-        return ('❤❤❤',0)
+        return ('🔴🔴🔴',0)
     elif (jz > q3):
-        return ('❤❤💚',1)
+        return ('🔴🔴🟢',1)
     elif (jz > q2):
-        return ('❤💚💚',2)
+        return ('🔴🟢🟢',2)
     elif (jz > q1):
-        return ('💚💚💚',3)
+        return ('🟢🟢🟢',3)
     else:
         return ('📉',3)
 
@@ -254,12 +214,10 @@ def working(code,moneylist):
     elif (gszf <= 0)and('绿' in tip1)and(tip2!=0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        #sio_content1.write(f'{get_money(tip2,rate)}')
         sio_content1.write(f'<p>Please give me RMB <font color="green">{moneylist[tip2]}</font></p>')
     elif (gszf <= 0)and('红' in tip1)and(tip2!=0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        #sio_content1.write(f'{get_money(-1,rate)}')
         sio_content1.write(f'<p>Please give me RMB <font color="green">{moneylist[0]}</font></p>')
     return None
 

@@ -2,7 +2,6 @@ name: OnSite_Fund
 
 on: 
   workflow_dispatch:
-  push:
   schedule:
     - cron: 50 13 * * MON-FRI
 

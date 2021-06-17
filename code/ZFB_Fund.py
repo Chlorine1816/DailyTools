@@ -155,13 +155,13 @@ def pd_jz(lj_data,jz):
     if (jz >= q5):
         return ('📈',-1)
     elif (jz > q4):
-        return ('❤❤❤',0)
+        return ('🔴🔴🔴',0)
     elif (jz > q3):
-        return ('❤❤💚',25)
+        return ('🔴🔴🟢',25)
     elif (jz > q2):
-        return ('❤💚💚',50)
+        return ('🔴🟢🟢',50)
     elif (jz > q1):
-        return ('💚💚💚',100)
+        return ('🟢🟢🟢',100)
     else:
         return ('📉',100)
 
