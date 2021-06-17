@@ -134,13 +134,13 @@ def pd_jz(lj_data,lj,jz):
     if (lj >= q5):
         return (f'<font color="green"><small>{round((q4*jz/lj)-0.001,3)}</small></font> 📈',-1)
     elif (lj > q4):
-        return (f'<font color="green"><small>{round((q4*jz/lj)-0.001,3)}</small></font> 🔴🔴🔴 <font color="red"><small>{round((q5*jz/lj)+0.001,3)}</small></font>',0)
+        return (f'<font color="green"><small>{round((q4*jz/lj)-0.001,3)}</small></font> 🍎🍎🍎 <font color="red"><small>{round((q5*jz/lj)+0.001,3)}</small></font>',0)
     elif (lj > q3):
-        return (f'<font color="green"><small>{round((q3*jz/lj)-0.001,3)}</small></font> 🔴🔴🟢 <font color="red"><small>{round((q4*jz/lj)+0.001,3)}</small></font>',1)
+        return (f'<font color="green"><small>{round((q3*jz/lj)-0.001,3)}</small></font> 🍎🍎🍏 <font color="red"><small>{round((q4*jz/lj)+0.001,3)}</small></font>',1)
     elif (lj > q2):
-        return (f'<font color="green"><small>{round((q2*jz/lj)-0.001,3)}</small></font> 🔴🟢🟢 <font color="red"><small>{round((q3*jz/lj)+0.001,3)}</small></font>',2)
+        return (f'<font color="green"><small>{round((q2*jz/lj)-0.001,3)}</small></font> 🍎🍏🍏 <font color="red"><small>{round((q3*jz/lj)+0.001,3)}</small></font>',2)
     elif (lj > q1):
-        return (f'<font color="green"><small>{round((q1*jz/lj)-0.001,3)}</small></font> 🟢🟢🟢 <font color="red"><small> {round((q2*jz/lj)+0.001,3)}</small></font>',3)
+        return (f'<font color="green"><small>{round((q1*jz/lj)-0.001,3)}</small></font> 🍏🍏🍏 <font color="red"><small> {round((q2*jz/lj)+0.001,3)}</small></font>',3)
     else:
         return (f'📉',3)
 
