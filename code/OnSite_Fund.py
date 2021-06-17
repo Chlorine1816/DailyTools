@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-  
 import time,re,requests,os,json
+from numpy.lib.function_base import quantile
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
@@ -126,33 +127,35 @@ def updown(jz):
     return(round(jz*1.031,3),round(jz*1.021,3),round(jz*1.011,3),round(jz*0.989,3),round(jz*0.979,3),round(jz*0.969,3))
 
 def pd_jz(lj_data,lj,jz):
-    q1=round(np.min(lj_data),3) #50日最小值
-    q2=round(np.quantile(lj_data,0.25),3) #50日四分位数
-    q3=round(np.quantile(lj_data,0.50),3) #50日四分位数
-    q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
-    q5=round(np.max(lj_data),3) #50日最大值
-    if (lj >= q5):
-        return (f'<font color="green"><small>{round((q4*jz/lj)-0.001,3)}</small></font> 📈',-1)
-    elif (lj > q4):
-        return (f'<font color="green"><small>{round((q4*jz/lj)-0.001,3)}</small></font> 🍎🍎🍎 <font color="red"><small>{round((q5*jz/lj)+0.001,3)}</small></font>',0)
-    elif (lj > q3):
-        return (f'<font color="green"><small>{round((q3*jz/lj)-0.001,3)}</small></font> 🍎🍎🍏 <font color="red"><small>{round((q4*jz/lj)+0.001,3)}</small></font>',1)
-    elif (lj > q2):
-        return (f'<font color="green"><small>{round((q2*jz/lj)-0.001,3)}</small></font> 🍎🍏🍏 <font color="red"><small>{round((q3*jz/lj)+0.001,3)}</small></font>',2)
-    elif (lj > q1):
-        return (f'<font color="green"><small>{round((q1*jz/lj)-0.001,3)}</small></font> 🍏🍏🍏 <font color="red"><small> {round((q2*jz/lj)+0.001,3)}</small></font>',3)
-    else:
-        return (f'📉',3)
+    quantile=np.quantile
+    mean=np.mean
+    mean5=round(mean(lj_data[-5:]),3) #前5天净值均值
+    mean10=round(mean(lj_data[-10:]),3)#前10天净值均值
+    mean30=round(mean(lj_data[-30:]),3)#前30天净值均值
+    q1=round(np.min(lj_data)*jz/lj,3) #50日最小值
+    q2=round(quantile(lj_data,0.2)*jz/lj,3) 
+    q3=round(quantile(lj_data,0.4)*jz/lj,3) 
+    q4=round(quantile(lj_data,0.6)*jz/lj,3) 
+    q5=round(quantile(lj_data,0.8)*jz/lj,3) 
+    q6=round(np.max(lj_data)*jz/lj,3) #50日最大值
+    data=[q1,q2,q3,q4,q5,q6,jz]
+    data.sort(reverse = True) #降序
+    dict_jz={}
+    for i in (q1,q2,q3,q4,q5,q6):
+        dict_jz[i]='🍎' if i < jz else '🍏'
+    dict_jz[jz]=get_color(mean5,mean10,mean30)
+    for i in data:
+        sio_content.write(f'<p>{dict_jz[i]}{i}</p>')
 
 def get_color(mean5,mean10,mean30):
     if (mean5 < mean10 < mean30):
-        return ('大绿')
+        return ('📉')
     elif (mean5 > mean10 > mean30):
-        return ('大红')
+        return ('📈')
     elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
-        return ('绿')
+        return ('📉')
     elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
-        return ('红')
+        return ('📈')
     else:
         return ('未知')
 
@@ -171,42 +174,9 @@ def working(code):
     jz_date=data['净值日期'].values[-1]
     lj_data=data['累计净值'].values[-50:]
     jz_data=data['单位净值'].values[-1]
-
-    mean5=round(np.mean(lj_data[-5:]),3) #前5天净值均值
-    mean10=round(np.mean(lj_data[-10:]),3)#前10天净值均值
-    mean30=round(np.mean(lj_data[-30:]),3)#前30天净值均值
-
-    tip1=get_color(mean5,mean10,mean30)
-    state,tip2=pd_jz(lj_data,lj_data[-1],jz_data)
-    up3,up2,up1,down1,down2,down3=updown(jz_data)
-    if (tip2 <= 0)and('红' in tip1):
-        #writing1(state,jz_date,name,jz_data)
-        sio_content.write(f'<p><strong>{jz_date}</strong></p>')
-        sio_content.write(f'<p><strong>{name}</strong></p>')
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p><font color="red">涨 3% {up3}</font></p>')
-        sio_content.write(f'<p><font color="red">涨 2% {up2}</font></p>')
-        sio_content.write(f'<p><font color="red">涨 1% {up1}</font></p>')
-        sio_content.write(f'<p><font color="green">跌 1% {down1}</font></p>')   
-    elif (tip2 >= 1)and('绿' in tip1):
-        #writing2(state,jz_date,name,jz_data)
-        sio_content.write(f'<p><strong>{jz_date}</strong></p>')
-        sio_content.write(f'<p><strong>{name}</strong></p>')
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p><font color="red">涨 1% {up1}</font></p>')
-        sio_content.write(f'<p><font color="green">跌 1% {down1}</font></p>')
-        sio_content.write(f'<p><font color="green">跌 2% {down2}</font></p>')
-        sio_content.write(f'<p><font color="green">跌 3% {down3}</font></p>')
-    else:
-        sio_content.write(f'<p><strong>{jz_date}</strong></p>')
-        sio_content.write(f'<p><strong>{name}</strong></p>')
-        sio_content.write(f'<p>{state}</p>')
-        sio_content.write(f'<p><font color="red">涨 2% {up2}</font></p>')
-        sio_content.write(f'<p><font color="red">涨 1% {up1}</font></p>')
-        sio_content.write(f'<p><font color="green">跌 1% {down1}</font></p>')
-        sio_content.write(f'<p><font color="green">跌 2% {down2}</font></p>')
-
-    return None
+    sio_content.write(f'<p><strong>{jz_date}</strong></p>')
+    sio_content.write(f'<p><strong>{name}</strong></p>')
+    pd_jz(lj_data,lj_data[-1],jz_data)
 
 if __name__=='__main__':
     start=time.perf_counter()
