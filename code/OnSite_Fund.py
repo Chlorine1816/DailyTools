@@ -123,9 +123,6 @@ def get_fund2(fund_id):
     name=jz.find_all('h4',class_='title')[0].text
     return (name)
 
-def updown(jz):
-    return(round(jz*1.031,3),round(jz*1.021,3),round(jz*1.011,3),round(jz*0.989,3),round(jz*0.979,3),round(jz*0.969,3))
-
 def pd_jz(lj_data,lj,jz):
     quantile=np.quantile
     mean=np.mean
@@ -140,22 +137,20 @@ def pd_jz(lj_data,lj,jz):
     q6=round(np.max(lj_data)*jz/lj,3)
     data=[q1,q2,q3,q4,q5,q6,jz]
     data.sort(reverse = True) #降序
-    dict_jz={}
-    for i in (q1,q2,q3,q4,q5,q6):
-        dict_jz[i]='🍎' if i < jz else '🍏'
+    dict_jz={q1:'🍏',q2:'🍏',q3:'🍏',q4:'🍏',q5:'🍎',q6:'🍎'}
     dict_jz[jz]=get_color(mean5,mean10,mean30)
     for i in data:
         sio_content.write(f'<p>{dict_jz[i]}{i}</p>')
 
 def get_color(mean5,mean10,mean30):
     if (mean5 < mean10 < mean30):
-        return ('📉')
+        return ('👇')
     elif (mean5 > mean10 > mean30):
-        return ('📈')
+        return ('👆')
     elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
-        return ('📉')
+        return ('👇')
     elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
-        return ('📈')
+        return ('👆')
     else:
         return ('未知')
 
