@@ -2,13 +2,13 @@ name: Invest_Fund
 
 on: 
   workflow_dispatch:
+  push:
   schedule:
     - cron: 15 3,6 * * MON-FRI
 
 jobs:
   run-tool:
     runs-on: ubuntu-latest
-    environment: Production
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
