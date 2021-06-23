@@ -147,11 +147,11 @@ def get_fund2(fund_id):
         return (name,float(gsz),float(gszf))
 
 def pd_jz(lj_data,jz):
-    q1=round(np.min(lj_data),3) #50日最小值
-    q2=round(np.quantile(lj_data,0.25),3) #50日四分位数
-    q3=round(np.quantile(lj_data,0.5),3) #50日四分位数
-    q4=round(np.quantile(lj_data,0.75),3) #50日四分位数
-    q5=round(np.max(lj_data),3) #50日最大值
+    q1=round(np.min(lj_data),4) #50日最小值
+    q2=round(np.quantile(lj_data,0.25),4) #50日四分位数
+    q3=round(np.quantile(lj_data,0.5),4) #50日四分位数
+    q4=round(np.quantile(lj_data,0.75),4) #50日四分位数
+    q5=round(np.max(lj_data),4) #50日最大值
     if (jz >= q5):
         return ('📈',-1)
     elif (jz > q4):

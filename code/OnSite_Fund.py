@@ -124,23 +124,22 @@ def get_fund2(fund_id):
     return (name)
 
 def pd_jz(lj_data,lj,jz):
-    jz=round(jz,3)
     quantile=np.quantile
     mean=np.mean
     mean5=round(mean(lj_data[-5:]),3) #前5天净值均值
     mean10=round(mean(lj_data[-10:]),3)#前10天净值均值
     mean30=round(mean(lj_data[-30:]),3)#前30天净值均值
-    q1=round(np.min(lj_data)*jz/lj,4) 
-    q2=round(quantile(lj_data,0.2)*jz/lj,4) 
-    q3=round(quantile(lj_data,0.4)*jz/lj,4) 
-    q4=round(quantile(lj_data,0.6)*jz/lj,4) 
-    q5=round(quantile(lj_data,0.8)*jz/lj,4) 
-    q6=round(np.max(lj_data)*jz/lj,4)
-    data=[q1,q2,q3,q4,q5,q6,jz]
-    data.sort(reverse = True) #降序
+    q1=round(np.min(lj_data)*jz/lj,3) 
+    q2=round(quantile(lj_data,0.2)*jz/lj,3) 
+    q3=round(quantile(lj_data,0.4)*jz/lj,3) 
+    q4=round(quantile(lj_data,0.6)*jz/lj,3) 
+    q5=round(quantile(lj_data,0.8)*jz/lj,3) 
+    q6=round(np.max(lj_data)*jz/lj,3)
+  
     dict_jz={q1:'🍏',q2:'🍏',q3:'🍏',q4:'🍏',q5:'🍎',q6:'🍎'}
     dict_jz[jz]=get_color(mean5,mean10,mean30)
-    for i in data:
+
+    for i in sorted(dict_jz,reverse=True):
         sio_content.write(f'<p>{dict_jz[i]}{i}</p>')
 
 def get_color(mean5,mean10,mean30):
