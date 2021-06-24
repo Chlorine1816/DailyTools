@@ -168,7 +168,7 @@ def working(code):
     name=get_fund2(code)
     jz_date=data['净值日期'].values[-1]
     lj_data=data['累计净值'].values[-50:]
-    jz_data=data['单位净值'].values[-1]
+    jz_data=round(data['单位净值'].values[-1],3)
     sio_content.write(f'<p><strong>{jz_date}</strong></p>')
     sio_content.write(f'<p><strong>{name}</strong></p>')
     pd_jz(lj_data,lj_data[-1],jz_data)
