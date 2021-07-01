@@ -29,4 +29,4 @@ jobs:
           CORPSECRET: ${{secrets.CZSECRET}}
           MEDIA: ${{secrets.CZMEDIA}}
         run: 
-          python ./code/BD_Search.py
+          python ./code/BD_API.py
