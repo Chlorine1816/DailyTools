@@ -56,7 +56,7 @@ def get_BDrealtime():
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'}
     data={'tab':'realtime'}
     #图文图文消息的标题
-    title=f'百度热搜'
+    title=f'百度热搜 (GitHub)'
     try:
         req=requests.get(url=url,params=data,headers=headers)
         req.encoding='utf-8'
