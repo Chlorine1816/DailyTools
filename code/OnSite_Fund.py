@@ -157,7 +157,6 @@ def get_color(mean5,mean10,mean30):
         return ('未知')
 
 def working(code):
-    print(code)
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
     sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-6666666))
@@ -183,6 +182,10 @@ if __name__=='__main__':
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
-        working(code)
+        try:
+            working(code)
+        except:
+            time.sleep(2)
+            working(code)
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())

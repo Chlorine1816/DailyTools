@@ -2,13 +2,13 @@ name: OnSite_Fund
 
 on: 
   workflow_dispatch:
-  push:
   schedule:
     - cron: 52 13,23 * * MON-FRI
 
 jobs:
   run-tool:
     runs-on: ubuntu-latest
+    environment: Production
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
