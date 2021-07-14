@@ -180,7 +180,6 @@ def get_color(mean5,mean10,mean30):
         return ('未知')
 
 def working(code):
-    print(code)
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
     sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-6666666))
