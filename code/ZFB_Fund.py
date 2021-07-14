@@ -57,12 +57,14 @@ def send_mpnews(title,content,digest):
 
 def get_daily_sentence():
     url = "http://open.iciba.com/dsapi/"
-    r = requests.get(url)
-    r = json.loads(r.text)
-    content = r["content"]
-    note = r["note"]
-    sio_digest.write(f'{content}\n{note}\n')
-    return None
+    try:
+        r = requests.get(url)
+        r = json.loads(r.text)
+        content = r["content"]
+        note = r["note"]
+        sio_digest.write(f'{content}\n{note}\n')
+    except:
+        sio_digest.write(f'Happy!\n')
 
 def get_fund(code,per=10,sdate='',edate='',proxies=None):
     url='http://fund.eastmoney.com/f10/F10DataApi.aspx'
