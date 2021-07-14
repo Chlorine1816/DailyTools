@@ -184,6 +184,7 @@ if __name__=='__main__':
         code=fund_list['ID'].values[i]
         try:
             working(code)
+        #重试一次
         except:
             time.sleep(2)
             working(code)
