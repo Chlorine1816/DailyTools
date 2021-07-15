@@ -234,7 +234,7 @@ if __name__=='__main__':
         time.sleep(1)
         moneylist=[fund_list['Zero'].values[i],fund_list['One'].values[i],fund_list['Two'].values[i],fund_list['Three'].values[i]]
         #最多尝试10次
-        for i in range(10):
+        for t in range(10):
             try:
                 working(code[i],moneylist)
             except:
