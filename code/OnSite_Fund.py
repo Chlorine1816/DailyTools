@@ -31,7 +31,7 @@ def get_token():
 
 #发送图文信息
 def send_mpnews(title,content,digest):
-    time.sleep(2)
+    time.sleep(0.5)
     access_token=get_token()
     url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
     data = {
@@ -85,7 +85,7 @@ def get_fund(code,per=30,sdate='',edate='',proxies=None):
     # 从第1页开始抓取所有页面数据
     page=1
     while page<=pages:
-        time.sleep(2)
+        time.sleep(0.5)
         params = {'type': 'lsjz', 'code': code, 'page':page,'per': per, 'sdate': sdate, 'edate': edate}
         req=requests.get(url=url,params=params,headers=headers)
         req.encoding='utf-8'   
@@ -110,7 +110,7 @@ def get_fund(code,per=30,sdate='',edate='',proxies=None):
 
 def get_fund2(fund_id):
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
-    time.sleep(2)
+    time.sleep(0.5)
     try:
         req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
@@ -182,12 +182,13 @@ if __name__=='__main__':
     for i in range(fund_list.shape[0]):
         time.sleep(1)
         code=fund_list['ID'].values[i]
-        #一次
-        try:
-            working(code)
-        #重试一次
-        except:
-            time.sleep(1)
-            working(code)
+        #最多尝试10次
+        for i in range(10):
+            try:
+                working(code)
+            except:
+                time.sleep(0.5)
+            else:
+                break
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())

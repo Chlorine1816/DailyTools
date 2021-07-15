@@ -89,7 +89,7 @@ def get_fund(code,per=30,sdate='',edate=''):
     # 从第1页开始抓取所有页面数据
     page=1
     while page<=pages:
-        time.sleep(2)
+        time.sleep(0.5)
         params = {'type': 'lsjz', 'code': code, 'page':page,'per': per, 'sdate': sdate, 'edate': edate}
         req=requests.get(url=url,params=params,headers=headers)
         req.encoding='utf-8'   
@@ -114,7 +114,7 @@ def get_fund(code,per=30,sdate='',edate=''):
 
 def get_fund1(fund_id):
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
-    time.sleep(2)
+    time.sleep(0.5)
     try:
         req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
@@ -129,7 +129,7 @@ def get_fund1(fund_id):
 
 def get_fund2(fund_id):
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
-    time.sleep(2)
+    time.sleep(0.5)
     try:
         req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
@@ -209,19 +209,19 @@ def working(code,moneylist):
     if (tip2==-1):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content2.write(f'<p>You can take RMB from me</p>')
+        sio_content2.write(f'<p>可以卖出一部分</p>')
     elif (gszf > 0)or(tip2==0):
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content0.write(f'<p>Calm down</p>')
+        sio_content0.write(f'<p>按兵不动</p>')
     elif (gszf <= 0)and('绿' in tip1)and(tip2!=0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>Please give me RMB <font color="green">{moneylist[tip2]}</font></p>')
+        sio_content1.write(f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB</p>')
     elif (gszf <= 0)and('红' in tip1)and(tip2!=0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>Please give me RMB <font color="green">{moneylist[0]}</font></p>')
+        sio_content1.write(f'<p>买入 <font color="green">{moneylist[0]}</font> RMB</p>')
     return None
 
 if __name__=='__main__':
@@ -233,11 +233,13 @@ if __name__=='__main__':
     for i in range(fund_list.shape[0]):
         time.sleep(1)
         moneylist=[fund_list['Zero'].values[i],fund_list['One'].values[i],fund_list['Two'].values[i],fund_list['Three'].values[i]]
-        try:
-            working(code[i],moneylist)
-        except:
-            sio_content0.write(f'<p>❓</p>')
-            sio_content0.write(f'<p>{code[i]}</p>')
-            sio_content0.write(f'<p>Not Fund</p>')
+        #最多尝试10次
+        for i in range(10):
+            try:
+                working(code[i],moneylist)
+            except:
+                time.sleep(0.5)
+            else:
+                break
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content1.getvalue()+sio_content2.getvalue()+sio_content0.getvalue(),sio_digest.getvalue())
