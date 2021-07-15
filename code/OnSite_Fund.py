@@ -182,7 +182,7 @@ if __name__=='__main__':
     for i in range(fund_list.shape[0]):
         time.sleep(0.2)
         code=fund_list['ID'].values[i]
-        #第一次
+        #一次
         try:
             working(code)
         #重试一次
