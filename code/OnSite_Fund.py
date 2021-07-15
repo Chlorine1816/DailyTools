@@ -132,7 +132,7 @@ def pd_jz(lj_data,lj,jz):
     mean10=round(mean(lj_data[-10:]),3)#前10天净值均值
     mean30=round(mean(lj_data[-30:]),3)#前30天净值均值
     q1=round(np.min(lj_data)*jz/lj,3) 
-    q2=round(quantile(lj_data,2)*jz/lj,3) 
+    q2=round(quantile(lj_data,0.2)*jz/lj,3) 
     q3=round(quantile(lj_data,0.4)*jz/lj,3) 
     q4=round(quantile(lj_data,0.6)*jz/lj,3) 
     q5=round(quantile(lj_data,0.8)*jz/lj,3) 
