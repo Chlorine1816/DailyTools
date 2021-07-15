@@ -85,7 +85,7 @@ def get_fund(code,per=30,sdate='',edate='',proxies=None):
     # 从第1页开始抓取所有页面数据
     page=1
     while page<=pages:
-        time.sleep(0.2)
+        time.sleep(2)
         params = {'type': 'lsjz', 'code': code, 'page':page,'per': per, 'sdate': sdate, 'edate': edate}
         req=requests.get(url=url,params=params,headers=headers)
         req.encoding='utf-8'   
@@ -110,7 +110,7 @@ def get_fund(code,per=30,sdate='',edate='',proxies=None):
 
 def get_fund2(fund_id):
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
-    time.sleep(0.2)
+    time.sleep(2)
     try:
         req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
@@ -132,7 +132,7 @@ def pd_jz(lj_data,lj,jz):
     mean10=round(mean(lj_data[-10:]),3)#前10天净值均值
     mean30=round(mean(lj_data[-30:]),3)#前30天净值均值
     q1=round(np.min(lj_data)*jz/lj,3) 
-    q2=round(quantile(lj_data,0.2)*jz/lj,3) 
+    q2=round(quantile(lj_data,2)*jz/lj,3) 
     q3=round(quantile(lj_data,0.4)*jz/lj,3) 
     q4=round(quantile(lj_data,0.6)*jz/lj,3) 
     q5=round(quantile(lj_data,0.8)*jz/lj,3) 
@@ -180,7 +180,7 @@ if __name__=='__main__':
     fund_list=pd.read_excel('./data/OnSite_FundList.xlsx',dtype={'ID': 'string'})
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
-        time.sleep(0.2)
+        time.sleep(2)
         code=fund_list['ID'].values[i]
         #一次
         try:
