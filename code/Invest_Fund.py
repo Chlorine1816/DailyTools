@@ -231,14 +231,14 @@ if __name__=='__main__':
     #rate=fund_list['Rate'].values
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
-        time.sleep(2)
+        time.sleep(1)
         moneylist=[fund_list['Zero'].values[i],fund_list['One'].values[i],fund_list['Two'].values[i],fund_list['Three'].values[i]]
         #第一次
         try:
             working(code[i],moneylist)
-        #重试一次
         except:
-            time.sleep(2)
-            working(code[i],moneylist)
+            sio_content0.write(f'<p>❓</p>')
+            sio_content0.write(f'<p>{code[i]}</p>')
+            sio_content0.write(f'<p>Not Fund</p>')
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content1.getvalue()+sio_content2.getvalue()+sio_content0.getvalue(),sio_digest.getvalue())
