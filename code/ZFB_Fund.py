@@ -227,12 +227,12 @@ if __name__=='__main__':
     fund_list=pd.read_excel('./data/ZFB_FundList.xlsx',dtype={'ID': 'string'})
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
-        time.sleep(2)
+        time.sleep(1)
         code=fund_list['ID'].values[i]
         try:
             working(code)
         except:
-            time.sleep(2)
+            time.sleep(1)
             working(code)
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content1.getvalue()+sio_content2.getvalue()+sio_content0.getvalue(),sio_digest.getvalue())

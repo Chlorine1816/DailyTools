@@ -180,14 +180,14 @@ if __name__=='__main__':
     fund_list=pd.read_excel('./data/OnSite_FundList.xlsx',dtype={'ID': 'string'})
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
-        time.sleep(2)
+        time.sleep(1)
         code=fund_list['ID'].values[i]
         #一次
         try:
             working(code)
         #重试一次
         except:
-            time.sleep(2)
+            time.sleep(1)
             working(code)
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
     send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())

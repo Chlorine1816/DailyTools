@@ -233,7 +233,6 @@ if __name__=='__main__':
     for i in range(fund_list.shape[0]):
         time.sleep(1)
         moneylist=[fund_list['Zero'].values[i],fund_list['One'].values[i],fund_list['Two'].values[i],fund_list['Three'].values[i]]
-        #第一次
         try:
             working(code[i],moneylist)
         except:
