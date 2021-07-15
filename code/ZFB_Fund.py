@@ -66,7 +66,7 @@ def get_daily_sentence():
     except:
         sio_digest.write(f'Happy!\n')
 
-def get_fund(code,per=10,sdate='',edate='',proxies=None):
+def get_fund(code,per=30,sdate='',edate='',proxies=None):
     url='http://fund.eastmoney.com/f10/F10DataApi.aspx'
     params = {'type': 'lsjz', 'code': code, 'page':1,'per': per, 'sdate': sdate, 'edate': edate}
     req=requests.get(url=url,params=params,headers=headers)
@@ -128,7 +128,7 @@ def get_fund2(fund_id):
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
     time.sleep(0.2)
     try:
-        req=requests.get(url=url,headers=headers,timeout=22)
+        req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
         if req.status_code==200:
             html=req.text
@@ -183,7 +183,7 @@ def working(code):
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
     sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-6666666))
-    data=get_fund(code,per=49,sdate=sdate,edate=edate)
+    data=get_fund(code,per=30,sdate=sdate,edate=edate)
     data['单位净值']=data['单位净值'].astype(float)
     data['累计净值']=data['累计净值'].astype(float)
     data['日增长率']=data['日增长率'].str.strip('%').astype(float)

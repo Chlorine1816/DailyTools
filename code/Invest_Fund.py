@@ -91,7 +91,7 @@ def get_fund(code,per=30,sdate='',edate=''):
     while page<=pages:
         time.sleep(0.2)
         params = {'type': 'lsjz', 'code': code, 'page':page,'per': per, 'sdate': sdate, 'edate': edate}
-        req=requests.get(url=url,params=params,headers=headers,timeout=22)
+        req=requests.get(url=url,params=params,headers=headers)
         req.encoding='utf-8'   
         html=req.text
         bf=BeautifulSoup(html,'lxml')
