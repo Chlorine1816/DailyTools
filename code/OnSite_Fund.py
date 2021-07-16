@@ -179,9 +179,8 @@ if __name__=='__main__':
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/OnSite_FundList.xlsx',dtype={'ID': 'string'})
     get_daily_sentence()
-    for i in range(fund_list.shape[0]):
+    for code in fund_list['ID']:
         time.sleep(1)
-        code=fund_list['ID'].values[i]
         #最多尝试10次
         for t in range(10):
             try:
