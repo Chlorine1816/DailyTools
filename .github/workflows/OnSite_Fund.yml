@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
   schedule:
-    - cron: 50 13,0 * * MON-FRI
+    - cron: 22 13,0 * * MON-FRI
 
 jobs:
   run-tool:
