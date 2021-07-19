@@ -228,7 +228,6 @@ if __name__=='__main__':
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/Invest_FundList.xlsx',dtype={'ID': 'string'})
     code=fund_list['ID'].values
-    #rate=fund_list['Rate'].values
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
         time.sleep(1)

@@ -2,7 +2,6 @@ name: ZFB_Fund
 
 on: 
   workflow_dispatch:
-  push:
   schedule:
     - cron: 20 3,6 * * MON-FRI
 
