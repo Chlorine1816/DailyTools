@@ -149,21 +149,26 @@ def get_fund2(fund_id):
         return (name,float(gsz),float(gszf))
 
 def pd_jz(lj_data,jz):
-    q1=round(np.min(lj_data),4) #50日最小值
-    q2=round(np.quantile(lj_data,0.25),4) #50日四分位数
-    q3=round(np.quantile(lj_data,0.5),4) #50日四分位数
-    q4=round(np.quantile(lj_data,0.75),4) #50日四分位数
-    q5=round(np.max(lj_data),4) #50日最大值
-    if (jz >= q5):
-        return ('📈',-1)
+    quantile=np.quantile
+    q1=round(np.min(lj_data),4) 
+    q2=round(quantile(lj_data,0.2),4) 
+    q3=round(quantile(lj_data,0.4),4) 
+    q4=round(quantile(lj_data,0.6),4) 
+    q5=round(quantile(lj_data,0.8),4) 
+    q6=round(np.max(lj_data),4)
+
+    if (jz > q6):
+        return('📈',-1)
+    elif (jz > q5):
+        return ('🍎🍎🍎🍎',0)
     elif (jz > q4):
-        return ('🍎🍎🍎',0)
+        return ('🍎🍎🍎🍏',10)
     elif (jz > q3):
-        return ('🍎🍎🍏',25)
+        return ('🍎🍎🍏🍏',25)
     elif (jz > q2):
-        return ('🍎🍏🍏',50)
+        return ('🍎🍏🍏🍏',50)
     elif (jz > q1):
-        return ('🍏🍏🍏',100)
+        return ('🍏🍏🍏🍏',75)
     else:
         return ('📉',100)
 
@@ -195,9 +200,10 @@ def working(code):
     today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
-    mean5=round(np.mean(lj_data[-5:]),3) #5日均值
-    mean10=round(np.mean(lj_data[-10:]),3) #10日均值
-    mean30=round(np.mean(lj_data[-30:]),3) #30日均值
+    mean=np.mean
+    mean5=round(mean(lj_data[-5:]),3) #5日均值
+    mean10=round(mean(lj_data[-10:]),3) #10日均值
+    mean30=round(mean(lj_data[-30:]),3) #30日均值
 
     tip1=get_color(mean5,mean10,mean30)
     state,tip2=pd_jz(lj_data,today_lj)
@@ -205,22 +211,24 @@ def working(code):
     if (tip2==-1):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content2.write(f'<p>建议卖出 <font color="red">25%</font> 的份额</p>')
+        sio_content2.write(f'<p><font color="red">建议卖出一部分</font></p>')
     elif (gszf <= 0)and(tip2 > 0):
         money=tip2 if '绿' in tip1 else 10
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>建议买入 RMB <font color="green">{money}</font> 元</p>')
-    elif (gszf > 0)and('红' in tip1)and(tip2==0):
-        money=int(round(30*(1+gszf/10)/gsz,0))
-        sio_content2.write(f'<p>{state}</p>')
-        sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content2.write(f'<p>建议卖出 <font color="red">{money}</font> 份</p>')
+        sio_content1.write(f'<p>建议买入 RMB <font color="green">{money}</font></p>')
+    
+    #elif (gszf > 0)and('红' in tip1)and(tip2==0):
+    #    money=int(round(30*(1+gszf/10)/gsz,0))
+    #    sio_content2.write(f'<p>{state}</p>')
+    #    sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+    #    sio_content2.write(f'<p>建议卖出 <font color="red">{money}</font> 份</p>')
+
     else:
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content0.write(f'<p>按兵不动</p>')
-    return None
+
 
 if __name__=='__main__':
     start=time.perf_counter()
@@ -233,7 +241,7 @@ if __name__=='__main__':
             try:
                 working(code)
             except:
-                time.sleep(0.5)
+                time.sleep(1)
             else:
                 break
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
