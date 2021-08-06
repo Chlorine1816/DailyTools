@@ -180,7 +180,7 @@ def get_color(today_lj,mean5,mean10,mean30):
 def working(code):
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
-    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-6666666))
+    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-86400*52))
     data=get_fund(code,per=30,sdate=sdate,edate=edate)
     data['单位净值']=data['单位净值'].astype(float)
     data['累计净值']=data['累计净值'].astype(float)
