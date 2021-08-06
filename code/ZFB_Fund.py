@@ -157,7 +157,7 @@ def pd_jz(lj_data,jz):
     q5=round(quantile(lj_data,0.8),4) 
     q6=round(np.max(lj_data),4)
 
-    if (jz > q6):
+    if (jz >= q6):
         return('📈',-1)
     elif (jz > q5):
         return ('🍎🍎🍎🍎',0)
