@@ -151,36 +151,29 @@ def get_fund2(fund_id):
 def pd_jz(lj_data,jz):
     quantile=np.quantile
     q1=round(np.min(lj_data),4) 
-    q2=round(quantile(lj_data,0.2),4) 
-    q3=round(quantile(lj_data,0.4),4) 
-    q4=round(quantile(lj_data,0.6),4) 
-    q5=round(quantile(lj_data,0.8),4) 
-    q6=round(np.max(lj_data),4)
+    q2=round(quantile(lj_data,0.25),4) 
+    q3=round(quantile(lj_data,0.50),4) 
+    q4=round(quantile(lj_data,0.80),4) 
+    q5=round(np.max(lj_data),4)
 
-    if (jz >= q6):
+    if (jz >= q5):
         return('📈',-1)
-    elif (jz > q5):
-        return ('🍎🍎🍎🍎',0)
     elif (jz > q4):
-        return ('🍎🍎🍎🍏',10)
+        return ('🍎🍎🍎',0)
     elif (jz > q3):
-        return ('🍎🍎🍏🍏',25)
+        return ('🍎🍎🍏',20)
     elif (jz > q2):
-        return ('🍎🍏🍏🍏',50)
+        return ('🍎🍏🍏',50)
     elif (jz > q1):
-        return ('🍏🍏🍏🍏',75)
+        return ('🍏🍏🍏',90)
     else:
         return ('📉',100)
 
-def get_color(mean5,mean10,mean30):
-    if (mean5 < mean10 < mean30):
+def get_color(today_lj,mean5,mean10,mean30):
+    if (today_lj <= mean5 <= mean10 <= mean30):
         return ('大绿')
-    elif (mean5 > mean10 > mean30):
+    elif (today_lj >= mean5 >= mean10 >= mean30):
         return ('大红')
-    elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
-        return ('绿')
-    elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
-        return ('红')
     else:
         return ('未知')
 
@@ -205,22 +198,21 @@ def working(code):
     mean10=round(mean(lj_data[-10:]),3) #10日均值
     mean30=round(mean(lj_data[-30:]),3) #30日均值
 
-    tip1=get_color(mean5,mean10,mean30)
+    tip1=get_color(today_lj,mean5,mean10,mean30)
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
-    if (tip2==-1):
+    if ((tip2==-1)and('红' in tip1))or((tip2<=0)and(today_lj <= mean5)):
         sio_content2.write(f'<p>{state}</p>')
-        sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p><font color="red">建议卖出一部分</font></p>')
-    elif (gszf <= 0)and(tip2 > 0):
-        money=tip2 if '绿' in tip1 else 10
-        sio_content1.write(f'<p>{state}</p>')
-        sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>建议买入 RMB <font color="green">{money}</font></p>')
-    else:
+    elif(tip2==0)or( '绿' in tip1):
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content0.write(f'<p>按兵不动</p>')
+    else:
+        sio_content1.write(f'<p>{state}</p>')
+        sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
+        sio_content1.write(f'<p>建议买入 RMB <font color="green">{tip2}</font></p>')
 
 if __name__=='__main__':
     start=time.perf_counter()

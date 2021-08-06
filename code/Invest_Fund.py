@@ -154,24 +154,21 @@ def pd_jz(lj_data,jz):
 
     quantile=np.quantile
     q1=round(np.min(lj_data),4) 
-    q2=round(quantile(lj_data,0.2),4) 
-    q3=round(quantile(lj_data,0.4),4) 
-    q4=round(quantile(lj_data,0.6),4) 
-    q5=round(quantile(lj_data,0.8),4) 
-    q6=round(np.max(lj_data),4)
+    q2=round(quantile(lj_data,0.25),4) 
+    q3=round(quantile(lj_data,0.50),4) 
+    q4=round(quantile(lj_data,0.80),4) 
+    q5=round(np.max(lj_data),4)
 
-    if (jz >= q6):
+    if (jz >= q5):
         return('📈',-2)
-    elif (jz > q5):
-        return ('🍎🍎🍎🍎',-1)
     elif (jz > q4):
-        return ('🍎🍎🍎🍏',0)
+        return ('🍎🍎🍎',-1)
     elif (jz > q3):
-        return ('🍎🍎🍏🍏',1)
+        return ('🍎🍎🍏',1)
     elif (jz > q2):
-        return ('🍎🍏🍏🍏',2)
+        return ('🍎🍏🍏',2)
     elif (jz > q1):
-        return ('🍏🍏🍏🍏',3)
+        return ('🍏🍏🍏',3)
     else:
         return ('📉',4)
 
@@ -212,23 +209,17 @@ def working(code,moneylist):
     color='red' if gszf > 0 else 'green'
     if ((tip2==-2)and('红' in tip1))or((tip2<=-1)and(today_lj <= mean5)):
         sio_content2.write(f'<p>{state}</p>')
-        sio_content2.write(f'<p><font color="red"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p>可以卖出一部分</p>')
     elif(tip2==-1)or( '绿' in tip1):
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content0.write(f'<p>按兵不动</p>')
-    #elif (tip2 >= 0):
     else:
         sio_content1.write(f'<p>{state}</p>')
-        sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
+        sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB</p>')
-    '''
-    elif (gszf <= 0)and('红' in tip1)and(tip2 >= 0):
-        sio_content1.write(f'<p>{state}</p>')
-        sio_content1.write(f'<p><font color="green"><strong>{name}</strong><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>买入 <font color="green">{moneylist[0]}</font> RMB</p>')
-    '''
+
 if __name__=='__main__':
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/Invest_FundList.xlsx',dtype={'ID': 'string'})
