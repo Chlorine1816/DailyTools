@@ -215,10 +215,14 @@ def working(code,moneylist):
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content0.write(f'<p>按兵不动</p>')
-    else:
+    elif(gszf < 0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB</p>')
+    else:
+        sio_content1.write(f'<p>{state}</p>')
+        sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
+        sio_content1.write(f'<p>买入 <font color="green">{moneylist[0]}</font> RMB</p>')
 
 if __name__=='__main__':
     start=time.perf_counter()
