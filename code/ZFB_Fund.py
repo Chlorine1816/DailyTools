@@ -205,7 +205,7 @@ def working(code):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p><font color="red">建议卖出一部分</font></p>')
-    elif(tip2==0)or( '绿' in tip1):
+    elif(tip2==0):
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content0.write(f'<p>按兵不动</p>')
@@ -213,7 +213,7 @@ def working(code):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>建议买入 RMB <font color="green">{tip2}</font></p>')
-    else:
+    elif( '绿' in tip1):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>建议买入 RMB <font color="green">10</font></p>')
