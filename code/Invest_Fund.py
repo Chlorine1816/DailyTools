@@ -207,7 +207,7 @@ def working(code,moneylist):
     tip1=get_color(today_lj,mean5,mean10,mean30)
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
-    if ((tip2==-2)and('红' in tip1))or((tip2<=-1)and(today_lj <= mean5)):
+    if (tip2==-2)or((tip2<=-1)and(today_lj <= mean5)):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p>可以卖出一部分</p>')
