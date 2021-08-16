@@ -211,7 +211,7 @@ def working(code,moneylist):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p>可以卖出一部分</p>')
-    elif(tip2==-1):
+    elif(tip2==-1)or(gszf > 0):
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content0.write(f'<p>按兵不动</p>')
