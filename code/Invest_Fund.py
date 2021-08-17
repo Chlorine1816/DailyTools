@@ -156,7 +156,7 @@ def pd_jz(lj_data,jz):
     q1=round(np.min(lj_data),4) 
     q2=round(quantile(lj_data,0.25),4) 
     q3=round(quantile(lj_data,0.50),4) 
-    q4=round(quantile(lj_data,0.80),4) 
+    q4=round(quantile(lj_data,0.75),4) 
     q5=round(np.max(lj_data),4)
 
     if (jz >= q5):
