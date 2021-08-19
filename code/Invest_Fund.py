@@ -235,7 +235,7 @@ if __name__=='__main__':
     Four=fund_list['Four'].values
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
-        time.sleep(1)
+        time.sleep(1.1)
         #moneylist=[fund_list['Zero'].values[i],fund_list['One'].values[i],fund_list['Two'].values[i],fund_list['Three'].values[i]]
         moneylist=[Zero[i],One[i],Two[i],Three[i],Four[i]]
         #最多尝试10次
