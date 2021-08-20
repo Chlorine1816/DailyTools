@@ -200,9 +200,9 @@ def working(code,moneylist):
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
     mean=np.mean
-    mean5=round(mean(lj_data[-5:]),3) #5日均值
-    mean10=round(mean(lj_data[-10:]),3) #10日均值
-    mean30=round(mean(lj_data[-30:]),3) #30日均值
+    mean5=round(mean(lj_data[-5:]),4) #5日均值
+    mean10=round(mean(lj_data[-10:]),4) #10日均值
+    mean30=round(mean(lj_data[-30:]),4) #30日均值
 
     tip1=get_color(today_lj,mean5,mean10,mean30)
     state,tip2=pd_jz(lj_data,today_lj)
