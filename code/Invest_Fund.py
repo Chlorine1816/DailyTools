@@ -115,7 +115,7 @@ def get_fund(code,per=30,sdate='',edate=''):
 
 def get_fund1(fund_id):
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
-    time.sleep(0.5)
+    time.sleep(0.2)
     try:
         req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
