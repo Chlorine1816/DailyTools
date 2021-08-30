@@ -126,27 +126,26 @@ def get_fund1(fund_id):
 
 def get_fund2(fund_id):
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
-    time.sleep(0.5)
-    try:
-        req=requests.get(url=url,headers=headers)
-        req.encoding='utf-8'
-        if req.status_code==200:
+    time.sleep(0.2)
+    #尝试6次
+    for i in range(6):
+        try:
+            req=requests.get(url=url,headers=headers)
+            req.encoding='utf-8'
             html=req.text
-    except:
-        html=''
-    bf=BeautifulSoup(html,'lxml')
-    jz=bf.find_all('div',class_='bs_jz')
-    jz=BeautifulSoup(str(jz),'lxml')
-    #名称
-    name=jz.find_all('h4',class_='title')[0].text
-    #估值
-    gsz=jz.find_all('span',id='fund_gsz')[0].text
-    #涨跌
-    gszf=jz.find_all('span',id='fund_gszf')[0].text.strip('%')
-    if (gszf == '---'):
-        return(get_fund2(fund_id))
-    else:
-        return (name,float(gsz),float(gszf))
+            bf=BeautifulSoup(html,'lxml')
+            jz=bf.find_all('div',class_='bs_jz')
+            jz=BeautifulSoup(str(jz),'lxml')
+            #名称
+            name=jz.find_all('h4',class_='title')[0].text
+            #涨跌
+            gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
+        except:
+            time.sleep(2)
+        else:
+            return (name,gszf)
+    #6次均失败 调用备用接口
+    return (name,get_fund1(fund_id))
 
 def pd_jz(lj_data,jz):
     quantile=np.quantile
