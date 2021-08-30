@@ -127,8 +127,8 @@ def get_fund1(fund_id):
 def get_fund2(fund_id):
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
     time.sleep(0.2)
-    #尝试6次
-    for i in range(6):
+    #尝试5次
+    for i in range(5):
         try:
             req=requests.get(url=url,headers=headers)
             req.encoding='utf-8'
@@ -141,10 +141,10 @@ def get_fund2(fund_id):
             #涨跌
             gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
         except:
-            time.sleep(2)
+            time.sleep(1.1)
         else:
             return (name,gszf)
-    #6次均失败 调用备用接口
+    #5次均失败 调用备用接口
     return (name,get_fund1(fund_id))
 
 def pd_jz(lj_data,jz):
@@ -222,13 +222,13 @@ if __name__=='__main__':
     fund_list=pd.read_excel('./data/ZFB_FundList.xlsx',dtype={'ID': 'string'})
     get_daily_sentence()
     for code in fund_list['ID']:
-        time.sleep(1)
-        #最多尝试10次
-        for t in range(10):
+        time.sleep(1.1)
+        #最多尝试5次
+        for t in range(5):
             try:
                 working(code)
             except:
-                time.sleep(1)
+                time.sleep(1.1)
             else:
                 break
     sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
