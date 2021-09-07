@@ -179,7 +179,7 @@ def get_color(today_lj,mean5,mean10,mean30):
 def working(code):
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
-    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-86400*52))
+    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-86400*62))
     data=get_fund(code,per=30,sdate=sdate,edate=edate)
     data['单位净值']=data['单位净值'].astype(float)
     data['累计净值']=data['累计净值'].astype(float)
@@ -187,10 +187,10 @@ def working(code):
     # 按照日期升序排序并重建索引
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
-    lj_data=data['累计净值'].values[-49:]
-    name,gsz,gszf=get_fund2(code) #获取当日估值 涨幅
+    lj_data=data['累计净值'].values[-59:]
+    name,gszf=get_fund2(code) #获取当日估值 涨幅
     today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
-    lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
+    lj_data=np.append(lj_data,today_lj) #前59日累计净值+当日估值
 
     mean=np.mean
     mean5=round(mean(lj_data[-5:]),4) #5日均值
