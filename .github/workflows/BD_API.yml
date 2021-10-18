@@ -3,7 +3,7 @@ name: 百度热搜
 on: 
   workflow_dispatch:
   schedule:
-    - cron: 10 10 * * *
+    - cron: 11 10 * * *
 
 jobs:
   run-tool:
