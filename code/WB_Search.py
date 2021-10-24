@@ -73,7 +73,7 @@ def get_wb(top_num):
     #图文消息的描述，不超过512个字节
     sio_digest=StringIO('')
     sio_digest.write(time.strftime("%Y年%m月%d日", time.localtime())+'\n')
-    for i in range(1,11):
+    for i in range(1,6):
         sio_digest.write(f'🔥'+txt[i].text+'\n')
     sio_digest.write(f'👉查看详情...')
     #图文消息的内容，支持html标签，不超过666 K个字节
@@ -94,5 +94,5 @@ if __name__=='__main__':
     #filename=f'qq.jpg' 
     access_token=get_token()
     #media_id=upload_file(filepath,filename,access_token)
-    title,content,digest=get_wb(top_num=50)
+    title,content,digest=get_wb(top_num=38)
     send_mpnews(title,content,digest)

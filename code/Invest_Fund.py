@@ -12,8 +12,10 @@ corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
 corpsecret=os.environ['CORPSECRET']  #机器人secret
 media_id=os.environ['MEDIA'] #图片id
-touser=os.environ['TOUSER']  #接收id
+#touser=os.environ['TOUSER']  #接收id
 #touser=f'@all'  #接收id
+touser=f'Chlorine|HaiMing'  #接收id
+
 
 #图文图文消息的标题
 title=f'Invest Fund (GitHub)'
