@@ -12,7 +12,7 @@ agentid=os.environ['AGENTID']  #机器人id
 corpsecret=os.environ['CORPSECRET']  #机器人secret
 media_id=os.environ['MEDIA'] #图片id
 #touser=os.environ['TOUSER']  #接收id
-touser='Chlorine'  #接收id
+touser='Chlorine'
 
 
 #图文图文消息的标题
