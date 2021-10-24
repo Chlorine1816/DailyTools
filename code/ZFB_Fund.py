@@ -10,7 +10,8 @@ headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537
 corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
 corpsecret=os.environ['CORPSECRET']  #机器人secret
-touser=os.environ['TOUSER']  #接收id
+#touser=os.environ['TOUSER']  #接收id
+touser='Chlorine'  #接收id
 media_id=os.environ['MEDIA'] #图片id
 
 #图文图文消息的标题
@@ -160,11 +161,11 @@ def pd_jz(lj_data,jz):
     elif (jz > q4):
         return ('🍎🍎🍎',0)
     elif (jz > q3):
-        return ('🍎🍎🍏',20)
+        return ('🍎🍎🍏',10)
     elif (jz > q2):
-        return ('🍎🍏🍏',50)
+        return ('🍎🍏🍏',40)
     elif (jz > q1):
-        return ('🍏🍏🍏',90)
+        return ('🍏🍏🍏',80)
     else:
         return ('📉',100)
 
