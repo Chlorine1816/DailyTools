@@ -91,7 +91,7 @@ def get_fund(code,per=30,sdate='',edate=''):
     records = []
     # 从第1页开始抓取所有页面数据
     page=1
-    while page<=pages:
+    while page<=2:
         time.sleep(0.5)
         params = {'type': 'lsjz', 'code': code, 'page':page,'per': per, 'sdate': sdate, 'edate': edate}
         req=requests.get(url=url,params=params,headers=headers)
@@ -186,7 +186,7 @@ def get_color(today_lj,mean5,mean10,mean30):
 def working(code,moneylist):
     #获取净值信息
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
-    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-86400*52))
+    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-86400*80))
     data=get_fund(code,per=30,sdate=sdate,edate=edate)
     data['单位净值']=data['单位净值'].astype(float)
     data['累计净值']=data['累计净值'].astype(float)
