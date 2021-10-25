@@ -166,7 +166,7 @@ def pd_jz(lj_data,jz):
     elif (jz > q2):
         return ('🍎🍏🍏',40)
     elif (jz > q1):
-        return ('🍏🍏🍏',80)
+        return ('🍏🍏🍏',90)
     else:
         return ('📉',100)
 
