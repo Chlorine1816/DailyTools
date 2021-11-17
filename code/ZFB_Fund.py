@@ -205,11 +205,11 @@ def working(code):
     if (tip2==-1)or((tip2<=0)and(today_lj <= mean5)):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content2.write(f'<p><font color="red">建议卖出一部分</font></p>')
+        sio_content2.write(f'<p><font color="red">可以卖出一部分</font></p>')
     elif(tip2==0)or(gszf > 0):
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content0.write(f'<p>按兵不动</p>')
+        sio_content0.write(f'<p>再等等看吧</p>')
     elif(gszf <= 0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
