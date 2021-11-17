@@ -164,11 +164,11 @@ def pd_jz(lj_data,jz):
     elif (jz > q3):
         return ('🍎🍎🍏',10)
     elif (jz > q2):
-        return ('🍎🍏🍏',40)
+        return ('🍎🍏🍏',20)
     elif (jz > q1):
-        return ('🍏🍏🍏',80)
+        return ('🍏🍏🍏',40)
     else:
-        return ('📉',100)
+        return ('📉',50)
 
 def get_color(today_lj,mean5,mean10,mean30):
     if (today_lj <= mean5 <= mean10 <= mean30):
