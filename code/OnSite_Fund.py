@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-  
 import time,re,requests,os,json
-from numpy.lib.function_base import quantile
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np

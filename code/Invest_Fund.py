@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-  
 import time,re,requests,os,json
-from numpy.lib import twodim_base
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
@@ -13,8 +12,8 @@ agentid=os.environ['AGENTID']  #机器人id
 corpsecret=os.environ['CORPSECRET']  #机器人secret
 media_id=os.environ['MEDIA'] #图片id
 #touser=os.environ['TOUSER']  #接收id
-#touser=f'@all'  #接收id
-touser=f'Chlorine|HaiMing' #接收id
+touser=f'@all'  #接收id
+#touser=f'Chlorine|HaiMing' #接收id
 
 
 #图文图文消息的标题
