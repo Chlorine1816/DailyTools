@@ -30,7 +30,7 @@ def get_token():
 
 #发送图文信息
 def send_mpnews(title,content,digest):
-    time.sleep(0.5)
+    time.sleep(1)
     access_token=get_token()
     url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
     data = {
@@ -83,8 +83,8 @@ def get_fund(code,per=30,sdate='',edate='',proxies=None):
     records = []
     # 从第1页开始抓取所有页面数据
     page=1
-    while page<=2:
-        time.sleep(0.5)
+    while page<=pages:
+        time.sleep(0.2)
         params = {'type': 'lsjz', 'code': code, 'page':page,'per': per, 'sdate': sdate, 'edate': edate}
         req=requests.get(url=url,params=params,headers=headers)
         req.encoding='utf-8'   

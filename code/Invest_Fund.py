@@ -35,7 +35,7 @@ def get_token():
 
 #发送图文信息
 def send_mpnews(title,content,digest):
-    time.sleep(2)
+    time.sleep(1.2)
     access_token=get_token()
     url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
     data = {
@@ -90,8 +90,8 @@ def get_fund(code,per=30,sdate='',edate=''):
     records = []
     # 从第1页开始抓取所有页面数据
     page=1
-    while page<=2:
-        time.sleep(0.5)
+    while page<=pages:
+        time.sleep(0.2)
         params = {'type': 'lsjz', 'code': code, 'page':page,'per': per, 'sdate': sdate, 'edate': edate}
         req=requests.get(url=url,params=params,headers=headers)
         req.encoding='utf-8'   
@@ -237,7 +237,7 @@ if __name__=='__main__':
     Four=fund_list['Four'].values
     get_daily_sentence()
     for i in range(fund_list.shape[0]):
-        time.sleep(1.1)
+        time.sleep(1)
         moneylist=[Zero[i],One[i],Two[i],Three[i],Four[i]]
         #最多尝试5次
         for t in range(5):

@@ -34,7 +34,7 @@ def get_token():
 
 #发送图文信息
 def send_mpnews(title,content,digest):
-    time.sleep(0.5)
+    time.sleep(1)
     access_token=get_token()
     url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
     data = {
@@ -87,8 +87,8 @@ def get_fund(code,per=30,sdate='',edate='',proxies=None):
     records = []
     # 从第1页开始抓取所有页面数据
     page=1
-    while page<=2:
-        time.sleep(0.5)
+    while page<=pages:
+        time.sleep(0.2)
         params = {'type': 'lsjz', 'code': code, 'page':page,'per': per, 'sdate': sdate, 'edate': edate}
         req=requests.get(url=url,params=params,headers=headers,timeout=22)
         req.encoding='utf-8'   
@@ -189,10 +189,10 @@ def working(code):
     # 按照日期升序排序并重建索引
     data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
-    lj_data=data['累计净值'].values[-59:]
+    lj_data=data['累计净值'].values[-49:]
     name,gszf=get_fund2(code) #获取当日估值 涨幅
     today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
-    lj_data=np.append(lj_data,today_lj) #前59日累计净值+当日估值
+    lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
     mean=np.mean
     mean5=round(mean(lj_data[-5:]),4) #5日均值
@@ -224,7 +224,7 @@ if __name__=='__main__':
     fund_list=pd.read_excel('./data/ZFB_FundList.xlsx',dtype={'ID': 'string'})
     get_daily_sentence()
     for code in fund_list['ID']:
-        time.sleep(1.1)
+        time.sleep(1)
         #最多尝试5次
         for t in range(5):
             try:
