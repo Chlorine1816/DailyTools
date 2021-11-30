@@ -171,10 +171,10 @@ def pd_jz(lj_data,jz):
         return ('📉',50)
 
 def get_color(today_lj,mean5,mean10,mean30):
-    if (today_lj <= mean5 <= mean10 <= mean30):
-        return ('大绿')
-    elif (today_lj >= mean5 >= mean10 >= mean30):
-        return ('大红')
+    if (today_lj <= mean5 <= mean10)or(today_lj <= mean10 <= mean30):
+        return ('绿')
+    elif (today_lj >= mean5 >= mean10)or(today_lj >= mean10 >= mean30):
+        return ('红')
     else:
         return ('未知')
 
@@ -206,18 +206,18 @@ def working(code):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p><font color="red">可以卖出一部分</font></p>')
-    elif(tip2==0)or(gszf > 0):
-        sio_content0.write(f'<p>{state}</p>')
-        sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content0.write(f'<p>再等等看吧</p>')
-    elif(gszf <= 0):
+    elif(gszf <= 0)and(tip2 > 0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>建议买入 RMB <font color="green">{tip2}</font></p>')
-    elif( '绿' in tip1):
+    elif( '红' in tip1)and(tip2 > 0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>建议买入 RMB <font color="green">10</font></p>')
+    else:
+        sio_content0.write(f'<p>{state}</p>')
+        sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
+        sio_content0.write(f'<p>再等等看吧</p>')
 
 if __name__=='__main__':
     start=time.perf_counter()
