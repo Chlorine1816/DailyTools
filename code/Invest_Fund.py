@@ -98,6 +98,7 @@ def get_his(fund_id):
     heads=pd.DataFrame(heads)
     return(heads)
 
+'''
 def get_fund(code,per=30,sdate='',edate=''):
     url='http://fund.eastmoney.com/f10/F10DataApi.aspx'
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'}
@@ -141,6 +142,7 @@ def get_fund(code,per=30,sdate='',edate=''):
     for col,col_name in enumerate(heads):
         data[col_name]=records[:,col]
     return data
+'''
 
 def get_fund1(fund_id):
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
