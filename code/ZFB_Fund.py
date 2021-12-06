@@ -213,7 +213,7 @@ def working(code):
     #获取净值信息
     data=get_his(code)
     data['最新单位净值']=data['最新单位净值'].astype(float)
-    data['最新累计净值']=data['最新计净值'].astype(float)
+    data['最新累计净值']=data['最新累计净值'].astype(float)
     # 按照日期升序排序并重建索引
     data.drop(['上期单位净值','上期累计净值','基金代码','基金名称','当日增长值'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
