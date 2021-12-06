@@ -195,7 +195,7 @@ def working(code):
     data.drop(['上期单位净值','上期累计净值','当日增长值'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
     lj_data=data['最新累计净值'].values[-50:]
-    name=data['基金名称'].values[-1]+str(data['基金代码'].values[-1])
+    name=data['基金名称'].values[-1]+' '+str(data['基金代码'].values[-1])
     jz_date=data['净值日期'].values[-1]
     jz_data=round(data['最新单位净值'].values[-1],3)
     sio_content.write(f'<p><strong>{jz_date}</strong></p>')
