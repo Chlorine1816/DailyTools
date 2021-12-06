@@ -213,7 +213,6 @@ def get_color(today_lj,mean5,mean10,mean30):
         return ('未知')
 
 def working(code,moneylist):
-    #获取净值信息
     #edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
     #sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-86400*80))
     #data=get_fund(code,per=30,sdate=sdate,edate=edate)

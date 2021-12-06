@@ -210,7 +210,7 @@ def get_color(today_lj,mean5,mean10,mean30):
         return ('未知')
 
 def working(code):
-    #获取净值信息
+    #获取历史净值
     data=get_his(code)
     data['最新单位净值']=data['最新单位净值'].astype(float)
     data['最新累计净值']=data['最新累计净值'].astype(float)
