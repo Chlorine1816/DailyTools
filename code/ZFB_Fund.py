@@ -68,6 +68,35 @@ def get_daily_sentence():
     except:
         sio_digest.write(f'Happy!\n')
 
+def get_his(fund_id):
+    url=f'https://www.dayfund.cn/fundvalue/{fund_id}.html'
+    time.sleep(0.2)
+    req=requests.get(url=url,headers=headers)
+    req.encoding='utf-8'
+    html=req.text
+    bf=BeautifulSoup(html,'lxml')
+    records=[]
+    for row in bf.find_all('table',class_='mt1 clear')[0].find_all("tr"): 
+        row_records = []
+        for record in row.find_all('td'):
+            val = record.contents
+            # 处理空值
+            if val == []:
+                row_records.append(0)
+            else:
+                row_records.append(val[0])
+        records.append(row_records)
+    heads={}
+    for i in records[0]:
+        heads[i]=[]
+    for i in records[1:]:
+        if len(i)<5:
+            continue
+        for j,k in zip(i,heads):
+            heads[k].append(j)
+    heads=pd.DataFrame(heads)
+    return(heads)
+
 def get_fund(code,per=30,sdate='',edate='',proxies=None):
     url='http://fund.eastmoney.com/f10/F10DataApi.aspx'
     params = {'type': 'lsjz', 'code': code, 'page':1,'per': per, 'sdate': sdate, 'edate': edate}
@@ -164,11 +193,11 @@ def pd_jz(lj_data,jz):
     elif (jz > q3):
         return ('🍎🍎🍏',10)
     elif (jz > q2):
-        return ('🍎🍏🍏',20)
+        return ('🍎🍏🍏',25)
     elif (jz > q1):
-        return ('🍏🍏🍏',40)
+        return ('🍏🍏🍏',50)
     else:
-        return ('📉',50)
+        return ('📉',60)
 
 def get_color(today_lj,mean5,mean10,mean30):
     if (today_lj <= mean5 <= mean10)or(today_lj <= mean10 <= mean30):
@@ -180,16 +209,14 @@ def get_color(today_lj,mean5,mean10,mean30):
 
 def working(code):
     #获取净值信息
-    edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
-    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-86400*80))
-    data=get_fund(code,per=30,sdate=sdate,edate=edate)
-    data['单位净值']=data['单位净值'].astype(float)
-    data['累计净值']=data['累计净值'].astype(float)
-    data['日增长率']=data['日增长率'].str.strip('%').astype(float)
+    data=get_his(code)
+    data['最新单位净值']=data['最新单位净值'].astype(float)
+    data['最新累计净值']=data['累最新计净值'].astype(float)
+    #data['当日增长率']=data['当日增长率'].str.strip('%').astype(float)
     # 按照日期升序排序并重建索引
-    data.drop(['申购状态','赎回状态','分红送配'],axis=1,inplace=True)
+    data.drop(['上期单位净值','上期累计净值','基金代码','基金名称','当日增长值'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
-    lj_data=data['累计净值'].values[-49:]
+    lj_data=data['最新累计净值'].values[-49:]
     name,gszf=get_fund2(code) #获取当日估值 涨幅
     today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
