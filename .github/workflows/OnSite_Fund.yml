@@ -3,7 +3,7 @@ name: OnSite_Fund
 on: 
   workflow_dispatch:
   schedule:
-    - cron: 02 00 * * MON-FRI
+    - cron: 03 00 * * MON-FRI
 
 jobs:
   run-tool:
