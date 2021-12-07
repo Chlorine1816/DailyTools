@@ -166,7 +166,7 @@ def pd_jz(lj_data,lj,jz):
     q5=round(quantile(lj_data,0.8)*jz/lj,3) 
     q6=round(np.max(lj_data)*jz/lj,3)
   
-    dict_jz={q1:'📉',q2:'🍏',q3:'🍏',q4:'🍎',q5:'🍎',q6:'📈'}
+    dict_jz={q1:'🍏',q2:'🍏',q3:'🍏',q4:'🍎',q5:'🍎',q6:'🍎'}
     dict_jz[jz]=get_color(mean5,mean10,mean30)
 
     for i in sorted(dict_jz,reverse=True):
@@ -188,6 +188,7 @@ def working(code):
     data['累计净值']=data['累计净值'].astype(float)
     # 按照日期升序排序并重建索引
     #data.drop(['上期单位净值','上期累计净值','当日增长值'],axis=1,inplace=True)
+    data=data[['净值日期','累计净值','单位净值']]
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
     lj_data=data['累计净值'].values[-50:]
     #name=data['基金名称'].values[-1]+' '+str(data['基金代码'].values[-1])
