@@ -186,7 +186,8 @@ def get_color(mean5,mean10,mean30):
 
 def working(code):
     #获取净值信息
-    data=get_his(code)
+    #data=get_his(code)
+    data=get_fund(code)
     data['单位净值']=data['单位净值'].astype(float)
     data['累计净值']=data['累计净值'].astype(float)
     # 按照日期升序排序并重建索引
