@@ -166,23 +166,19 @@ def pd_jz(lj_data,lj,jz):
     q5=round(quantile(lj_data,0.8)*jz/lj,3) 
     q6=round(np.max(lj_data)*jz/lj,3)
   
-    dict_jz={q1:'🍏',q2:'🍏',q3:'🍏',q4:'🍏',q5:'🍎',q6:'🍎'}
+    dict_jz={q1:'📉',q2:'🍏',q3:'🍏',q4:'🍎',q5:'🍎',q6:'📈'}
     dict_jz[jz]=get_color(mean5,mean10,mean30)
 
     for i in sorted(dict_jz,reverse=True):
         sio_content.write(f'<p>{dict_jz[i]}{i}</p>')
 
 def get_color(mean5,mean10,mean30):
-    if (mean5 < mean10 < mean30):
-        return ('👇')
-    elif (mean5 > mean10 > mean30):
-        return ('👆')
-    elif ((mean5 <= mean10)and(mean10 >= mean30))or((mean5 >= mean10)and(mean10 <= mean30)):
-        return ('👇')
-    elif ((mean5 >= mean10)and(mean10 <= mean30))or((mean5 <= mean10)and(mean10 >= mean30)):
-        return ('👆')
+    if (mean5 < mean10) or (mean10 < mean30):
+        return('👇')
+    elif(mean5 > mean10)or(mean10 > mean30):
+        return('👆')
     else:
-        return ('未知')
+        return('👉')
 
 def working(code):
     #获取净值信息
