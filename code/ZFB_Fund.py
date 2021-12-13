@@ -96,51 +96,6 @@ def get_his(fund_id):
             heads[k].append(j)
     heads=pd.DataFrame(heads)
     return(heads)
-    
-'''
-def get_fund(code,per=30,sdate='',edate='',proxies=None):
-    url='http://fund.eastmoney.com/f10/F10DataApi.aspx'
-    params = {'type': 'lsjz', 'code': code, 'page':1,'per': per, 'sdate': sdate, 'edate': edate}
-    req=requests.get(url=url,params=params,headers=headers)
-    req.encoding='utf-8'   
-    html=req.text
-    bf=BeautifulSoup(html,'lxml')
-    # 获取总页数
-    pattern=re.compile(r'pages:(.*),')
-    result=re.search(pattern,html).group(1)
-    pages=int(result)
-    # 获取表头
-    heads = []
-    for head in bf.find_all("th"):
-        heads.append(head.contents[0])
-    # 数据存取列表
-    records = []
-    # 从第1页开始抓取所有页面数据
-    page=1
-    while page<=pages:
-        time.sleep(0.2)
-        params = {'type': 'lsjz', 'code': code, 'page':page,'per': per, 'sdate': sdate, 'edate': edate}
-        req=requests.get(url=url,params=params,headers=headers,timeout=22)
-        req.encoding='utf-8'   
-        html=req.text
-        bf=BeautifulSoup(html,'lxml')
-        for row in bf.find_all("tbody")[0].find_all("tr"): 
-            row_records = []
-            for record in row.find_all('td'):
-                val = record.contents
-                # 处理空值
-                if val == []:
-                    row_records.append(0)
-                else:
-                    row_records.append(val[0])
-            records.append(row_records)
-        page+=1
-    data=pd.DataFrame()
-    records=np.array(records)
-    for col,col_name in enumerate(heads):
-        data[col_name]=records[:,col]
-    return data
-'''
 
 def get_fund1(fund_id):
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
@@ -201,10 +156,14 @@ def pd_jz(lj_data,jz):
     else:
         return ('📉',60)
 
-def get_color(today_lj,mean5,mean10,mean30):
-    if (today_lj <= mean5 <= mean10)or(today_lj <= mean10 <= mean30):
+def get_color(mean5,mean10,mean20):
+    if (mean5 <= mean10 <= mean20):
+        return('大绿')
+    elif(mean5 >= mean10 >= mean20):
+        return('大红')
+    elif (mean5 <= mean10)and(mean5 >= mean20):
         return ('绿')
-    elif (today_lj >= mean5 >= mean10)or(today_lj >= mean10 >= mean30):
+    elif (mean5 >= mean10)and(mean5 <= mean20):
         return ('红')
     else:
         return ('未知')
@@ -225,23 +184,19 @@ def working(code):
     mean=np.mean
     mean5=round(mean(lj_data[-5:]),4) #5日均值
     mean10=round(mean(lj_data[-10:]),4) #10日均值
-    mean30=round(mean(lj_data[-30:]),4) #30日均值
+    mean20=round(mean(lj_data[-20:]),4) #20日均值
 
-    tip1=get_color(today_lj,mean5,mean10,mean30)
+    tip1=get_color(mean5,mean10,mean20)
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
-    if (tip2==-1)or((tip2<=0)and(today_lj <= mean5)):
+    if(tip2<=0)and((tip1=='大红')or(tip1=='绿')):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p><font color="red">可以卖出一部分</font></p>')
-    elif(gszf <= 0)and(tip2 > 0):
+    elif(tip2=='大绿')or(tip2=='红'):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>建议买入 RMB <font color="green">{tip2}</font></p>')
-    elif( '红' in tip1)and(tip2 > 0):
-        sio_content1.write(f'<p>{state}</p>')
-        sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>建议买入 RMB <font color="green">10</font></p>')
     else:
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
