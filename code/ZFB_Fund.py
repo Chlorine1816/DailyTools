@@ -166,7 +166,7 @@ def get_color(mean5,mean10,mean20):
     elif (mean5 >= mean10)and(mean5 <= mean20):
         return ('红')
     else:
-        return ('未知')
+        return ('其他')
 
 def working(code):
     #获取历史净值
