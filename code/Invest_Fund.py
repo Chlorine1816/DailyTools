@@ -230,6 +230,7 @@ def working(code,moneylist):
     lj_data=data['最新累计净值'].values[-49:]
     if code=='000934':
         name,gszf='国富大中华精选混合(000934)',0
+        today_lj=lj_data[-1]
     else:
         name,gszf=get_fund2(code) #天天基金网 估值涨幅
         today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
