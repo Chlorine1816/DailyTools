@@ -204,13 +204,17 @@ def pd_jz(lj_data,jz):
     else:
         return ('📉',4)
 
-def get_color(today_lj,mean5,mean10,mean30):
-    if (today_lj <= mean5 <= mean10)or(today_lj <= mean10 <= mean30):
+def get_color(mean5,mean10,mean20):
+    if (mean5 <= mean10 <= mean20):
+        return('大绿')
+    elif(mean5 >= mean10 >= mean20):
+        return('大红')
+    elif (mean5 <= mean10)and(mean5 >= mean20):
         return ('绿')
-    elif (today_lj >= mean5 >= mean10)or(today_lj >= mean10 >= mean30):
+    elif (mean5 >= mean10)and(mean5 <= mean20):
         return ('红')
     else:
-        return ('未知')
+        return ('其他')
 
 def working(code,moneylist):
     #edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
@@ -234,23 +238,19 @@ def working(code,moneylist):
     mean=np.mean
     mean5=round(mean(lj_data[-5:]),4) #5日均值
     mean10=round(mean(lj_data[-10:]),4) #10日均值
-    mean30=round(mean(lj_data[-30:]),4) #30日均值
+    mean20=round(mean(lj_data[-20:]),4) #20日均值
 
-    tip1=get_color(today_lj,mean5,mean10,mean30)
+    tip1=get_color(mean5,mean10,mean20)
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
-    if (tip2==-2)or((tip2<=-1)and(today_lj <= mean5)):
+    if(tip2 <= 0)and((tip1=='大红')or(tip1=='绿')):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p>可以卖出一部分</p>')
-    elif(gszf <= 0)and(tip2 > 0):
+    elif(tip1=='大绿')or(tip1=='红'):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB</p>')
-    elif( '红' in tip1 )and( tip2 > 0):
-        sio_content1.write(f'<p>{state}</p>')
-        sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>买入 <font color="green">{moneylist[0]}</font> RMB</p>')
     else:
         sio_content0.write(f'<p>{state}</p>')
         sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
