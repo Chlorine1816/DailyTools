@@ -158,7 +158,7 @@ def pd_jz(lj_data,lj,jz):
     mean=np.mean
     mean5=round(mean(lj_data[-5:]),3) #前5天净值均值
     mean10=round(mean(lj_data[-10:]),3)#前10天净值均值
-    mean30=round(mean(lj_data[-30:]),3)#前30天净值均值
+    mean20=round(mean(lj_data[-20:]),3)#前20天净值均值
     q1=round(np.min(lj_data)*jz/lj,3) 
     q2=round(quantile(lj_data,0.2)*jz/lj,3) 
     q3=round(quantile(lj_data,0.4)*jz/lj,3) 
@@ -167,15 +167,15 @@ def pd_jz(lj_data,lj,jz):
     q6=round(np.max(lj_data)*jz/lj,3)
   
     dict_jz={q1:'🍏',q2:'🍏',q3:'🍏',q4:'🍎',q5:'🍎',q6:'🍎'}
-    dict_jz[jz]=get_color(mean5,mean10,mean30)
+    dict_jz[jz]=get_color(mean5,mean10,mean20)
 
     for i in sorted(dict_jz,reverse=True):
         sio_content.write(f'<p>{dict_jz[i]}{i}</p>')
 
-def get_color(mean5,mean10,mean30):
-    if (mean5 < mean10) or (mean10 < mean30):
+def get_color(mean5,mean10,mean20):
+    if (mean5 < mean10) or (mean10 < mean20):
         return('👇')
-    elif(mean5 > mean10)or(mean10 > mean30):
+    elif(mean5 > mean10)or(mean10 > mean20):
         return('👆')
     else:
         return('👉')
