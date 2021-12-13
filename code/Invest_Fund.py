@@ -232,8 +232,8 @@ def working(code,moneylist):
         name,gszf='国富大中华精选混合(000934)',0
     else:
         name,gszf=get_fund2(code) #天天基金网 估值涨幅
-    today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
-    lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
+        today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
+        lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
     mean=np.mean
     mean5=round(mean(lj_data[-5:]),4) #5日均值
