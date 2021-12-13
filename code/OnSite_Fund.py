@@ -173,9 +173,13 @@ def pd_jz(lj_data,lj,jz):
         sio_content.write(f'<p>{dict_jz[i]}{i}</p>')
 
 def get_color(mean5,mean10,mean20):
-    if (mean5 < mean10) or (mean10 < mean20):
+    if (mean5 <= mean10 <= mean20):
         return('👇')
-    elif(mean5 > mean10)or(mean10 > mean20):
+    elif(mean5 >= mean10 >= mean20):
+        return('👆')
+    elif(mean5 <= mean10)and(mean5 >= mean20):
+        return('👇')
+    elif(mean5 >= mean10)and(mean5 <= mean20):
         return('👆')
     else:
         return('👉')
