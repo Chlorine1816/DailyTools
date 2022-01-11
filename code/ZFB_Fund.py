@@ -146,15 +146,15 @@ def pd_jz(lj_data,jz):
     if (jz >= q5):
         return('📈',-1)
     elif (jz > q4):
-        return ('🍎🍎🍎',10)
+        return ('🍎🍎🍎',0)
     elif (jz > q3):
-        return ('🍎🍎🍏',20)
+        return ('🍎🍎🍏',10)
     elif (jz > q2):
-        return ('🍎🍏🍏',40)
+        return ('🍎🍏🍏',20)
     elif (jz > q1):
-        return ('🍏🍏🍏',80)
+        return ('🍏🍏🍏',40)
     else:
-        return ('📉',100)
+        return ('📉',50)
 
 def get_color(mean5,mean10,mean20):
     if (mean5 <= mean10 <= mean20):
@@ -189,7 +189,7 @@ def working(code):
     tip1=get_color(mean5,mean10,mean20)
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
-    if(tip2 <= 10)and((tip1=='大红')or(tip1=='绿')):
+    if(tip2 <= 0)and((tip1=='大红')or(tip1=='绿')):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p><font color="red">可以卖出一部分</font></p>')
