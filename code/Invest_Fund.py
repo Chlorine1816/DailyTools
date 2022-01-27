@@ -244,11 +244,11 @@ def working(code,moneylist):
     tip1=get_color(mean5,mean10,mean20)
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
-    if(tip2 <= 0)and((tip1=='大红')or(tip1=='绿')):
+    if (tip2 <= 0) and ((tip1=='大红') or (tip1=='绿')):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p>可以卖出一部分</p>')
-    elif((tip1=='大绿')or(tip1=='红'))and(gszf <= 0):
+    elif ((tip1=='大绿') or (tip1=='红')) and (gszf <= 0):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB</p>')
