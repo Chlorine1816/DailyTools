@@ -148,13 +148,13 @@ def pd_jz(lj_data,jz):
     elif (jz > q4):
         return ('🍎🍎🍎',0)
     elif (jz > q3):
-        return ('🍎🍎🍏',10)
+        return ('🍎🍎🍏',0)
     elif (jz > q2):
-        return ('🍎🍏🍏',20)
+        return ('🍎🍏🍏',10)
     elif (jz > q1):
-        return ('🍏🍏🍏',40)
+        return ('🍏🍏🍏',20)
     else:
-        return ('📉',50)
+        return ('📉',25)
 
 def get_color(mean5,mean10,mean20):
     if (mean5 <= mean10 <= mean20):
