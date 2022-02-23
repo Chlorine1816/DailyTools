@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import numpy as np
 from io import StringIO
 
-headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 Edg/98.0.1108.56'}
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'}
 
 corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
@@ -69,12 +69,33 @@ def get_daily_sentence():
         sio_digest.write(f'Happy!\n')
 
 def get_his(fund_id):
-    url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
-    r=requests.get(url,headers=headers)
-    df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
-    df=pd.DataFrame(df)
-    df=df[['净值日期','基金名称','最新单位净值','最新累计净值']]
-    return(df)
+    url=f'https://www.dayfund.cn/fundvalue/{fund_id}.html'
+    time.sleep(0.2)
+    req=requests.get(url=url,headers=headers)
+    req.encoding='utf-8'
+    html=req.text
+    bf=BeautifulSoup(html,'lxml')
+    records=[]
+    for row in bf.find_all('table',class_='mt1 clear')[0].find_all("tr"): 
+        row_records = []
+        for record in row.find_all('td'):
+            val = record.contents
+            # 处理空值
+            if val == []:
+                row_records.append(0)
+            else:
+                row_records.append(val[0])
+        records.append(row_records)
+    heads={}
+    for i in records[0]:
+        heads[i]=[]
+    for i in records[1:]:
+        if len(i)<5:
+            continue
+        for j,k in zip(i,heads):
+            heads[k].append(j)
+    heads=pd.DataFrame(heads)
+    return(heads)
 
 def get_fund1(fund_id):
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
@@ -153,13 +174,11 @@ def working(code):
     data['最新单位净值']=data['最新单位净值'].astype(float)
     data['最新累计净值']=data['最新累计净值'].astype(float)
     # 按照日期升序排序并重建索引
-    #data.drop(['上期单位净值','上期累计净值','基金代码','基金名称','当日增长值'],axis=1,inplace=True)
+    data.drop(['上期单位净值','上期累计净值','基金代码','基金名称','当日增长值'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
-    dwjz=data['最新单位净值'].values[-1]
     lj_data=data['最新累计净值'].values[-49:]
     name,gszf=get_fund2(code) #获取当日 涨幅
-    dwjz=dwjz*gszf/100
-    today_lj=round(lj_data[-1]+dwjz,4) #当日累计估值
+    today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
     lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
     mean=np.mean
