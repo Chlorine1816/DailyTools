@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import numpy as np
 from io import StringIO
 
-headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'}
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 Edg/98.0.1108.56'}
 
 corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
@@ -69,79 +69,12 @@ def get_daily_sentence():
         sio_digest.write(f'Happy!\n')
 
 def get_his(fund_id):
-    url=f'https://www.dayfund.cn/fundvalue/{fund_id}.html'
-    time.sleep(0.2)
-    req=requests.get(url=url,headers=headers)
-    req.encoding='utf-8'
-    html=req.text
-    bf=BeautifulSoup(html,'lxml')
-    records=[]
-    for row in bf.find_all('table',class_='mt1 clear')[0].find_all("tr"): 
-        row_records = []
-        for record in row.find_all('td'):
-            val = record.contents
-            # 处理空值
-            if val == []:
-                row_records.append(0)
-            else:
-                row_records.append(val[0])
-        records.append(row_records)
-    heads={}
-    for i in records[0]:
-        heads[i]=[]
-    for i in records[1:]:
-        if len(i)<5:
-            continue
-        for j,k in zip(i,heads):
-            heads[k].append(j)
-    heads=pd.DataFrame(heads)
-    return(heads)
-
-'''
-def get_fund(code,per=30,sdate='',edate=''):
-    url='http://fund.eastmoney.com/f10/F10DataApi.aspx'
-    headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'}
-    params = {'type': 'lsjz', 'code': code, 'page':1,'per': per, 'sdate': sdate, 'edate': edate}
-    req=requests.get(url=url,params=params,headers=headers)
-    req.encoding='utf-8'   
-    html=req.text
-    bf=BeautifulSoup(html,'lxml')
-    # 获取总页数
-    pattern=re.compile(r'pages:(.*),')
-    result=re.search(pattern,html).group(1)
-    pages=int(result)
-    # 获取表头
-    heads = []
-    for head in bf.find_all("th"):
-        heads.append(head.contents[0])
-    # 数据存取列表
-    records = []
-    # 从第1页开始抓取所有页面数据
-    page=1
-    while page<=pages:
-        time.sleep(0.2)
-        params = {'type': 'lsjz', 'code': code, 'page':page,'per': per, 'sdate': sdate, 'edate': edate}
-        req=requests.get(url=url,params=params,headers=headers)
-        req.encoding='utf-8'   
-        html=req.text
-        bf=BeautifulSoup(html,'lxml')
-        for row in bf.find_all("tbody")[0].find_all("tr"): 
-            row_records = []
-            for record in row.find_all('td'):
-                val = record.contents
-                # 处理空值
-                if val == []:
-                    row_records.append(0)
-                else:
-                    row_records.append(val[0])
-            records.append(row_records)
-        page+=1
-    data=pd.DataFrame()
-    records=np.array(records)
-    for col,col_name in enumerate(heads):
-        data[col_name]=records[:,col]
-    return data
-'''
+    url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
+    r=requests.get(url,headers=headers)
+    df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
+    df=pd.DataFrame(df)
+    df=df[['净值日期','基金名称','最新单位净值','最新累计净值']]
+    return(df)
 
 def get_fund1(fund_id):
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
@@ -216,23 +149,20 @@ def get_color(mean5,mean10,mean20):
         return ('其他')
 
 def working(code,moneylist):
-    #edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
-    #sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-86400*80))
-    #data=get_fund(code,per=30,sdate=sdate,edate=edate)
     data=get_his(code)
     data['最新单位净值']=data['最新单位净值'].astype(float)
     data['最新累计净值']=data['最新累计净值'].astype(float)
-    #data['当日增长率']=data['当日增长率'].str.strip('%').astype(float)
     # 按照日期升序排序并重建索引
-    data.drop(['上期单位净值','上期累计净值','基金代码','基金名称','当日增长值'],axis=1,inplace=True)
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
     lj_data=data['最新累计净值'].values[-49:]
+    dwjz=data['最新单位净值'].values[-1]
     if code=='000934':
         name,gszf='国富大中华精选混合(000934)',0
         today_lj=lj_data[-1]
     else:
         name,gszf=get_fund2(code) #天天基金网 估值涨幅
-        today_lj=round(lj_data[-1]*(1+gszf/100),4) #当日累计估值
+        dwjz=dwjz*gszf/100
+        today_lj=round(lj_data[-1]+dwjz,4) #当日累计估值
         lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
     mean=np.mean
