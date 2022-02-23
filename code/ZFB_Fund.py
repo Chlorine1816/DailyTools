@@ -74,6 +74,9 @@ def get_his(fund_id):
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
     df=pd.DataFrame(df)
     df=df[['净值日期','基金名称','最新单位净值','最新累计净值']]
+    df['最新单位净值']=df['最新单位净值'].astype(float)
+    df['最新累计净值']=df['最新累计净值'].astype(float)
+    df.dropna(subset=['净值日期','基金名称','最新单位净值','最新累计净值'],how='any',inplace=True)
     return(df)
 
 def get_fund1(fund_id):
@@ -150,11 +153,8 @@ def get_color(mean5,mean10,mean20):
 def working(code):
     #获取历史净值
     data=get_his(code)
-    data['最新单位净值']=data['最新单位净值'].astype(float)
-    data['最新累计净值']=data['最新累计净值'].astype(float)
     # 按照日期升序排序并重建索引
-    #data.drop(['上期单位净值','上期累计净值','基金代码','基金名称','当日增长值'],axis=1,inplace=True)
-    data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
+    data=data.sort_values(by='净值日期',axis=0,ascending=True,ignore_index=True)
     dwjz=data['最新单位净值'].values[-1]
     lj_data=data['最新累计净值'].values[-49:]
     name,gszf=get_fund2(code) #获取当日 涨幅
