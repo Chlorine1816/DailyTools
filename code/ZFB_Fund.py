@@ -130,9 +130,9 @@ def pd_jz(lj_data,jz):
     elif (jz > q4):
         return ('🍎🍎🍎',0)
     elif (jz > q3):
-        return ('🍎🍎🍏',0)
+        return ('🍎🍎🍏',10)
     elif (jz > q2):
-        return ('🍎🍏🍏',10)
+        return ('🍎🍏🍏',15)
     elif (jz > q1):
         return ('🍏🍏🍏',20)
     else:
