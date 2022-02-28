@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-  
-import time,re,requests,os,json
+import time,requests,os,json
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
@@ -90,6 +90,7 @@ def get_fund1(fund_id):
     except:
         html=''
     bf=BeautifulSoup(html,'lxml')
+    gszf=0
     gszf=bf.find_all(id='fvr_add')[0].text.strip()
     gszf=float(gszf.split(' ')[1].split('%')[0])
     return gszf
