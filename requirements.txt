@@ -6,3 +6,4 @@ rsa
 numpy
 pandas
 openpyxl
+tqdm
