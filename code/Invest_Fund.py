@@ -3,7 +3,8 @@ import time,requests,os,json
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
-from io import StringIO
+from multiprocessing import Pool
+import random
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 Edg/98.0.1108.56'}
 
@@ -17,13 +18,6 @@ touser=f'@all'  #接收id
 
 #图文图文消息的标题
 title=f'Invest Fund (GitHub)'
-#图文消息的描述，不超过512个字节
-sio_digest=StringIO('')
-sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
-#图文消息的内容，支持html标签，不超过666 K个字节
-sio_content0=StringIO('') #不操作
-sio_content1=StringIO('') #买入
-sio_content2=StringIO('') #卖出
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}
@@ -64,9 +58,9 @@ def get_daily_sentence():
         r = json.loads(r.text)
         content = r["content"]
         note = r["note"]
-        sio_digest.write(f'{content}\n{note}\n')
+        return(f'{content}\n{note}\n')
     except:
-        sio_digest.write(f'Happy!\n')
+        return(f'Happy every day !\n')
 
 def get_his(fund_id):
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
@@ -77,11 +71,13 @@ def get_his(fund_id):
     df['最新单位净值']=df['最新单位净值'].astype(float)
     df['最新累计净值']=df['最新累计净值'].astype(float)
     df.dropna(subset=['净值日期','基金名称','最新单位净值','最新累计净值'],how='any',inplace=True)
+    # 按照日期升序排序并重建索引
+    df.sort_values(by='净值日期',axis=0,ascending=True,ignore_index=True,inplace=True)
     return(df)
 
 def get_fund1(fund_id):
+    time.sleep(random.randint(2,3)+random.random())
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
-    time.sleep(0.2)
     try:
         req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
@@ -90,14 +86,20 @@ def get_fund1(fund_id):
     except:
         html=''
     bf=BeautifulSoup(html,'lxml')
-    gszf=0
-    gszf=bf.find_all(id='fvr_add')[0].text.strip()
-    gszf=float(gszf.split(' ')[1].split('%')[0])
-    return gszf
+    try:
+        gszf=0
+        gszf=bf.find_all(id='fvr_add')[0].text.strip()
+        gszf=float(gszf.split(' ')[1].split('%')[0])
+        if gszf == 0:
+            return (True)
+        else:
+            return (gszf)
+    except:
+        return (True)
 
 def get_fund2(fund_id):
+    time.sleep(random.randint(2,3)+random.random())
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
-    time.sleep(0.2)
     #尝试5次
     for i in range(5):
         try:
@@ -154,15 +156,15 @@ def get_color(mean5,mean10,mean20):
 
 def working(code,moneylist):
     data=get_his(code)
-    # 按照日期升序排序并重建索引
-    data=data.sort_values(by='净值日期',axis=0,ascending=True,ignore_index=True)
+    name,gszf=get_fund2(code) #获取当日 涨幅
     lj_data=data['最新累计净值'].values[-49:]
     dwjz=data['最新单位净值'].values[-1]
-    if code=='000934':
-        name,gszf='国富大中华精选混合(000934)',0
+
+    if gszf :
+        gszf=0
+        lj_data=data['最新累计净值'].values[-50:]
         today_lj=lj_data[-1]
     else:
-        name,gszf=get_fund2(code) #天天基金网 估值涨幅
         dwjz=dwjz*gszf/100
         today_lj=round(lj_data[-1]+dwjz,4) #当日累计估值
         lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
@@ -176,38 +178,61 @@ def working(code,moneylist):
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
     if (tip2 <= 0) and ((tip1=='大幅上涨') or (tip1=='破线向下')):
-        sio_content2.write(f'<p>{state}</p>')
-        sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content2.write(f'<p>可以卖出一部分</p>')
+        sio_content2=f'<p>{state}</p>'
+        sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content2+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
     elif ((tip1=='大幅下跌')and (gszf <= 0))or (tip1=='震荡筑底'):
-        sio_content1.write(f'<p>{state}</p>')
-        sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB</p>')
+        sio_content1=f'<p>{state}</p>'
+        sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB<small> {tip1}</small></font></p>'
     else:
-        sio_content0.write(f'<p>{state}</p>')
-        sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content0.write(f'<p>再等等看吧</p>')
+        sio_content3=f'<p>{state}</p>'
+        sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content3+=f'<p>再等等看吧<small> {tip1}</small></font></p>'
 
-if __name__=='__main__':
+    return (sio_content1+sio_content2+sio_content3)
+
+def try_many_times(code,moneylist):
+    #最多尝试5次
+    for _ in range(5):
+        try:
+            return(working(code,moneylist))
+        except:
+            time.sleep(1.1)
+        else:
+            break
+    return('')
+
+def main():
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/Invest_FundList.xlsx',dtype={'ID': 'string'})
-    code=fund_list['ID'].values
+    fund_list=fund_list['ID'].tolist()
+
     Zero=fund_list['Zero'].values
     One=fund_list['One'].values
     Two=fund_list['Two'].values
     Three=fund_list['Three'].values
     Four=fund_list['Four'].values
-    get_daily_sentence()
-    for i in range(fund_list.shape[0]):
-        time.sleep(1)
+
+    pool=Pool(5)
+    pool_data_list=[]
+    for i,num in enumerate(fund_list):
         moneylist=[Zero[i],One[i],Two[i],Three[i],Four[i]]
-        #最多尝试5次
-        for t in range(5):
-            try:
-                working(code[i],moneylist)
-            except:
-                time.sleep(1.1)
-            else:
-                break
-    sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
-    send_mpnews(title,sio_content1.getvalue()+sio_content2.getvalue()+sio_content0.getvalue(),sio_digest.getvalue())
+        pool_data_list.append(pool.apply_async(try_many_times,args=(num,moneylist)))
+
+    print('- - - Start - - -',flush=True)
+    pool.close()
+    pool.join()
+    print('- - - End - - -',flush=True)
+    print('Get the Values ...',flush=True)
+
+    content=''
+    for pool_data in pool_data_list:
+        content+=pool_data.get()
+
+    digest=time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n'
+    digest=f'{digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
+    send_mpnews(title,content,digest)
+
+if __name__=='__main__':
+    main()

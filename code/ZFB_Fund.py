@@ -89,7 +89,7 @@ def get_fund1(fund_id):
         gszf=0
         gszf=bf.find_all(id='fvr_add')[0].text.strip()
         gszf=float(gszf.split(' ')[1].split('%')[0])
-        if gszf ==0:
+        if gszf == 0:
             return (True)
         else:
             return (gszf)
@@ -161,6 +161,7 @@ def working(code):
     lj_data=data['最新累计净值'].values[-49:]
     
     if gszf :
+        gszf=0
         lj_data=data['最新累计净值'].values[-50:]
         today_lj=lj_data[-1]
     else:
@@ -200,7 +201,7 @@ def try_many_times(code):
             time.sleep(1.1)
         else:
             break
-    return(None)
+    return('')
 
 def main():
     start=time.perf_counter()
