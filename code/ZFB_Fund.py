@@ -177,6 +177,9 @@ def working(code):
     tip1=get_color(mean5,mean10,mean20)
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
+    sio_content1=''
+    sio_content2=''
+    sio_content3=''
     if(tip2 <= 0)and((tip1=='大幅上涨') or (tip1=='破线向下')):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
@@ -190,7 +193,7 @@ def working(code):
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content3+=f'<p>再等等看吧<small> {tip1}</small></font></p>'
 
-    return (sio_content1+sio_content2+sio_content3)
+    return (sio_content1,sio_content2,sio_content3)
 
 def try_many_times(code):
     #最多尝试5次
@@ -208,12 +211,16 @@ def main():
     fund_list=pd.read_excel('./data/ZFB_FundList.xlsx',dtype={'ID': 'string'})
     fund_list=fund_list['ID'].tolist()
     t = process_map(try_many_times, fund_list, max_workers=5)
-    content=''
+    content1=''
+    content2=''
+    content3=''
     for i in t:
-        content+=i
+        content1+=i[0]
+        content2+=i[1]
+        content3+=i[2]
     digest=time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n'
     digest=f'{digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
-    send_mpnews(title,content,digest)
+    send_mpnews(title,content1+content2+content3,digest)
 
 if __name__=='__main__':
     main()

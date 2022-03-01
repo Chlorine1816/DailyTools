@@ -177,6 +177,9 @@ def working(code,moneylist):
     tip1=get_color(mean5,mean10,mean20)
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
+    sio_content1=''
+    sio_content2=''
+    sio_content3=''
     if (tip2 <= 0) and ((tip1=='大幅上涨') or (tip1=='破线向下')):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
@@ -190,7 +193,7 @@ def working(code,moneylist):
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content3+=f'<p>再等等看吧<small> {tip1}</small></font></p>'
 
-    return (sio_content1+sio_content2+sio_content3)
+    return (sio_content1,sio_content2,sio_content3)
 
 def try_many_times(code,moneylist):
     #最多尝试5次
@@ -226,13 +229,16 @@ def main():
     print('- - - End - - -',flush=True)
     print('Get the Values ...',flush=True)
 
-    content=''
+    content1=''
+    content2=''
+    content3=''
     for pool_data in pool_data_list:
-        content+=pool_data.get()
-
+        content1+=pool_data.get()[0]
+        content2+=pool_data.get()[1]
+        content3+=pool_data.get()[2]
     digest=time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n'
     digest=f'{digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
-    send_mpnews(title,content,digest)
+    send_mpnews(title,content1+content2+content3,digest)
 
 if __name__=='__main__':
     main()
