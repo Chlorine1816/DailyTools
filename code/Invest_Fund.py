@@ -206,7 +206,7 @@ def try_many_times(code,moneylist):
 def main():
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/Invest_FundList.xlsx',dtype={'ID': 'string'})
-    fund_list=fund_list['ID'].tolist()
+    code_list=fund_list['ID'].tolist()
 
     Zero=fund_list['Zero'].values
     One=fund_list['One'].values
@@ -216,7 +216,7 @@ def main():
 
     pool=Pool(5)
     pool_data_list=[]
-    for i,num in enumerate(fund_list):
+    for i,num in enumerate(code_list):
         moneylist=[Zero[i],One[i],Two[i],Three[i],Four[i]]
         pool_data_list.append(pool.apply_async(try_many_times,args=(num,moneylist)))
 
