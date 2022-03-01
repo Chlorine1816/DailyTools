@@ -189,7 +189,8 @@ def working(code):
         sio_content3=f'<p>{state}</p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content3+=f'<p>再等等看吧<small> {tip1}</small></font></p>'
-    
+        
+    print(sio_content1+sio_content2+sio_content3)
     return (sio_content1+sio_content2+sio_content3)
 
 def try_many_times(code):
