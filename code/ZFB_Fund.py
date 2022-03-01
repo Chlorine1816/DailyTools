@@ -117,7 +117,7 @@ def get_fund2(fund_id):
         else:
             return (name,gszf)
     #5次均失败 调用备用接口
-    return (name,get_fund1(fund_id))
+    return (name,True)
 
 def pd_jz(lj_data,jz):
     quantile=np.quantile
@@ -189,8 +189,7 @@ def working(code):
         sio_content3=f'<p>{state}</p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content3+=f'<p>再等等看吧<small> {tip1}</small></font></p>'
-        
-    print(sio_content1+sio_content2+sio_content3)
+
     return (sio_content1+sio_content2+sio_content3)
 
 def try_many_times(code):

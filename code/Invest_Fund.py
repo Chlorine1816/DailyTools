@@ -118,7 +118,7 @@ def get_fund2(fund_id):
         else:
             return (name,gszf)
     #5次均失败 调用备用接口
-    return (name,get_fund1(fund_id))
+    return (name,True)
 
 def pd_jz(lj_data,jz):
 
