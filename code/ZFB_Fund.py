@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-  
-import time,re,requests,os,json
+import time,requests,os,json
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
-from io import StringIO
+from tqdm.contrib.concurrent import process_map
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 Edg/98.0.1108.56'}
 
@@ -14,16 +14,8 @@ media_id=os.environ['MEDIA'] #图片id
 touser=os.environ['TOUSER']  #接收id
 #touser='Chlorine'
 
-
 #图文图文消息的标题
 title=f'ZFB Fund (GitHub)'
-#图文消息的描述，不超过512个字节
-sio_digest=StringIO('')
-sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
-#图文消息的内容，支持html标签，不超过666 K个字节
-sio_content0=StringIO('') #不操作
-sio_content1=StringIO('') #买入
-sio_content2=StringIO('') #卖出
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}
@@ -64,9 +56,9 @@ def get_daily_sentence():
         r = json.loads(r.text)
         content = r["content"]
         note = r["note"]
-        sio_digest.write(f'{content}\n{note}\n')
+        return(f'{content}\n{note}\n')
     except:
-        sio_digest.write(f'Happy!\n')
+        return(f'Happy every day !\n')
 
 def get_his(fund_id):
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
@@ -172,31 +164,44 @@ def working(code):
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
     if(tip2 <= 0)and((tip1=='大幅上涨') or (tip1=='破线向下')):
-        sio_content2.write(f'<p>{state}</p>')
-        sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content2.write(f'<p><font color="red">可以卖出一部分</font></p>')
+        sio_content=f'<p>{state}</p>'
+        sio_content+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
     elif ((tip1=='大幅下跌')and (gszf <= 0))or (tip1=='震荡筑底'):
-        sio_content1.write(f'<p>{state}</p>')
-        sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content1.write(f'<p>买入 <font color="green">{tip2}</font> RMB</p>')
+        sio_content=f'<p>{state}</p>'
+        sio_content+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content+=f'<p>买入 <font color="green">{tip2}</font> RMB<small> {tip1}</small></font></p>'
     else:
-        sio_content0.write(f'<p>{state}</p>')
-        sio_content0.write(f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>')
-        sio_content0.write(f'<p>再等等看吧</p>')
+        sio_content=f'<p>{state}</p>'
+        sio_content+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content+=f'<p>再等等看吧<small> {tip1}</small></font></p>'
+    
+    return (sio_content)
 
-if __name__=='__main__':
+def try_many_times(code):
+    time.sleep(1.1)
+    #最多尝试5次
+    for _ in range(5):
+        try:
+            return(working(code))
+        except:
+            time.sleep(1.1)
+        else:
+            break
+    return(None)
+
+def main():
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/ZFB_FundList.xlsx',dtype={'ID': 'string'})
-    get_daily_sentence()
-    for code in fund_list['ID']:
-        time.sleep(1)
-        #最多尝试5次
-        for t in range(5):
-            try:
-                working(code)
-            except:
-                time.sleep(1.1)
-            else:
-                break
-    sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
-    send_mpnews(title,sio_content1.getvalue()+sio_content2.getvalue()+sio_content0.getvalue(),sio_digest.getvalue())
+    fund_list=fund_list['ID'].tolist()
+    t = process_map(try_many_times, fund_list, max_workers=5)
+    content=''
+    for i in t:
+        content+=i
+    digest=time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n'
+    digest=f'{digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
+    send_mpnews(title,content,digest)
+
+if __name__=='__main__':
+    main()
+    

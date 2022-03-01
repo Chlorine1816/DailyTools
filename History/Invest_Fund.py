@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-  
-import time,re,requests,os,json
+import time,requests,os,json
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
@@ -90,6 +90,7 @@ def get_fund1(fund_id):
     except:
         html=''
     bf=BeautifulSoup(html,'lxml')
+    gszf=0
     gszf=bf.find_all(id='fvr_add')[0].text.strip()
     gszf=float(gszf.split(' ')[1].split('%')[0])
     return gszf
@@ -141,15 +142,15 @@ def pd_jz(lj_data,jz):
 
 def get_color(mean5,mean10,mean20):
     if (mean5 <= mean10 <= mean20):
-        return('大绿')
+        return('大幅下跌')
     elif(mean5 >= mean10 >= mean20):
-        return('大红')
-    elif (mean5 <= mean10)and(mean5 >= mean20):
-        return ('绿')
-    elif (mean5 >= mean10)and(mean5 <= mean20):
-        return ('红')
+        return('大幅上涨')
+    elif (mean5 <= mean10)and(mean5 <= mean20)and(mean10 >= mean20):
+        return ('破线向下')
+    elif (mean5 >= mean10)and(mean5 >= mean20)and(mean10 <= mean20):
+        return ('突破向上')
     else:
-        return ('其他')
+        return ('震荡筑底')
 
 def working(code,moneylist):
     data=get_his(code)
@@ -174,11 +175,11 @@ def working(code,moneylist):
     tip1=get_color(mean5,mean10,mean20)
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
-    if (tip2 <= 0) and ((tip1=='大红') or (tip1=='绿')):
+    if (tip2 <= 0) and ((tip1=='大幅上涨') or (tip1=='破线向下')):
         sio_content2.write(f'<p>{state}</p>')
         sio_content2.write(f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content2.write(f'<p>可以卖出一部分</p>')
-    elif ((tip1=='大绿') or (tip1=='红')) and (gszf <= 0):
+    elif ((tip1=='大幅下跌')and (gszf <= 0))or (tip1=='震荡筑底'):
         sio_content1.write(f'<p>{state}</p>')
         sio_content1.write(f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>')
         sio_content1.write(f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB</p>')
