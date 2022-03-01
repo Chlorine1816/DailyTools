@@ -61,7 +61,7 @@ def get_daily_sentence():
         return(f'Happy every day !\n')
 
 def get_his(fund_id):
-    time.sleep(random.randint(2,3)+random.random())
+    time.sleep(random.randint(1,2)+random.random())
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
     r=requests.get(url,headers=headers)
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
@@ -76,7 +76,7 @@ def get_his(fund_id):
 
 def get_fund1(fund_id):
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
-    time.sleep(random.randint(2,3)+random.random())
+    time.sleep(random.randint(1,2)+random.random())
     try:
         req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
@@ -97,8 +97,8 @@ def get_fund1(fund_id):
         return (True)
 
 def get_fund2(fund_id):
+    time.sleep(random.randint(1,2)+random.random())
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
-    time.sleep(random.randint(2,3)+random.random())
     #尝试5次
     for _ in range(5):
         try:

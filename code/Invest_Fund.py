@@ -76,7 +76,7 @@ def get_his(fund_id):
     return(df)
 
 def get_fund1(fund_id):
-    time.sleep(random.randint(2,3)+random.random())
+    time.sleep(random.randint(1,2)+random.random())
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
     try:
         req=requests.get(url=url,headers=headers)
@@ -98,7 +98,7 @@ def get_fund1(fund_id):
         return (True)
 
 def get_fund2(fund_id):
-    time.sleep(random.randint(2,3)+random.random())
+    time.sleep(random.randint(1,2)+random.random())
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
     #尝试5次
     for i in range(5):
