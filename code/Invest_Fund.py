@@ -118,7 +118,7 @@ def get_fund2(fund_id):
         else:
             return (name,gszf)
     #5次均失败 调用备用接口
-    return (name,True)
+    return (name,False)
 
 def pd_jz(lj_data,jz):
 
@@ -160,7 +160,7 @@ def working(code,moneylist):
     lj_data=data['最新累计净值'].values[-49:]
     dwjz=data['最新单位净值'].values[-1]
 
-    if gszf :
+    if gszf==False :
         gszf=0
         lj_data=data['最新累计净值'].values[-50:]
         today_lj=lj_data[-1]
