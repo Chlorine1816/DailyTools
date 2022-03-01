@@ -164,10 +164,12 @@ def working(code,moneylist):
         gszf=0
         lj_data=data['最新累计净值'].values[-50:]
         today_lj=lj_data[-1]
+        color='black'
     else:
         dwjz=dwjz*gszf/100
         today_lj=round(lj_data[-1]+dwjz,4) #当日累计估值
         lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
+        color='red' if gszf > 0 else 'green'
 
     mean=np.mean
     mean5=round(mean(lj_data[-5:]),4) #5日均值
@@ -176,7 +178,6 @@ def working(code,moneylist):
 
     tip1=get_color(mean5,mean10,mean20)
     state,tip2=pd_jz(lj_data,today_lj)
-    color='red' if gszf > 0 else 'green'
     sio_content1=''
     sio_content2=''
     sio_content3=''
