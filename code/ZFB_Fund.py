@@ -4,6 +4,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
 from tqdm.contrib.concurrent import process_map
+import random
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 Edg/98.0.1108.56'}
 
@@ -26,7 +27,6 @@ def get_token():
 
 #发送图文信息
 def send_mpnews(title,content,digest):
-    time.sleep(1)
     access_token=get_token()
     url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
     data = {
@@ -61,6 +61,7 @@ def get_daily_sentence():
         return(f'Happy every day !\n')
 
 def get_his(fund_id):
+    time.sleep(random.randint(2,3)+random.random())
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
     r=requests.get(url,headers=headers)
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
@@ -69,11 +70,13 @@ def get_his(fund_id):
     df['最新单位净值']=df['最新单位净值'].astype(float)
     df['最新累计净值']=df['最新累计净值'].astype(float)
     df.dropna(subset=['净值日期','基金名称','最新单位净值','最新累计净值'],how='any',inplace=True)
+    # 按照日期升序排序并重建索引
+    df.sort_values(by='净值日期',axis=0,ascending=True,ignore_index=True,inplace=True)
     return(df)
 
 def get_fund1(fund_id):
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
-    time.sleep(0.5)
+    time.sleep(random.randint(2,3)+random.random())
     try:
         req=requests.get(url=url,headers=headers)
         req.encoding='utf-8'
@@ -82,16 +85,22 @@ def get_fund1(fund_id):
     except:
         html=''
     bf=BeautifulSoup(html,'lxml')
-    gszf=0
-    gszf=bf.find_all(id='fvr_add')[0].text.strip()
-    gszf=float(gszf.split(' ')[1].split('%')[0])
-    return gszf
+    try:
+        gszf=0
+        gszf=bf.find_all(id='fvr_add')[0].text.strip()
+        gszf=float(gszf.split(' ')[1].split('%')[0])
+        if gszf ==0:
+            return (True)
+        else:
+            return (gszf)
+    except:
+        return (True)
 
 def get_fund2(fund_id):
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
-    time.sleep(0.2)
+    time.sleep(random.randint(2,3)+random.random())
     #尝试5次
-    for i in range(5):
+    for _ in range(5):
         try:
             req=requests.get(url=url,headers=headers)
             req.encoding='utf-8'
@@ -146,14 +155,18 @@ def get_color(mean5,mean10,mean20):
 def working(code):
     #获取历史净值
     data=get_his(code)
-    # 按照日期升序排序并重建索引
-    data=data.sort_values(by='净值日期',axis=0,ascending=True,ignore_index=True)
+    name,gszf=get_fund2(code) #获取当日 涨幅
+
     dwjz=data['最新单位净值'].values[-1]
     lj_data=data['最新累计净值'].values[-49:]
-    name,gszf=get_fund2(code) #获取当日 涨幅
-    dwjz=dwjz*gszf/100
-    today_lj=round(lj_data[-1]+dwjz,4) #当日累计估值
-    lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
+    
+    if gszf :
+        lj_data=data['最新累计净值'].values[-50:]
+        today_lj=lj_data[-1]
+    else:
+        dwjz=dwjz*gszf/100
+        today_lj=round(lj_data[-1]+dwjz,4) #当日累计估值
+        lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
 
     mean=np.mean
     mean5=round(mean(lj_data[-5:]),4) #5日均值
@@ -164,22 +177,21 @@ def working(code):
     state,tip2=pd_jz(lj_data,today_lj)
     color='red' if gszf > 0 else 'green'
     if(tip2 <= 0)and((tip1=='大幅上涨') or (tip1=='破线向下')):
-        sio_content=f'<p>{state}</p>'
-        sio_content+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
+        sio_content2=f'<p>{state}</p>'
+        sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content2+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
     elif ((tip1=='大幅下跌')and (gszf <= 0))or (tip1=='震荡筑底'):
-        sio_content=f'<p>{state}</p>'
-        sio_content+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content+=f'<p>买入 <font color="green">{tip2}</font> RMB<small> {tip1}</small></font></p>'
+        sio_content1=f'<p>{state}</p>'
+        sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content1+=f'<p>买入 <font color="green">{tip2}</font> RMB<small> {tip1}</small></font></p>'
     else:
-        sio_content=f'<p>{state}</p>'
-        sio_content+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content+=f'<p>再等等看吧<small> {tip1}</small></font></p>'
+        sio_content3=f'<p>{state}</p>'
+        sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content3+=f'<p>再等等看吧<small> {tip1}</small></font></p>'
     
-    return (sio_content)
+    return (sio_content1+sio_content2+sio_content3)
 
 def try_many_times(code):
-    time.sleep(1.1)
     #最多尝试5次
     for _ in range(5):
         try:
