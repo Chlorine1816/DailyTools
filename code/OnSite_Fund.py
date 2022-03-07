@@ -62,7 +62,7 @@ def get_daily_sentence():
         note = r["note"]
         sio_digest.write(f'{content}\n{note}\n')
     except:
-        sio_digest.write(f'Happy!\n')
+        sio_digest.write(f'Happy every day !\n')
 
 def get_his(fund_id):
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}.html'
@@ -160,13 +160,12 @@ def pd_jz(lj_data,lj,jz):
     mean10=round(mean(lj_data[-10:]),3)#前10天净值均值
     mean20=round(mean(lj_data[-20:]),3)#前20天净值均值
     q1=round(np.min(lj_data)*jz/lj,3) 
-    q2=round(quantile(lj_data,0.2)*jz/lj,3) 
-    q3=round(quantile(lj_data,0.4)*jz/lj,3) 
-    q4=round(quantile(lj_data,0.6)*jz/lj,3) 
-    q5=round(quantile(lj_data,0.8)*jz/lj,3) 
-    q6=round(np.max(lj_data)*jz/lj,3)
+    q2=round(quantile(lj_data,0.25)*jz/lj,3) 
+    q3=round(quantile(lj_data,0.5)*jz/lj,3) 
+    q4=round(quantile(lj_data,0.75)*jz/lj,3) 
+    q5=round(np.max(lj_data)*jz/lj,3)
   
-    dict_jz={q1:'🍏',q2:'🍏',q3:'🍏',q4:'🍎',q5:'🍎',q6:'🍎'}
+    dict_jz={q1:'🍏',q2:'🍏',q3:'🍊',q4:'🍎',q5:'🍎'}
     dict_jz[jz]=get_color(mean5,mean10,mean20)
 
     for i in sorted(dict_jz,reverse=True):
@@ -177,9 +176,9 @@ def get_color(mean5,mean10,mean20):
         return('👇')
     elif(mean5 >= mean10 >= mean20):
         return('👆')
-    elif(mean5 <= mean10)and(mean5 >= mean20):
+    elif(mean5 <= mean10)and(mean5 <= mean20)and(mean10 >= mean20):
         return('👇')
-    elif(mean5 >= mean10)and(mean5 <= mean20):
+    elif(mean5 >= mean10)and(mean5 >= mean20)and(mean10 <= mean20):
         return('👆')
     else:
         return('👉')
