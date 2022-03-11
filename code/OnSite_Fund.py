@@ -225,6 +225,7 @@ def main():
     sio_content=''
     for i in t:
         sio_content+=i
+    sio_digest=time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n'
     sio_digest=f'{sio_digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
     send_mpnews(title,sio_content,sio_digest)
 
