@@ -3,7 +3,6 @@ import time,re,requests,os,json
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
-from io import StringIO
 from tqdm.contrib.concurrent import process_map
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.36'}
@@ -16,11 +15,6 @@ media_id=os.environ['MEDIA'] #图片id
 
 #图文图文消息的标题
 title=f'OnSite Fund (GitHub)'
-#图文消息的描述，不超过512个字节
-sio_digest=StringIO('')
-sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
-#图文消息的内容，支持html标签，不超过666 K个字节
-sio_content=StringIO('')
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}
