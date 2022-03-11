@@ -55,9 +55,9 @@ def get_daily_sentence():
         r = json.loads(r.text)
         content = r["content"]
         note = r["note"]
-        sio_digest.write(f'{content}\n{note}\n')
+        return(f'{content}\n{note}\n')
     except:
-        sio_digest.write(f'Happy every day !\n')
+        return(f'Happy every day !\n')
 
 def get_his(fund_id):
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}.html'
