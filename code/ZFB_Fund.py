@@ -121,11 +121,11 @@ def get_fund2(fund_id):
 
 def pd_jz(lj_data,jz):
     quantile=np.quantile
-    q1=round(np.min(lj_data),4) + 0.0001
+    q1=round(np.min(lj_data),4) + 0.0002
     q2=round(quantile(lj_data,0.25),4) 
     q3=round(quantile(lj_data,0.50),4) 
     q4=round(quantile(lj_data,0.75),4) 
-    q5=round(np.max(lj_data),4) - 0.0001
+    q5=round(np.max(lj_data),4) - 0.0002
 
     if (jz >= q5):
         return('📈',-1)
