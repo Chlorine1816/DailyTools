@@ -128,7 +128,7 @@ def pd_jz(lj_data,jz):
     q5=round(np.max(lj_data),4) - 0.0002
 
     if (jz >= q5):
-        return('📈📈📈',-1)
+        return ('📈📈📈',-1)
     elif (jz > q4):
         return ('🍎🍎🍎',0)
     elif (jz > q3):
