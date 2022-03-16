@@ -162,12 +162,13 @@ def working(code):
     
     if gszf==False :
         gszf=0
+        zf=0
         lj_data=data['最新累计净值'].values[-50:]
         today_lj=lj_data[-1]
         color='black'
     else:
-        dwjz=dwjz*gszf/100 #当日单位净值估值
-        today_lj=round(lj_data[-1]+dwjz,4) #当日累计净值估值
+        zf=dwjz*gszf/100 #当日单位净值估值涨幅
+        today_lj=round(lj_data[-1]+zf,4) #当日累计净值估值
         lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
@@ -184,7 +185,7 @@ def working(code):
     if(today_lj > max(mean5,mean10,mean20)):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p><font color="red">卖出{round(10/dwjz,2)}份</font><small> {tip1}</small></font></p>'
+        sio_content2+=f'<p><font color="red">卖出{round(10/(dwjz+zf),2)}份</font><small> {tip1}</small></font></p>'
     elif(today_lj < min(mean5,mean10,mean20))and(gszf <= 0):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
