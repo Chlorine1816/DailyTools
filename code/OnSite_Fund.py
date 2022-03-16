@@ -148,7 +148,7 @@ def get_fund2(fund_id):
     name=jz.find_all('h4',class_='title')[0].text
     return (name)
 
-def pd_jz(ljjz_data,lj,dwjz,sio_content):
+def pd_jz(ljjz_data,lj,num1,num2,dwjz,sio_content):
     quantile=np.quantile
     q1=round(np.min(ljjz_data),3) 
     q2=round(quantile(ljjz_data,0.25),3) 
@@ -157,18 +157,22 @@ def pd_jz(ljjz_data,lj,dwjz,sio_content):
     q5=round(np.max(ljjz_data),3)
 
     if lj >= q5:
-        sio_content+=f'<p>⛄📈 <small>{dwjz}</small></p>'
+        sio_content+=f'<p>📈</p>'
     elif lj > q4:
-        sio_content+=f'<p>⛄🍎🍎🍎 <small>{dwjz}</small></p>'
+        sio_content+=f'<p>🍎🍎🍎</p>'
     elif lj > q3:
-        sio_content+=f'<p>⛄🍎🍎🍏 <small>{dwjz}</small></p>'
+        sio_content+=f'<p>🍎🍎🍏</p>'
     elif lj > q2:
-        sio_content+=f'<p>⛄🍎🍏🍏 <small>{dwjz}</small></p>'
+        sio_content+=f'<p>🍎🍏🍏</p>'
     elif lj > q1:
-        sio_content+=f'<p>⛄🍏🍏🍏 <small>{dwjz}</small></p>'
+        sio_content+=f'<p>🍏🍏🍏</p>'
     else:
-        sio_content+=f'<p>⛄📉 <small>{dwjz}</small></p>'
+        sio_content+=f'<p>📉</p>'
 
+    dict_jz={num1:'🔻',num2:'🔺',dwjz:'🔸'}
+    for i in sorted(dict_jz,reverse=True):
+        sio_content+=f'<p>{dict_jz[i]}{i}</p>'
+        
     return (sio_content)
 
 def get_color(ljjz_data):
@@ -213,9 +217,7 @@ def working(code):
 
     sio_content=f'<p><strong>{date}</strong></p>'
     sio_content+=f'<p><strong>{name}</strong></p>'
-    sio_content=pd_jz(ljjz_data,ljjz,dwjz,sio_content)
-    sio_content+=f'<p>🔺 {num2}</p>'
-    sio_content+=f'<p>🔻 {num1}</p>'
+    sio_content=pd_jz(ljjz_data,ljjz,num1,num2,dwjz,sio_content)
 
     return (sio_content)
 
