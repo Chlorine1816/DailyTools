@@ -130,7 +130,7 @@ def pd_jz(lj_data,jz):
     q5=round(np.max(lj_data),4) - 0.0002
 
     if (jz >= q5):
-        return('📈',-1)
+        return('📈📈📈',-1)
     elif (jz > q4):
         return ('🍎🍎🍎',0)
     elif (jz > q3):
@@ -140,7 +140,7 @@ def pd_jz(lj_data,jz):
     elif (jz > q1):
         return ('🍏🍏🍏',3)
     else:
-        return ('📉',4)
+        return ('📉📉📉',4)
 
 def get_color(mean5,mean10,mean20):
     if (mean5 <= mean10 <= mean20):

@@ -148,60 +148,74 @@ def get_fund2(fund_id):
     name=jz.find_all('h4',class_='title')[0].text
     return (name)
 
-def pd_jz(lj_data,lj,jz,sio_content):
+def pd_jz(ljjz_data,lj,sio_content):
     quantile=np.quantile
-    mean=np.mean
-    mean5=round(mean(lj_data[-5:]),3) #前5天净值均值
-    mean10=round(mean(lj_data[-10:]),3)#前10天净值均值
-    mean20=round(mean(lj_data[-20:]),3)#前20天净值均值
-    q1=round(np.min(lj_data)*jz/lj,3) 
-    q2=round(quantile(lj_data,0.25)*jz/lj,3) 
-    q3=round(quantile(lj_data,0.5)*jz/lj,3) 
-    q4=round(quantile(lj_data,0.75)*jz/lj,3) 
-    q5=round(np.max(lj_data)*jz/lj,3)
-  
-    dict_jz={q1:'🍏',q2:'🍏',q3:'🍊',q4:'🍎',q5:'🍎'}
-    dict_jz[jz]=get_color(mean5,mean10,mean20)
+    q1=round(np.min(ljjz_data),3) 
+    q2=round(quantile(ljjz_data,0.25),3) 
+    q3=round(quantile(ljjz_data,0.5),3) 
+    q4=round(quantile(ljjz_data,0.75),3) 
+    q5=round(np.max(ljjz_data),3)
 
-    for i in sorted(dict_jz,reverse=True):
-        sio_content+=f'<p>{dict_jz[i]}{i}</p>'
+    if lj >= q5:
+        sio_content+=f'<p>⛄📈📈📈</p>'
+    elif lj > q4:
+        sio_content+=f'<p>⛄🍎🍎🍎</p>'
+    elif lj > q3:
+        sio_content+=f'<p>⛄🍎🍎🍏</p>'
+    elif lj > q2:
+        sio_content+=f'<p>⛄🍎🍏🍏</p>'
+    elif lj > q1:
+        sio_content+=f'<p>⛄🍏🍏🍏</p>'
+    else:
+        sio_content+=f'<p>⛄📉📉📉</p>'
 
     return (sio_content)
 
-def get_color(mean5,mean10,mean20):
+def get_color(ljjz_data):
+    mean=np.mean
+    mean5=round(mean(ljjz_data[-5:]),3) #前5天净值均值
+    mean10=round(mean(ljjz_data[-10:]),3)#前10天净值均值
+    mean20=round(mean(ljjz_data[-20:]),3)#前20天净值均值
     if (mean5 <= mean10 <= mean20):
-        return('📉')
+        return('大幅下跌')
     elif(mean5 >= mean10 >= mean20):
-        return('📈')
-    elif(mean5 <= mean10)and(mean5 <= mean20)and(mean10 >= mean20):
-        return('👇')
-    elif(mean5 >= mean10)and(mean5 >= mean20)and(mean10 <= mean20):
-        return('👆')
+        return('大幅上涨')
+    elif (mean5 <= mean10)and(mean5 <= mean20)and(mean10 >= mean20):
+        return ('破线向下')
+    elif (mean5 >= mean10)and(mean5 >= mean20)and(mean10 <= mean20):
+        return ('突破向上')
     else:
-        return('👉')
+        return ('震荡筑底')
+
+def get_num(ljjz_data):
+    num1=sum(ljjz_data[-9:-4])-sum(ljjz_data[-4:])
+    num2=sum(ljjz_data[-19:-9])-sum(ljjz_data[-9:])
+    return(min(num1,num2),max(num1,num2))
 
 def working(code):
-    #获取净值信息
-    #data=get_his(code)
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
     sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-86400*80))
     data=get_fund(code,per=30,sdate=sdate,edate=edate)
     data['单位净值']=data['单位净值'].astype(float)
     data['累计净值']=data['累计净值'].astype(float)
-    # 按照日期升序排序并重建索引
-    #data.drop(['上期单位净值','上期累计净值','当日增长值'],axis=1,inplace=True)
     data=data[['净值日期','累计净值','单位净值']]
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
-    lj_data=data['累计净值'].values[-50:]
-    #name=data['基金名称'].values[-1]+' '+str(data['基金代码'].values[-1])
+    ljjz_data=data['累计净值'].values[-50:]
+
     name=get_fund2(code)
-    jz_date=data['净值日期'].values[-1]
-    jz_data=round(data['单位净值'].values[-1],3)
 
-    sio_content=f'<p><strong>{jz_date}</strong></p>'
+    date=data['净值日期'].values[-1]
+    dwjz=data['单位净值'].values[-1]
+    ljjz=ljjz_data[-1]
+    num1,num2=get_num(ljjz_data) #求大幅跌涨累计净值
+    num1=round(dwjz+(num1-ljjz),3) #大幅下跌单位净值
+    num2=round(dwjz+(num2-ljjz),3) #大幅上涨单位净值
+
+    sio_content=f'<p><strong>{date}</strong></p>'
+    sio_content=pd_jz(ljjz_data,ljjz,sio_content)
     sio_content+=f'<p><strong>{name}</strong></p>'
-
-    sio_content=pd_jz(lj_data,lj_data[-1],jz_data,sio_content)
+    sio_content+=f'<p>🔺 {num2}</p>'
+    sio_content+=f'<p>🔻 {num1}</p>'
 
     return (sio_content)
 

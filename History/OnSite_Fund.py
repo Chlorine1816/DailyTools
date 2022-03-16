@@ -3,9 +3,9 @@ import time,re,requests,os,json
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
-from io import StringIO
+from tqdm.contrib.concurrent import process_map
 
-headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'}
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.36'}
 
 corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
@@ -15,11 +15,6 @@ media_id=os.environ['MEDIA'] #图片id
 
 #图文图文消息的标题
 title=f'OnSite Fund (GitHub)'
-#图文消息的描述，不超过512个字节
-sio_digest=StringIO('')
-sio_digest.write(time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n')
-#图文消息的内容，支持html标签，不超过666 K个字节
-sio_content=StringIO('')
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}
@@ -60,9 +55,9 @@ def get_daily_sentence():
         r = json.loads(r.text)
         content = r["content"]
         note = r["note"]
-        sio_digest.write(f'{content}\n{note}\n')
+        return(f'{content}\n{note}\n')
     except:
-        sio_digest.write(f'Happy!\n')
+        return(f'Happy every day !\n')
 
 def get_his(fund_id):
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}.html'
@@ -153,33 +148,34 @@ def get_fund2(fund_id):
     name=jz.find_all('h4',class_='title')[0].text
     return (name)
 
-def pd_jz(lj_data,lj,jz):
+def pd_jz(lj_data,lj,jz,sio_content):
     quantile=np.quantile
     mean=np.mean
     mean5=round(mean(lj_data[-5:]),3) #前5天净值均值
     mean10=round(mean(lj_data[-10:]),3)#前10天净值均值
     mean20=round(mean(lj_data[-20:]),3)#前20天净值均值
     q1=round(np.min(lj_data)*jz/lj,3) 
-    q2=round(quantile(lj_data,0.2)*jz/lj,3) 
-    q3=round(quantile(lj_data,0.4)*jz/lj,3) 
-    q4=round(quantile(lj_data,0.6)*jz/lj,3) 
-    q5=round(quantile(lj_data,0.8)*jz/lj,3) 
-    q6=round(np.max(lj_data)*jz/lj,3)
+    q2=round(quantile(lj_data,0.25)*jz/lj,3) 
+    q3=round(quantile(lj_data,0.5)*jz/lj,3) 
+    q4=round(quantile(lj_data,0.75)*jz/lj,3) 
+    q5=round(np.max(lj_data)*jz/lj,3)
   
-    dict_jz={q1:'🍏',q2:'🍏',q3:'🍏',q4:'🍎',q5:'🍎',q6:'🍎'}
+    dict_jz={q1:'🍏',q2:'🍏',q3:'🍊',q4:'🍎',q5:'🍎'}
     dict_jz[jz]=get_color(mean5,mean10,mean20)
 
     for i in sorted(dict_jz,reverse=True):
-        sio_content.write(f'<p>{dict_jz[i]}{i}</p>')
+        sio_content+=f'<p>{dict_jz[i]}{i}</p>'
+
+    return (sio_content)
 
 def get_color(mean5,mean10,mean20):
     if (mean5 <= mean10 <= mean20):
-        return('👇')
+        return('📉')
     elif(mean5 >= mean10 >= mean20):
-        return('👆')
-    elif(mean5 <= mean10)and(mean5 >= mean20):
+        return('📈')
+    elif(mean5 <= mean10)and(mean5 <= mean20)and(mean10 >= mean20):
         return('👇')
-    elif(mean5 >= mean10)and(mean5 <= mean20):
+    elif(mean5 >= mean10)and(mean5 >= mean20)and(mean10 <= mean20):
         return('👆')
     else:
         return('👉')
@@ -201,23 +197,37 @@ def working(code):
     name=get_fund2(code)
     jz_date=data['净值日期'].values[-1]
     jz_data=round(data['单位净值'].values[-1],3)
-    sio_content.write(f'<p><strong>{jz_date}</strong></p>')
-    sio_content.write(f'<p><strong>{name}</strong></p>')
-    pd_jz(lj_data,lj_data[-1],jz_data)
 
-if __name__=='__main__':
+    sio_content=f'<p><strong>{jz_date}</strong></p>'
+    sio_content+=f'<p><strong>{name}</strong></p>'
+
+    sio_content=pd_jz(lj_data,lj_data[-1],jz_data,sio_content)
+
+    return (sio_content)
+
+def try_many_times(code):
+    #最多尝试5次
+    for _ in range(5):
+        try:
+            return(working(code))
+        except:
+            time.sleep(1.1)
+        else:
+            break
+    return('')
+
+def main():
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/OnSite_FundList.xlsx',dtype={'ID': 'string'})
-    get_daily_sentence()
-    for code in fund_list['ID']:
-        time.sleep(1)
-        #最多尝试10次
-        for t in range(10):
-            try:
-                working(code)
-            except:
-                time.sleep(0.5)
-            else:
-                break
-    sio_digest.write(f'⏱ {round((time.perf_counter()-start)/60,1)} 分钟')
-    send_mpnews(title,sio_content.getvalue(),sio_digest.getvalue())
+
+    fund_list=fund_list['ID'].tolist()
+    t = process_map(try_many_times, fund_list, max_workers=5)
+    sio_content=''
+    for i in t:
+        sio_content+=i
+    sio_digest=time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n'
+    sio_digest=f'{sio_digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
+    send_mpnews(title,sio_content,sio_digest)
+
+if __name__=='__main__':
+    main()
