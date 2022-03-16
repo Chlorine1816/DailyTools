@@ -181,11 +181,11 @@ def working(code,moneylist):
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (tip2 <= 0) and ((tip1=='大幅上涨') or (tip1=='破线向下')):
+    if (tip1=='大幅上涨')and(gszf >= 0):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
-    elif(tip1=='震荡筑底')or(tip1=='突破向上')or(tip2==4):
+    elif(today_lj < min(mean5,mean10,mean20))and(gszf <= 0):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB<small> {tip1}</small></font></p>'
