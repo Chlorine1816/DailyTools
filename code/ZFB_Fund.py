@@ -132,13 +132,13 @@ def pd_jz(lj_data,jz):
     elif (jz > q4):
         return ('🍎🍎🍎',0)
     elif (jz > q3):
-        return ('🍎🍎🍏',0)
+        return ('🍎🍎🍏',10)
     elif (jz > q2):
-        return ('🍎🍏🍏',10)
+        return ('🍎🍏🍏',15)
     elif (jz > q1):
-        return ('🍏🍏🍏',15)
+        return ('🍏🍏🍏',20)
     else:
-        return ('📉',20)
+        return ('📉',25)
 
 def get_color(mean5,mean10,mean20):
     if (mean5 <= mean10 <= mean20):
@@ -166,8 +166,8 @@ def working(code):
         today_lj=lj_data[-1]
         color='black'
     else:
-        dwjz=dwjz*gszf/100
-        today_lj=round(lj_data[-1]+dwjz,4) #当日累计估值
+        dwjz=dwjz*gszf/100 #当日单位净值估值
+        today_lj=round(lj_data[-1]+dwjz,4) #当日累计净值估值
         lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
@@ -181,11 +181,11 @@ def working(code):
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if(tip2 <= 0)and((tip1=='大幅上涨') or (tip1=='破线向下')):
+    if(today_lj > max(mean5,mean10,mean20)):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
-    elif(tip1=='震荡筑底')or(tip1=='突破向上')or(tip2==20):
+        sio_content2+=f'<p><font color="red">卖出{round(10/dwjz,2)}份</font><small> {tip1}</small></font></p>'
+    elif(today_lj < min(mean5,mean10,mean20))and(gszf < 0):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{tip2}</font> RMB<small> {tip1}</small></font></p>'
