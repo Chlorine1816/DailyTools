@@ -185,7 +185,7 @@ def working(code):
     if(today_lj > max(mean5,mean10,mean20)):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p><font color="red">卖出{round(10/(dwjz+zf),2)}份</font><small> {tip1}</small></font></p>'
+        sio_content2+=f'<p>卖出<font color="red"> {int(10/(dwjz+zf))} </font>份<small> {tip1}</small></font></p>'
     elif(today_lj < min(mean5,mean10,mean20))and(gszf <= 0):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
