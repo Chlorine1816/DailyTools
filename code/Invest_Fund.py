@@ -181,7 +181,7 @@ def working(code,moneylist):
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (tip1=='大幅上涨')and(gszf >= 0):
+    if (tip1=='大幅上涨')and(gszf >= 0)and(tip2 <= 0):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
