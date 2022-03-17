@@ -157,17 +157,17 @@ def pd_jz(ljjz_data,lj,num1,num2,dwjz,sio_content):
     q5=round(np.max(ljjz_data),3)
 
     if lj >= q5:
-        sio_content+=f'<p>📈</p>'
+        sio_content+=f'<p>🚦📈</p>'
     elif lj > q4:
-        sio_content+=f'<p>🍎🍎🍎</p>'
+        sio_content+=f'<p>🚦🍎🍎🍎</p>'
     elif lj > q3:
-        sio_content+=f'<p>🍎🍎🍏</p>'
+        sio_content+=f'<p>🚦🍎🍎🍏</p>'
     elif lj > q2:
-        sio_content+=f'<p>🍎🍏🍏</p>'
+        sio_content+=f'<p>🚦🍎🍏🍏</p>'
     elif lj > q1:
-        sio_content+=f'<p>🍏🍏🍏</p>'
+        sio_content+=f'<p>🚦🍏🍏🍏</p>'
     else:
-        sio_content+=f'<p>📉</p>'
+        sio_content+=f'<p>🚦📉</p>'
 
     dict_jz={num1:'🔻',num2:'🔺',dwjz:'🔸'}
     for i in sorted(dict_jz,reverse=True):
