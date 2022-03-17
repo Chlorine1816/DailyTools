@@ -152,6 +152,10 @@ def get_color(mean5,mean10,mean20):
     else:
         return ('震荡筑底')
 
+def get_additional(value,mean5,mean10,mean20):
+    num=(value-mean5)*16+(value-mean10)*18+(value-mean20)*29
+    return (num)
+
 def working(code):
     #获取历史净值
     data=get_his(code)
@@ -185,11 +189,11 @@ def working(code):
     if(today_lj > max(mean5,mean10,mean20)):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p>卖出<font color="red"> {int(10/(dwjz+zf))} </font>份<small> {tip1}</small></font></p>'
+        sio_content2+=f'<p>卖出<font color="red"> {int((10+get_additional(today_lj,mean5,mean10,mean20))/(dwjz+zf))} </font>份<small> {tip1}</small></font></p>'
     elif(today_lj < min(mean5,mean10,mean20))and(gszf <= 0):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{tip2}</font> RMB<small> {tip1}</small></font></p>'
+        sio_content1+=f'<p>买入 <font color="green">{tip2-int(get_additional(today_lj,mean5,mean10,mean20))}</font> RMB<small> {tip1}</small></font></p>'
     else:
         sio_content3=f'<p>{state}</p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
