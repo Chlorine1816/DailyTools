@@ -148,7 +148,7 @@ def get_fund2(fund_id):
     name=jz.find_all('h4',class_='title')[0].text
     return (name)
 
-def pd_jz(ljjz_data,lj,num1,num2,dwjz,sio_content):
+def pd_jz(ljjz_data,lj,num1,num2,cache1,cache2,dwjz,sio_content):
     quantile=np.quantile
     #q1=round(np.min(ljjz_data),3) 
     q2=round(quantile(ljjz_data,0.25),3) 
@@ -166,8 +166,6 @@ def pd_jz(ljjz_data,lj,num1,num2,dwjz,sio_content):
         sio_content+=f'<p>🚦🍎🍏🍏</p>'
     else:
         sio_content+=f'<p>🚦🍏🍏🍏</p>'
-
-    cache1,cache2=get_color(ljjz_data)
 
     dict_jz={num1:'📉',num2:'📈',dwjz:'🔸',cache1:'🟩',cache2:'🟥'}
     for i in sorted(dict_jz,reverse=True):
@@ -216,12 +214,17 @@ def working(code):
     dwjz=data['单位净值'].values[-1]
     ljjz=ljjz_data[-1]
     num1,num2=get_num(ljjz_data) #求大幅跌涨累计净值
+    cache1,cache2=get_color(ljjz_data) #求近20天均值极值点
+
     num1=round(dwjz+(num1-ljjz),3) #大幅下跌单位净值
     num2=round(dwjz+(num2-ljjz),3) #大幅上涨单位净值
 
+    cache1=round(dwjz+(cache1-ljjz),3)
+    cache2=round(dwjz+(cache2-ljjz),3)
+
     sio_content=f'<p><strong>{date}</strong></p>'
     sio_content+=f'<p><strong>{name}</strong></p>'
-    sio_content=pd_jz(ljjz_data,ljjz,num1,num2,dwjz,sio_content)
+    sio_content=pd_jz(ljjz_data,ljjz,num1,num2,cache1,cache2,dwjz,sio_content)
 
     return (sio_content)
 
