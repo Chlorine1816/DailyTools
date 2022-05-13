@@ -16,7 +16,7 @@ touser=os.environ['TOUSER']  #接收id
 #touser='Chlorine'
 
 #图文图文消息的标题
-title=f'ZFB Fund (GitHub)'
+title='ZFB Fund (GitHub)'
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}

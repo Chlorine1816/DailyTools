@@ -128,17 +128,17 @@ def pd_jz(lj_data,jz):
     q5=round(np.max(lj_data),4) - 0.0002
 
     if (jz >= q5):
-        return('📈',-1)
+        return ('📈',-1)
     elif (jz > q4):
         return ('🍎🍎🍎',0)
     elif (jz > q3):
-        return ('🍎🍎🍏',0)
+        return ('🍎🍎🍏',10)
     elif (jz > q2):
-        return ('🍎🍏🍏',10)
+        return ('🍎🍏🍏',15)
     elif (jz > q1):
-        return ('🍏🍏🍏',15)
+        return ('🍏🍏🍏',20)
     else:
-        return ('📉',20)
+        return ('📉',25)
 
 def get_color(mean5,mean10,mean20):
     if (mean5 <= mean10 <= mean20):
@@ -152,6 +152,10 @@ def get_color(mean5,mean10,mean20):
     else:
         return ('震荡筑底')
 
+def get_additional(value,mean5,mean10,mean20):
+    num=(value-mean5)*16+(value-mean10)*18+(value-mean20)*29
+    return (num)
+
 def working(code):
     #获取历史净值
     data=get_his(code)
@@ -162,12 +166,13 @@ def working(code):
     
     if gszf==False :
         gszf=0
+        zf=0
         lj_data=data['最新累计净值'].values[-50:]
         today_lj=lj_data[-1]
         color='black'
     else:
-        dwjz=dwjz*gszf/100
-        today_lj=round(lj_data[-1]+dwjz,4) #当日累计估值
+        zf=dwjz*gszf/100 #当日单位净值估值涨幅
+        today_lj=round(lj_data[-1]+zf,4) #当日累计净值估值
         lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
@@ -181,14 +186,14 @@ def working(code):
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if(tip2 <= 0)and((tip1=='大幅上涨') or (tip1=='破线向下')):
+    if(today_lj > max(mean5,mean10,mean20)+0.0002):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
-    elif(tip1=='震荡筑底')or(tip1=='突破向上')or(tip2==20):
+        sio_content2+=f'<p>卖出<font color="red"> {round((10 + get_additional(today_lj,mean5,mean10,mean20))/(dwjz+zf),1)} </font>份<small> {tip1}</small></font></p>'
+    elif(today_lj < min(mean5,mean10,mean20)-0.0002)and(gszf <= 0):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{tip2}</font> RMB<small> {tip1}</small></font></p>'
+        sio_content1+=f'<p>买入 <font color="green">{tip2 - int(get_additional(today_lj,mean5,mean10,mean20))}</font> RMB<small> {tip1}</small></font></p>'
     else:
         sio_content3=f'<p>{state}</p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'

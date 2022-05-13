@@ -13,11 +13,11 @@ agentid=os.environ['AGENTID']  #机器人id
 corpsecret=os.environ['CORPSECRET']  #机器人secret
 media_id=os.environ['MEDIA'] #图片id
 #touser=os.environ['TOUSER']  #接收id
-touser=f'@all'  #接收id
+touser='@all'  #接收id
 #touser=f'Chlorine|HaiMing' #接收id
 
 #图文图文消息的标题
-title=f'Invest Fund (GitHub)'
+title='Invest Fund (GitHub)'
 
 def get_token():
     payload_access_token = {'corpid': corpid, 'corpsecret': corpsecret}
@@ -185,7 +185,7 @@ def working(code,moneylist):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
-    elif(today_lj < min(mean5,mean10,mean20)-0.0002)and(gszf <= 0):
+    elif(today_lj < min(mean5,mean10,mean20)-0.0002)and(gszf <= 0)and(tip2 > 1):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB<small> {tip1}</small></font></p>'
