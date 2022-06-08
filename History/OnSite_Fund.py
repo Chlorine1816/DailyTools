@@ -148,28 +148,26 @@ def get_fund2(fund_id):
     name=jz.find_all('h4',class_='title')[0].text
     return (name)
 
-def pd_jz(ljjz_data,lj,num1,num2,dwjz,sio_content):
+def pd_jz(ljjz_data,lj,num1,num2,cache1,cache2,dwjz,sio_content):
     quantile=np.quantile
-    q1=round(np.min(ljjz_data),3) 
+    #q1=round(np.min(ljjz_data),3) 
     q2=round(quantile(ljjz_data,0.25),3) 
     q3=round(quantile(ljjz_data,0.5),3) 
     q4=round(quantile(ljjz_data,0.75),3) 
-    q5=round(np.max(ljjz_data),3)
+    #q5=round(np.max(ljjz_data),3)
 
-    if lj >= q5:
-        sio_content+=f'<p>🚦📈</p>'
-    elif lj > q4:
+    #if lj >= q5:
+    #    sio_content+=f'<p>🚦📈</p>'
+    if lj > q4:
         sio_content+=f'<p>🚦🍎🍎🍎</p>'
     elif lj > q3:
         sio_content+=f'<p>🚦🍎🍎🍏</p>'
     elif lj > q2:
         sio_content+=f'<p>🚦🍎🍏🍏</p>'
-    elif lj > q1:
-        sio_content+=f'<p>🚦🍏🍏🍏</p>'
     else:
-        sio_content+=f'<p>🚦📉</p>'
+        sio_content+=f'<p>🚦🍏🍏🍏</p>'
 
-    dict_jz={num1:'🔻',num2:'🔺',dwjz:'🔸'}
+    dict_jz={num1:'📉',num2:'📈',dwjz:'🔸',cache1:'🟩',cache2:'🟥'}
     for i in sorted(dict_jz,reverse=True):
         sio_content+=f'<p>{dict_jz[i]}{i}</p>'
         
@@ -180,6 +178,9 @@ def get_color(ljjz_data):
     mean5=round(mean(ljjz_data[-5:]),3) #前5天净值均值
     mean10=round(mean(ljjz_data[-10:]),3)#前10天净值均值
     mean20=round(mean(ljjz_data[-20:]),3)#前20天净值均值
+
+    return(min(mean5,mean10,mean20),max(mean5,mean10,mean20))
+    '''
     if (mean5 <= mean10 <= mean20):
         return('大幅下跌')
     elif(mean5 >= mean10 >= mean20):
@@ -190,6 +191,7 @@ def get_color(ljjz_data):
         return ('突破向上')
     else:
         return ('震荡筑底')
+    '''
 
 def get_num(ljjz_data):
     num1=sum(ljjz_data[-9:-4])-sum(ljjz_data[-4:])
@@ -212,12 +214,17 @@ def working(code):
     dwjz=data['单位净值'].values[-1]
     ljjz=ljjz_data[-1]
     num1,num2=get_num(ljjz_data) #求大幅跌涨累计净值
+    cache1,cache2=get_color(ljjz_data) #求近20天均值极值点
+
     num1=round(dwjz+(num1-ljjz),3) #大幅下跌单位净值
     num2=round(dwjz+(num2-ljjz),3) #大幅上涨单位净值
 
+    cache1=round(dwjz+(cache1-ljjz),3)
+    cache2=round(dwjz+(cache2-ljjz),3)
+
     sio_content=f'<p><strong>{date}</strong></p>'
     sio_content+=f'<p><strong>{name}</strong></p>'
-    sio_content=pd_jz(ljjz_data,ljjz,num1,num2,dwjz,sio_content)
+    sio_content=pd_jz(ljjz_data,ljjz,num1,num2,cache1,cache2,dwjz,sio_content)
 
     return (sio_content)
 
@@ -241,7 +248,7 @@ def main():
     sio_content=''
     for i in t:
         sio_content+=i
-    sio_digest=time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n'
+    sio_digest = time.strftime('%Y-%m-%d UTC(%H:%M)', time.localtime()) + '\n'
     sio_digest=f'{sio_digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
     send_mpnews(title,sio_content,sio_digest)
 

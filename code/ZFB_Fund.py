@@ -153,8 +153,7 @@ def get_color(mean5,mean10,mean20):
         return ('震荡筑底')
 
 def get_additional(value,mean5,mean10,mean20):
-    num=(value-mean5)*16+(value-mean10)*18+(value-mean20)*29
-    return (num)
+    return (value-mean5)*16+(value-mean10)*18+(value-mean20)*29
 
 def working(code):
     #获取历史净值
@@ -186,7 +185,7 @@ def working(code):
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if(today_lj > max(mean5,mean10,mean20)+0.0002):
+    if(today_lj > max(mean5,mean10,mean20)+0.0002)and('上' in tip1):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p>卖出<font color="red"> {round((10 + get_additional(today_lj,mean5,mean10,mean20))/(dwjz+zf),1)} </font>份<small> {tip1}</small></font></p>'
@@ -224,7 +223,7 @@ def main():
         content1+=i[0]
         content2+=i[1]
         content3+=i[2]
-    digest=time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n'
+    digest = time.strftime('%Y-%m-%d UTC(%H:%M)', time.localtime()) + '\n'
     digest=f'{digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
     send_mpnews(title,content1+content2+content3,digest)
 
