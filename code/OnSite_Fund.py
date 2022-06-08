@@ -167,8 +167,7 @@ def pd_jz(ljjz_data,lj,num1,num2,cache1,cache2,dwjz,sio_content):
     else:
         sio_content+=f'<p>🚦🍏🍏🍏</p>'
 
-    dict_jz={num1:'📉',num2:'📈',dwjz:'🚨',cache1:'💧',cache2:'🔥'}
-    #🔺🔻🔼⏫🔽⏬🔥💧❄️🔅🔆
+    dict_jz={num1:'📉',num2:'📈',dwjz:'🔥',cache1:'🟩',cache2:'🟥'}
     for i in sorted(dict_jz,reverse=True):
         sio_content+=f'<p>{dict_jz[i]}{i}</p>'
         
