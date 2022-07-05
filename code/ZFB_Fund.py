@@ -185,7 +185,7 @@ def working(code):
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if(today_lj > max(mean5,mean10,mean20)+0.0002)and('上' in tip1):
+    if(min(mean5,mean10,mean20)+0.0002 < today_lj < max(mean5,mean10,mean20)+0.0002):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p>卖出<font color="red"> {round((10 + get_additional(today_lj,mean5,mean10,mean20))/(dwjz+zf),1)} </font>份<small> {tip1}</small></font></p>'

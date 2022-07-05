@@ -167,7 +167,7 @@ def pd_jz(ljjz_data,lj,num1,num2,cache1,cache2,dwjz,sio_content):
     else:
         sio_content+=f'<p>🚦🍏🍏🍏</p>'
 
-    dict_jz={num1:'📉',num2:'📈',dwjz:'🔸',cache1:'🟩',cache2:'🟥'}
+    dict_jz={num1:'📉',num2:'📈',dwjz:'🔥',cache1:'🟩',cache2:'🟥'}
     for i in sorted(dict_jz,reverse=True):
         sio_content+=f'<p>{dict_jz[i]}{i}</p>'
         
@@ -245,9 +245,7 @@ def main():
 
     fund_list=fund_list['ID'].tolist()
     t = process_map(try_many_times, fund_list, max_workers=5)
-    sio_content=''
-    for i in t:
-        sio_content+=i
+    sio_content = ''.join(t)
     sio_digest = time.strftime('%Y-%m-%d UTC(%H:%M)', time.localtime()) + '\n'
     sio_digest=f'{sio_digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
     send_mpnews(title,sio_content,sio_digest)
