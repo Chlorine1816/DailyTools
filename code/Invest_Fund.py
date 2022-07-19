@@ -185,7 +185,7 @@ def working(code,moneylist):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
-    elif(today_lj < min(mean5,mean10,mean20)-0.0002)and(gszf <= 0.5)and(tip2 > 0):
+    elif(today_lj < min(mean5,mean10,mean20)-0.0002)and(gszf <= 0.5)and(tip2 > 1):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB<small> {tip1}</small></font></p>'
@@ -237,7 +237,7 @@ def main():
         content1+=pool_data.get()[0]
         content2+=pool_data.get()[1]
         content3+=pool_data.get()[2]
-    digest=time.strftime(f'%Y-%m-%d UTC(%H:%M)', time.localtime())+'\n'
+    digest = time.strftime('%Y-%m-%d UTC(%H:%M)', time.localtime()) + '\n'
     digest=f'{digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
     send_mpnews(title,content1+content2+content3,digest)
 
