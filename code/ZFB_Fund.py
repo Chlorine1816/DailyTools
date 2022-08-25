@@ -142,9 +142,9 @@ def pd_jz(lj_data,jz):
 
 def get_color(ljjz_data):
     mean=np.mean
-    mean5=round(mean(ljjz_data[-5:]),3) #前5天净值均值
-    mean10=round(mean(ljjz_data[-10:]),3)#前10天净值均值
-    mean20=round(mean(ljjz_data[-20:]),3)#前20天净值均值
+    mean5=round(mean(ljjz_data[-5:]),4) #前5天净值均值
+    mean10=round(mean(ljjz_data[-10:]),4)#前10天净值均值
+    mean20=round(mean(ljjz_data[-20:]),4)#前20天净值均值
 
     return(min(mean5,mean10,mean20),max(mean5,mean10,mean20))
 
