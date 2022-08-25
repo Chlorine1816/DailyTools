@@ -142,17 +142,18 @@ def pd_jz(lj_data,jz):
     else:
         return ('📉',4)
 
-def get_color(mean5,mean10,mean20):
-    if (mean5 <= mean10 <= mean20):
-        return('大幅下跌')
-    elif(mean5 >= mean10 >= mean20):
-        return('大幅上涨')
-    elif (mean5 <= mean10)and(mean5 <= mean20)and(mean10 >= mean20):
-        return ('破线向下')
-    elif (mean5 >= mean10)and(mean5 >= mean20)and(mean10 <= mean20):
-        return ('突破向上')
-    else:
-        return ('震荡筑底')
+def get_color(ljjz_data):
+    mean=np.mean
+    mean5=round(mean(ljjz_data[-5:]),3) #前5天净值均值
+    mean10=round(mean(ljjz_data[-10:]),3)#前10天净值均值
+    mean20=round(mean(ljjz_data[-20:]),3)#前20天净值均值
+
+    return(min(mean5,mean10,mean20),max(mean5,mean10,mean20))
+
+def get_num(ljjz_data):
+    num1=sum(ljjz_data[-9:-4])-sum(ljjz_data[-4:])
+    num2=sum(ljjz_data[-19:-9])-sum(ljjz_data[-9:])
+    return(min(num1,num2),max(num1,num2))
 
 def working(code,moneylist):
     data=get_his(code)
@@ -171,41 +172,37 @@ def working(code,moneylist):
         lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
-    mean=np.mean
-    mean5=round(mean(lj_data[-5:]),4) #5日均值
-    mean10=round(mean(lj_data[-10:]),4) #10日均值
-    mean20=round(mean(lj_data[-20:]),4) #20日均值
+    num_xd,num_sz=get_num(lj_data) #求大幅跌涨累计净值
+    num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
 
-    tip1=get_color(mean5,mean10,mean20)
     state,tip2=pd_jz(lj_data,today_lj)
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (tip2 <= 0)and(min(mean5,mean10,mean20)+0.0002 < today_lj < max(mean5,mean10,mean20)+0.0002):
+    if (num_min20 >= num_sz):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p><font color="red">可以卖出一部分</font><small> {tip1}</small></font></p>'
-    elif(today_lj < min(mean5,mean10,mean20)-0.0002)and(gszf <= 0.5)and(tip2 > 0):
+        sio_content2+='<p>🚀 <font color="red">可以卖出一部分</font><small> </small></font></p>'
+    elif (num_sz >= num_max20):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB<small> {tip1}</small></font></p>'
+        sio_content1+=f'<p>🎈 买入 <font color="green">{moneylist[tip2]}</font> RMB<small> </small></font></p>'
     else:
         sio_content3=f'<p>{state}</p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content3+=f'<p>再等等看吧<small> {tip1}</small></font></p>'
+        sio_content3+='<p>🚩 再等等看吧<small> </small></font></p>'
 
     return (sio_content1,sio_content2,sio_content3)
 
-def try_many_times(code,moneylist):
-    #最多尝试5次
+def try_many_times(code, moneylist):
     for _ in range(5):
         try:
-            return(working(code,moneylist))
-        except:
+            return working(code, moneylist)
+        except Exception:
             time.sleep(1.1)
         else:
             break
-    return('')
+    return ''
 
 def main():
     start=time.perf_counter()
