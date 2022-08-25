@@ -174,8 +174,8 @@ def working(code):
         color='red' if gszf > 0 else 'green'
 
     num_xd,num_sz=get_num(lj_data) #求大幅跌涨累计净值
-    num_xd=round(dwjz+(num_xd-today_lj),3) #大幅下跌单位净值
-    num_sz=round(dwjz+(num_sz-today_lj),3) #大幅上涨单位净值
+    #num_xd=round(dwjz+(num_xd-today_lj),4) #大幅下跌单位净值
+    #num_sz=round(dwjz+(num_sz-today_lj),4) #大幅上涨单位净值
 
     num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
 
@@ -186,18 +186,18 @@ def working(code):
     if (num_min20 >= num_sz):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p>卖出<font color="red"> {round((10 + 0)/(dwjz+zf),1)} </font>份<small> 🚀</small></font></p>'
+        sio_content2+=f'<p>🚀 卖出<font color="red"> {round((10 + 0)/(dwjz+zf),1)} </font>份<small> </small></font></p>'
     elif (num_sz >= num_max20):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{tip2}</font> RMB<small> ❄️</small></font></p>'
+        sio_content1+=f'<p>🎈 买入 <font color="green">{tip2}</font> RMB<small> </small></font></p>'
     else:
         sio_content3=f'<p>{state}</p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content3+=f'<p>再等等看吧<small> 🚩</small></font></p>'
+        sio_content3+=f'<p>🚩 再等等看吧<small> </small></font></p>'
 
     return (sio_content1,sio_content2,sio_content3)
-    
+
 def try_many_times(code):
     for _ in range(5):
         try:
