@@ -128,13 +128,13 @@ def pd_jz(lj_data,jz):
     q5=round(np.max(lj_data),4) - 0.0002
 
     if (jz >= q5):
-        return ('📈',-1)
+        return ('📈',-2)
     elif (jz > q4):
-        return ('🍎🍎🍎',0)
+        return ('🍎🍎🍎',-1)
     elif (jz > q3):
-        return ('🍎🍎🍏',10)
+        return ('🍎🍎🍏',0)
     elif (jz > q2):
-        return ('🍎🍏🍏',15)
+        return ('🍎🍏🍏',10)
     elif (jz > q1):
         return ('🍏🍏🍏',20)
     else:
@@ -183,10 +183,10 @@ def working(code):
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (num_min20 >= num_sz)and(today_lj > num_max20)and(tip2 < 15):
+    if (num_min20 >= num_sz)and(today_lj > num_max20)and(tip2 < 0):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p>卖出<font color="red"> {round((10 + 0)/(dwjz+zf),1)} </font>份<small> </small></font></p>'
+        sio_content2+=f'<p>卖出<font color="red"> {round((10 * -(tip2))/(dwjz+zf),1)} </font>份<small> </small></font></p>'
     elif (num_sz >= num_max20)and(today_lj < num_min20)and(tip2 > 0):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
