@@ -187,7 +187,7 @@ def working(code):
         sio_content2=f'<p>{state}</p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p>卖出<font color="red"> {round((10 * -(tip2))/(dwjz+zf),1)} </font>份<small> </small></font></p>'
-    elif (num_sz >= num_max20)and(today_lj < num_min20)and(tip2 > 0):
+    elif (today_lj <= max(num_min20,num_xd))and(tip2 > 0):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{tip2}</font> RMB<small> </small></font></p>'
