@@ -157,8 +157,8 @@ def get_num(ljjz_data):
 def working(code,moneylist):
     data=get_his(code)
     name,gszf=get_fund2(code) #获取当日 涨幅
-    lj_data=data['最新累计净值']
     dwjz=data['最新单位净值'].values[-1]
+    lj_data=data['最新累计净值'].values
     days=lj_data.shape[0] #历史数据天数
 
     if gszf==False :
@@ -179,17 +179,17 @@ def working(code,moneylist):
     sio_content2=''
     sio_content3=''
     if (num_min20 >= num_sz)and(today_lj > num_max20)and(tip2 < 1):
-        sio_content2=f'<p>{state} <small>{days}</small></p>'
+        sio_content2=f'<p>{state} </p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+='<p><font color="red">可以卖出一部分</font><small> </small></font></p>'
+        sio_content2+='<p><font color="red">可以卖出一部分</font></p>'
     elif (today_lj <= max(num_min20,num_xd))and(tip2 > 1):
-        sio_content1=f'<p>{state} <small>{days}</small></p>'
+        sio_content1=f'<p>{state} </p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB<small> </small></font></p>'
+        sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> 元</p>'
     else:
-        sio_content3=f'<p>{state} <small>{days}</small></p>'
+        sio_content3=f'<p>{state} </p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content3+='<p>再等等看吧<small> </small></font></p>'
+        sio_content3+='<p>再等等看吧</p>'
 
     return (sio_content1,sio_content2,sio_content3)
 
