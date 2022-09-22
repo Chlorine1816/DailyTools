@@ -179,15 +179,15 @@ def working(code):
     sio_content2=''
     sio_content3=''
     if (num_min20 >= num_up)and(today_lj > num_max20)and(tip2 < 0):
-        sio_content2=f'<p>{state} <font color="black"><small>{days}</small></font></p>'
+        sio_content2=f'<p>{state} <small>{days}</small></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p>卖出<font color="red"> {round((10 * -(tip2))/(dwjz+zf),1)} </font>份<small> </small></font></p>'
     elif (today_lj <= max(num_min20,num_down))and(tip2 > 0):
-        sio_content1=f'<p>{state}</p>'
+        sio_content1=f'<p>{state} <small>{days}</small></p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{tip2}</font> RMB<small> </small></font></p>'
     else:
-        sio_content3=f'<p>{state}</p>'
+        sio_content3=f'<p>{state} <small>{days}</small></p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content3 += '<p>再等等看吧<small> </small></font></p>'
 
