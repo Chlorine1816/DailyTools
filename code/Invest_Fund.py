@@ -157,18 +157,18 @@ def get_num(ljjz_data):
 def working(code,moneylist):
     data=get_his(code)
     name,gszf=get_fund2(code) #获取当日 涨幅
-    lj_data=data['最新累计净值'].values[-49:]
+    lj_data=data['最新累计净值']
     dwjz=data['最新单位净值'].values[-1]
+    days=lj_data.shape[0] #历史数据天数
 
     if gszf==False :
         gszf=0
-        lj_data=data['最新累计净值'].values[-50:]
         today_lj=lj_data[-1]
         color='black'
     else:
         dwjz=dwjz*gszf/100
         today_lj=round(lj_data[-1]+dwjz,4) #当日累计估值
-        lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
+        lj_data=np.append(lj_data,today_lj) #前1季度累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
     num_xd,num_sz=get_num(lj_data) #求大幅跌涨累计净值
@@ -179,7 +179,7 @@ def working(code,moneylist):
     sio_content2=''
     sio_content3=''
     if (num_min20 >= num_sz)and(today_lj > num_max20)and(tip2 < 1):
-        sio_content2=f'<p>{state}</p>'
+        sio_content2=f'<p>{state} <font color="black"><small>{days}</small></font></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+='<p><font color="red">可以卖出一部分</font><small> </small></font></p>'
     elif (today_lj <= max(num_min20,num_xd))and(tip2 > 1):
