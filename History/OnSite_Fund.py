@@ -180,18 +180,6 @@ def get_color(ljjz_data):
     mean20=round(mean(ljjz_data[-20:]),3)#前20天净值均值
 
     return(min(mean5,mean10,mean20),max(mean5,mean10,mean20))
-    '''
-    if (mean5 <= mean10 <= mean20):
-        return('大幅下跌')
-    elif(mean5 >= mean10 >= mean20):
-        return('大幅上涨')
-    elif (mean5 <= mean10)and(mean5 <= mean20)and(mean10 >= mean20):
-        return ('破线向下')
-    elif (mean5 >= mean10)and(mean5 >= mean20)and(mean10 <= mean20):
-        return ('突破向上')
-    else:
-        return ('震荡筑底')
-    '''
 
 def get_num(ljjz_data):
     num1=sum(ljjz_data[-9:-4])-sum(ljjz_data[-4:])
@@ -229,15 +217,14 @@ def working(code):
     return (sio_content)
 
 def try_many_times(code):
-    #最多尝试5次
     for _ in range(5):
         try:
-            return(working(code))
-        except:
+            return working(code)
+        except Exception:
             time.sleep(1.1)
         else:
             break
-    return('')
+    return ''
 
 def main():
     start=time.perf_counter()

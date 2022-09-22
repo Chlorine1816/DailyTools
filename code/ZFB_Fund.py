@@ -62,6 +62,7 @@ def get_daily_sentence():
 
 def get_his(fund_id):
     time.sleep(random.randint(1,2)+random.random())
+    #近1季度
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
     r=requests.get(url,headers=headers)
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
@@ -154,47 +155,42 @@ def get_num(ljjz_data):
     return(min(num1,num2),max(num1,num2))
 
 def working(code):
-    #获取历史净值
-    data=get_his(code)
+    data=get_his(code) #获取历史净值
     name,gszf=get_fund2(code) #获取当日 涨幅
-
     dwjz=data['最新单位净值'].values[-1]
-    lj_data=data['最新累计净值'].values[-49:]
-    
+    lj_data=data['最新累计净值'].values  
+    days=lj_data.shape[0] #历史数据天数
+
     if gszf==False :
         gszf=0
         zf=0
-        lj_data=data['最新累计净值'].values[-50:]
         today_lj=lj_data[-1]
         color='black'
     else:
         zf=dwjz*gszf/100 #当日单位净值估值涨幅
         today_lj=round(lj_data[-1]+zf,4) #当日累计净值估值
-        lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
+        lj_data=np.append(lj_data,today_lj) #前1季度累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
-    num_xd,num_sz=get_num(lj_data) #求大幅跌涨累计净值
-    #num_xd=round(dwjz+(num_xd-today_lj),4) #大幅下跌单位净值
-    #num_sz=round(dwjz+(num_sz-today_lj),4) #大幅上涨单位净值
-
+    num_down,num_up=get_num(lj_data) #求大幅跌涨累计净值
     num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
 
     state,tip2=pd_jz(lj_data,today_lj)
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (num_min20 >= num_sz)and(today_lj > num_max20)and(tip2 < 0):
-        sio_content2=f'<p>{state}</p>'
+    if (num_min20 >= num_up)and(today_lj > num_max20)and(tip2 < 0):
+        sio_content2=f'<p>{state} <small>{days}</small></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p>卖出<font color="red"> {round((10 * -(tip2))/(dwjz+zf),1)} </font>份<small> </small></font></p>'
-    elif (today_lj <= max(num_min20,num_xd))and(tip2 > 0):
+    elif (today_lj <= max(num_min20,num_down))and(tip2 > 0):
         sio_content1=f'<p>{state}</p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{tip2}</font> RMB<small> </small></font></p>'
     else:
         sio_content3=f'<p>{state}</p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content3+=f'<p>再等等看吧<small> </small></font></p>'
+        sio_content3 += '<p>再等等看吧<small> </small></font></p>'
 
     return (sio_content1,sio_content2,sio_content3)
 
