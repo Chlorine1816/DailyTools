@@ -171,18 +171,18 @@ def working(code,moneylist):
         lj_data=np.append(lj_data,today_lj) #前1季度累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
-    num_xd,num_sz=get_num(lj_data) #求大幅跌涨累计净值
+    num_down,num_up=get_num(lj_data) #求大幅跌涨累计净值
     num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
 
     state,tip2=pd_jz(lj_data,today_lj)
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (num_min20 >= num_sz)and(today_lj > num_max20)and(tip2 < 1):
+    if (today_lj >= max(num_max20,num_up))and(tip2 < 1):
         sio_content2=f'<p>{state} </p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+='<p><font color="red">可以卖出一部分</font></p>'
-    elif (today_lj <= max(num_min20,num_xd))and(tip2 > 1):
+    elif (today_lj <= max(num_min20,num_down))and(tip2 > 1):
         sio_content1=f'<p>{state} </p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> 元</p>'
