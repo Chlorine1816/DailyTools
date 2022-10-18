@@ -6,7 +6,7 @@ import numpy as np
 from multiprocessing import Pool
 import random
 
-headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 Edg/98.0.1108.56'}
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47'}
 
 corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
@@ -54,17 +54,17 @@ def send_mpnews(title,content,digest):
 def get_daily_sentence():
     url = "http://open.iciba.com/dsapi/"
     try:
-        r = requests.get(url)
+        r = requests.get(url,timeout=5)
         r = json.loads(r.text)
         content = r["content"]
         note = r["note"]
         return(f'{content}\n{note}\n')
-    except:
+    except Exception:
         return(f'Happy every day !\n')
 
 def get_his(fund_id):
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
-    r=requests.get(url,headers=headers)
+    r=requests.get(url,headers=headers,timeout=22)
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
     df=pd.DataFrame(df)
     df=df[['净值日期','基金名称','最新单位净值','最新累计净值']]
@@ -79,31 +79,28 @@ def get_fund1(fund_id):
     time.sleep(random.randint(1,2)+random.random())
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
     try:
-        req=requests.get(url=url,headers=headers)
+        req=requests.get(url=url,headers=headers,timeout=22)
         req.encoding='utf-8'
         if req.status_code==200:
             html=req.text
-    except:
+    except Exception:
         html=''
     bf=BeautifulSoup(html,'lxml')
     try:
         gszf=0
         gszf=bf.find_all(id='fvr_add')[0].text.strip()
         gszf=float(gszf.split(' ')[1].split('%')[0])
-        if gszf == 0:
-            return (True)
-        else:
-            return (gszf)
-    except:
+        return True if gszf == 0 else gszf
+    except Exception:
         return (True)
 
 def get_fund2(fund_id):
     time.sleep(random.randint(1,2)+random.random())
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
     #尝试5次
-    for i in range(5):
+    for _ in range(5):
         try:
-            req=requests.get(url=url,headers=headers)
+            req=requests.get(url=url,headers=headers,timeout=22)
             req.encoding='utf-8'
             html=req.text
             bf=BeautifulSoup(html,'lxml')
@@ -113,7 +110,7 @@ def get_fund2(fund_id):
             name=jz.find_all('h4',class_='title')[0].text
             #涨跌
             gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
-        except:
+        except Exception:
             time.sleep(1.1)
         else:
             return (name,gszf)
