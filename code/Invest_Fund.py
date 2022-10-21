@@ -179,7 +179,7 @@ def working(code,moneylist):
         sio_content2=f'<p>{state} </p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+='<p><font color="red">可以卖出一部分</font></p>'
-    elif ((num_down - 0.0001 <= today_lj <= num_min20 + 0.0001)and(tip2 > 1))or(tip2 == 4):
+    elif (today_lj <= min(num_min20,num_down) + 0.0002)and(tip2 > 1):
         sio_content1=f'<p>{state} </p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> 元</p>'
