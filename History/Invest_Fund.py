@@ -6,7 +6,7 @@ import numpy as np
 from multiprocessing import Pool
 import random
 
-headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 Edg/98.0.1108.56'}
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47'}
 
 corpid=os.environ['CORPID']  #公司id
 agentid=os.environ['AGENTID']  #机器人id
@@ -54,17 +54,17 @@ def send_mpnews(title,content,digest):
 def get_daily_sentence():
     url = "http://open.iciba.com/dsapi/"
     try:
-        r = requests.get(url)
+        r = requests.get(url,timeout=5)
         r = json.loads(r.text)
         content = r["content"]
         note = r["note"]
         return(f'{content}\n{note}\n')
-    except:
+    except Exception:
         return(f'Happy every day !\n')
 
 def get_his(fund_id):
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
-    r=requests.get(url,headers=headers)
+    r=requests.get(url,headers=headers,timeout=22)
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
     df=pd.DataFrame(df)
     df=df[['净值日期','基金名称','最新单位净值','最新累计净值']]
@@ -79,31 +79,28 @@ def get_fund1(fund_id):
     time.sleep(random.randint(1,2)+random.random())
     url=f'https://www.dayfund.cn/fundpre/{fund_id}.html'
     try:
-        req=requests.get(url=url,headers=headers)
+        req=requests.get(url=url,headers=headers,timeout=22)
         req.encoding='utf-8'
         if req.status_code==200:
             html=req.text
-    except:
+    except Exception:
         html=''
     bf=BeautifulSoup(html,'lxml')
     try:
         gszf=0
         gszf=bf.find_all(id='fvr_add')[0].text.strip()
         gszf=float(gszf.split(' ')[1].split('%')[0])
-        if gszf == 0:
-            return (True)
-        else:
-            return (gszf)
-    except:
+        return True if gszf == 0 else gszf
+    except Exception:
         return (True)
 
 def get_fund2(fund_id):
     time.sleep(random.randint(1,2)+random.random())
     url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
     #尝试5次
-    for i in range(5):
+    for _ in range(5):
         try:
-            req=requests.get(url=url,headers=headers)
+            req=requests.get(url=url,headers=headers,timeout=22)
             req.encoding='utf-8'
             html=req.text
             bf=BeautifulSoup(html,'lxml')
@@ -113,7 +110,7 @@ def get_fund2(fund_id):
             name=jz.find_all('h4',class_='title')[0].text
             #涨跌
             gszf=float(jz.find_all('span',id='fund_gszf')[0].text.strip('%'))
-        except:
+        except Exception:
             time.sleep(1.1)
         else:
             return (name,gszf)
@@ -157,39 +154,39 @@ def get_num(ljjz_data):
 def working(code,moneylist):
     data=get_his(code)
     name,gszf=get_fund2(code) #获取当日 涨幅
-    lj_data=data['最新累计净值'].values[-49:]
     dwjz=data['最新单位净值'].values[-1]
+    lj_data=data['最新累计净值'].values
+    days=lj_data.shape[0] #历史数据天数
 
     if gszf==False :
         gszf=0
-        lj_data=data['最新累计净值'].values[-50:]
         today_lj=lj_data[-1]
         color='black'
     else:
         dwjz=dwjz*gszf/100
         today_lj=round(lj_data[-1]+dwjz,4) #当日累计估值
-        lj_data=np.append(lj_data,today_lj) #前49日累计净值+当日估值
+        lj_data=np.append(lj_data,today_lj) #前1季度累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
-    num_xd,num_sz=get_num(lj_data) #求大幅跌涨累计净值
+    num_down,num_up=get_num(lj_data) #求大幅跌涨累计净值
     num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
 
     state,tip2=pd_jz(lj_data,today_lj)
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (num_min20 >= num_sz)and(today_lj > num_max20)and(tip2 < 1):
-        sio_content2=f'<p>{state}</p>'
+    if (today_lj >= max(num_max20,num_up))and(tip2 < 1):
+        sio_content2=f'<p>{state} </p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+='<p><font color="red">可以卖出一部分</font><small> </small></font></p>'
-    elif (today_lj <= max(num_min20,num_xd))and(tip2 > 1):
-        sio_content1=f'<p>{state}</p>'
+        sio_content2+='<p><font color="red">可以卖出一部分</font></p>'
+    elif (today_lj <= max(num_min20,num_down))and(tip2 > 1):
+        sio_content1=f'<p>{state} </p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> RMB<small> </small></font></p>'
+        sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> 元</p>'
     else:
-        sio_content3=f'<p>{state}</p>'
+        sio_content3=f'<p>{state} </p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content3+='<p>再等等看吧<small> </small></font></p>'
+        sio_content3+='<p>再等等看吧</p>'
 
     return (sio_content1,sio_content2,sio_content3)
 
