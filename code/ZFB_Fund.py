@@ -180,7 +180,7 @@ def working(code):
     if (today_lj >= max(num_max20,num_up)):
         sio_content2=f'<p>{state} </p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p>卖出<font color="red"> {round((10 * -(tip2))/(dwjz+zf),1)} </font>份</p>'
+        sio_content2+=f'<p>卖出<font color="red"> {round((10 * (-tip2))/(dwjz+zf),1)} </font>份</p>'
     elif (today_lj <= min(num_min20,num_down) + 0.0002)and(tip2 > 0):
         sio_content1=f'<p>{state} </p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
