@@ -129,7 +129,7 @@ def pd_jz(lj_data,jz):
     if (jz >= q5):
         return ('📈',-15)
     elif (jz > q4):
-        return ('🍎🍎🍎',-10)
+        return ('🍎🍎🍎',-9)
     elif (jz > q3):
         return ('🍎🍎🍏',0)
     elif (jz > q2):
