@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from tqdm.contrib.concurrent import process_map
 import random
-from bisect import bisect_left
+from bisect import bisect_right
 from bs4 import BeautifulSoup
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.36'}
@@ -98,7 +98,7 @@ def get_fund_name(fund_id):
 
 def pd_jz(ljjz_data,ljjz,sio_content):
     ljjz_data.sort()
-    num = round(bisect_left(ljjz_data,ljjz)/len(ljjz_data)*100,1)
+    num = round(bisect_right(ljjz_data,ljjz)/len(ljjz_data)*100,1)
     if num < 25:
         sio_content+=f'<p>🍏🍏🍏 <font color="green"><small>{num}%</small></font></p>'
     elif num < 50:

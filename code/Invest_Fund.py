@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import numpy as np
 from multiprocessing import Pool
 import random
-from bisect import bisect_left
+from bisect import bisect_right
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47'}
 
@@ -120,7 +120,7 @@ def get_fund2(fund_id):
 
 def pd_jz(lj_data,jz):
     lj_data.sort()
-    num = round(bisect_left(lj_data,jz)/len(lj_data)*100,1)
+    num = round(bisect_right(lj_data,jz)/len(lj_data)*100,1)
     if num < 25:
         return ('🍏🍏🍏',num)
     elif num < 50:
@@ -135,7 +135,7 @@ def get_color(ljjz_data):
     mean5=round(mean(ljjz_data[-5:]),4) #前5天净值均值
     mean10=round(mean(ljjz_data[-10:]),4)#前10天净值均值
     mean20=round(mean(ljjz_data[-20:]),4)#前20天净值均值
-    return(max(mean5,mean10,mean20))
+    return(min(mean5,mean10,mean20),max(mean5,mean10,mean20))
 
 def working(code,moneylist):
     data=get_his(code)
@@ -153,7 +153,7 @@ def working(code,moneylist):
         lj_data=np.append(lj_data,today_lj) #前1季度累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
-    num_max20=get_color(lj_data) #求近20天均值极值点
+    num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
 
     state,tip=pd_jz(lj_data,today_lj)
     sio_content1=''
@@ -163,7 +163,7 @@ def working(code,moneylist):
         sio_content2=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+='<p><font color="red">可以卖出一部分</font></p>'
-    elif (tip < 25):
+    elif (today_lj < num_min20)and(tip < 25):
         sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{moneylist[int(tip)//9]}</font> 元</p>'

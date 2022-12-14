@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import numpy as np
 from tqdm.contrib.concurrent import process_map
 import random
-from bisect import bisect_left
+from bisect import bisect_right
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47'}
 
@@ -121,7 +121,7 @@ def get_fund2(fund_id):
 
 def pd_jz(lj_data,jz):
     lj_data.sort()
-    num = round(bisect_left(lj_data,jz)/len(lj_data)*100,1)
+    num = round(bisect_right(lj_data,jz)/len(lj_data)*100,1)
     if num < 25:
         return ('🍏🍏🍏',num)
     elif num < 50:
@@ -130,6 +130,13 @@ def pd_jz(lj_data,jz):
         return ('🍎🍎🍏',num)
     else:
         return ('🍎🍎🍎',num)
+
+def get_color(ljjz_data):
+    mean=np.mean
+    mean5=round(mean(ljjz_data[-5:]),4) #前5天净值均值
+    mean10=round(mean(ljjz_data[-10:]),4)#前10天净值均值
+    mean20=round(mean(ljjz_data[-20:]),4)#前20天净值均值
+    return(min(mean5,mean10,mean20),max(mean5,mean10,mean20))
 
 def working(code):
     data=get_his(code) #获取历史净值
@@ -148,15 +155,17 @@ def working(code):
         lj_data=np.append(lj_data,today_lj) #前1季度累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
+    num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
+
     state,tip=pd_jz(lj_data,today_lj)
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (tip > 80):
+    if (tip > 80)and(today_lj > num_max20):
         sio_content2=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p>卖出<font color="red"> {round((tip-80)/(dwjz+zf),1)} </font>份</p>'
-    elif (tip < 25):
+    elif (tip < 25)and(today_lj < num_min20):
         sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{max(25-tip,10)}</font> 元</p>'
