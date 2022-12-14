@@ -64,7 +64,7 @@ def get_his(fund_id):
     time.sleep(random.randint(1,2)+random.random())
     # 近1年
     url=f'https://www.dayfund.cn/fundvalue/{fund_id}_y.html'
-    r=requests.get(url,headers=headers,timeout=22)
+    r=requests.get(url,headers=headers,timeout=30)
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
     df=pd.DataFrame(df)
     df=df[['净值日期','基金名称','最新单位净值','最新累计净值']]
@@ -104,18 +104,19 @@ def working(code):
     jjmc=data['基金名称'].values[-1]
     dwjz=data['最新单位净值'].values[-1]
     ljjz=data['最新累计净值'].values[-1]
-    cache1,cache2=get_color(data['最新累计净值']) #求近20天均值极值点
+    cache1,cache2=get_color(data['最新累计净值'].values) #求近20天均值极值点
 
     cache1=round(dwjz+(cache1-ljjz),3)
     cache2=round(dwjz+(cache2-ljjz),3)
 
     sio_content=f'<p><strong>{jzrq}</strong></p>'
     sio_content+=f'<p><strong>{jjmc}</strong></p>'
-    sio_content=pd_jz(data['最新累计净值'],ljjz,sio_content)
+    sio_content=pd_jz(data['最新累计净值'].values,ljjz,sio_content)
 
     sio_content+=f'<p>📈{cache2}</p>'
     sio_content+=f'<p>📉{cache1}</p>'
 
+    print(sio_content)
     return sio_content
 
 def try_many_times(code):
@@ -126,7 +127,7 @@ def try_many_times(code):
             time.sleep(1.1)
         else:
             break
-    return None
+    return ''
 
 def main():
     start=time.perf_counter()
