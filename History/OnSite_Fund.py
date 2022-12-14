@@ -194,7 +194,7 @@ def working(code):
     data['累计净值']=data['累计净值'].astype(float)
     data=data[['净值日期','累计净值','单位净值']]
     data=data.sort_values(by='净值日期',axis=0,ascending=True).reset_index(drop=True)
-    ljjz_data=data['累计净值'].values[-50:]
+    ljjz_data=data['累计净值'].values[-60:]
 
     name=get_fund2(code)
 
