@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import numpy as np
 from multiprocessing import Pool
 import random
+from bisect import bisect_left
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47'}
 
@@ -118,25 +119,16 @@ def get_fund2(fund_id):
     return (name,False)
 
 def pd_jz(lj_data,jz):
-    quantile=np.quantile
-    q1=round(np.min(lj_data),4) + 0.0002
-    q2=round(quantile(lj_data,0.25),4) 
-    q3=round(quantile(lj_data,0.50),4) 
-    q4=round(quantile(lj_data,0.75),4) 
-    q5=round(np.max(lj_data),4) - 0.0002
-
-    if (jz >= q5):
-        return ('📈',-1)
-    elif (jz > q4):
-        return ('🍎🍎🍎',0)
-    elif (jz > q3):
-        return ('🍎🍎🍏',1)
-    elif (jz > q2):
-        return ('🍎🍏🍏',2)
-    elif (jz > q1):
-        return ('🍏🍏🍏',3)
+    lj_data.sort()
+    num = round(bisect_left(lj_data,jz)/len(lj_data)*100,1)
+    if num < 25:
+        return ('🍏🍏🍏',num)
+    elif num < 50:
+        return ('🍎🍏🍏',num)
+    elif num < 75:
+        return ('🍎🍎🍏',num)
     else:
-        return ('📉',4)
+        return ('🍎🍎🍎',num)
 
 def get_color(ljjz_data):
     mean=np.mean
@@ -156,7 +148,6 @@ def working(code,moneylist):
     name,gszf=get_fund2(code) #获取当日 涨幅
     dwjz=data['最新单位净值'].values[-1]
     lj_data=data['最新累计净值'].values
-    days=lj_data.shape[0] #历史数据天数
 
     if gszf==False :
         gszf=0
@@ -171,20 +162,20 @@ def working(code,moneylist):
     num_down,num_up=get_num(lj_data) #求大幅跌涨累计净值
     num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
 
-    state,tip2=pd_jz(lj_data,today_lj)
+    state,tip=pd_jz(lj_data,today_lj)
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (today_lj >= max(num_max20,num_up))and(tip2 < 1):
-        sio_content2=f'<p>{state} </p>'
+    if (today_lj >= max(num_max20,num_up))and(tip > 80):
+        sio_content2=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+='<p><font color="red">可以卖出一部分</font></p>'
-    elif (today_lj <= min(num_min20,num_down) + 0.0002)and(tip2 > 1):
-        sio_content1=f'<p>{state} </p>'
+    elif (tip < 25):
+        sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{moneylist[tip2]}</font> 元</p>'
+        sio_content1+=f'<p>买入 <font color="green">{moneylist[tip//9]}</font> 元</p>'
     else:
-        sio_content3=f'<p>{state} </p>'
+        sio_content3=f'<p>{state} <font color="black"><small>{tip}%</small></font></p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content3+='<p>再等等看吧</p>'
 
