@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-  
-import time,requests,os,json
+import time,requests,os,json,re
 import pandas as pd
 import numpy as np
 from tqdm.contrib.concurrent import process_map
 import random
 from bisect import bisect_left
+from bs4 import BeautifulSoup
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.36'}
 
@@ -60,25 +61,44 @@ def get_daily_sentence():
     except Exception:
         return(f'Happy every day !\n')
 
-def get_his(fund_id):
+def get_his(code,per=45,sdate='',edate='',proxies=None):
     time.sleep(random.randint(1,2)+random.random())
-    # 近1年
-    url=f'https://www.dayfund.cn/fundvalue/{fund_id}_y.html'
-    r=requests.get(url,headers=headers,timeout=30)
+    url='http://fund.eastmoney.com/f10/F10DataApi.aspx'
+    params = {'type': 'lsjz', 'code': code, 'page':1,'per': per, 'sdate': sdate, 'edate': edate}
+    r=requests.get(url,params=params,headers=headers,timeout=30)
+    # 获取总页数
+    pattern = re.compile(r'pages:(.*),')
+    pages = int(re.search(pattern,r.text)[1])
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
-    df=pd.DataFrame(df)
-    df=df[['净值日期','基金名称','最新单位净值','最新累计净值']]
-    df['最新单位净值']=df['最新单位净值'].astype(float)
-    df['最新累计净值']=df['最新累计净值'].astype(float)
-    df.dropna(subset=['净值日期','基金名称','最新单位净值','最新累计净值'],how='any',inplace=True)
-    # 按照日期升序排序并重建索引
-    df.sort_values(by='净值日期',axis=0,ascending=True,ignore_index=True,inplace=True)
-    return(df)
+    for page in range(2,pages+1):
+        time.sleep(0.2)
+        params['page']=page
+        r=requests.get(url,params=params,headers=headers,timeout=30)
+        df=pd.concat([df,pd.read_html(r.text,encoding='utf-8',header=0)[0]])
+    df=df[['净值日期','单位净值','累计净值']]
+    df.sort_values('净值日期',inplace=True,ignore_index=True)
+    return df
+
+def get_fund_name(fund_id):
+    time.sleep(random.randint(1,2)+random.random())
+    url=f'http://fundf10.eastmoney.com/jjjz_{fund_id}.html'
+    try:
+        req=requests.get(url=url,headers=headers)
+        req.encoding='utf-8'
+        if req.status_code==200:
+            html=req.text
+    except Exception:
+        html=''
+    bf=BeautifulSoup(html,'lxml')
+    jz=bf.find_all('div',class_='bs_jz')
+    jz=BeautifulSoup(str(jz),'lxml')
+    #名称
+    name=jz.find_all('h4',class_='title')[0].text
+    return (name)
 
 def pd_jz(ljjz_data,ljjz,sio_content):
     ljjz_data.sort()
     num = round(bisect_left(ljjz_data,ljjz)/len(ljjz_data)*100,2)
-
     if num < 25:
         sio_content+=f'<p>🍏🍏🍏 <font color="green"><small>{num}%</small></font></p>'
     elif num < 50:
@@ -86,8 +106,7 @@ def pd_jz(ljjz_data,ljjz,sio_content):
     elif num < 75:
         sio_content+=f'<p>🍎🍎🍏 <font color="black"><small>{num}%</small></font></p>'
     else:
-        sio_content+=f'<p>🍎🍎🍎 <font color="red"><small>{num}%</small></font></p>'
-        
+        sio_content+=f'<p>🍎🍎🍎 <font color="red"><small>{num}%</small></font></p>'    
     return sio_content
 
 def get_color(ljjz_data):
@@ -95,23 +114,25 @@ def get_color(ljjz_data):
     mean5=round(mean(ljjz_data[-5:]),3) #前5天净值均值
     mean10=round(mean(ljjz_data[-10:]),3)#前10天净值均值
     mean20=round(mean(ljjz_data[-20:]),3)#前20天净值均值
-
     return (min(mean5,mean10,mean20),max(mean5,mean10,mean20))
 
 def working(code):
-    data=get_his(code)
+    edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
+    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-365*24*3600))
+    data=get_his(code=code,sdate=sdate,edate=edate)
+    jjmc=get_fund_name(code)
+
     jzrq=data['净值日期'].values[-1]
-    jjmc=data['基金名称'].values[-1]
-    dwjz=data['最新单位净值'].values[-1]
-    ljjz=data['最新累计净值'].values[-1]
-    cache1,cache2=get_color(data['最新累计净值'].values) #求近20天均值极值点
+    dwjz=data['单位净值'].values[-1]
+    ljjz=data['累计净值'].values[-1]
+    cache1,cache2=get_color(data['累计净值'].values) #求近20天均值极值点
 
     cache1=round(dwjz+(cache1-ljjz),3)
     cache2=round(dwjz+(cache2-ljjz),3)
 
     sio_content=f'<p><strong>{jzrq}</strong></p>'
     sio_content+=f'<p><strong>{jjmc}</strong></p>'
-    sio_content=pd_jz(data['最新累计净值'].values,ljjz,sio_content)
+    sio_content=pd_jz(data['累计净值'].values,ljjz,sio_content)
 
     sio_content+=f'<p>📈{cache2}</p>'
     sio_content+=f'<p>📉{cache1}</p>'
