@@ -135,13 +135,7 @@ def get_color(ljjz_data):
     mean5=round(mean(ljjz_data[-5:]),4) #前5天净值均值
     mean10=round(mean(ljjz_data[-10:]),4)#前10天净值均值
     mean20=round(mean(ljjz_data[-20:]),4)#前20天净值均值
-
-    return(min(mean5,mean10,mean20),max(mean5,mean10,mean20))
-
-def get_num(ljjz_data):
-    num1=sum(ljjz_data[-9:-4])-sum(ljjz_data[-4:])
-    num2=sum(ljjz_data[-19:-9])-sum(ljjz_data[-9:])
-    return(min(num1,num2),max(num1,num2))
+    return(max(mean5,mean10,mean20))
 
 def working(code,moneylist):
     data=get_his(code)
@@ -159,21 +153,20 @@ def working(code,moneylist):
         lj_data=np.append(lj_data,today_lj) #前1季度累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
-    num_down,num_up=get_num(lj_data) #求大幅跌涨累计净值
-    num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
+    num_max20=get_color(lj_data) #求近20天均值极值点
 
     state,tip=pd_jz(lj_data,today_lj)
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (today_lj >= max(num_max20,num_up))and(tip > 80):
+    if (today_lj > num_max20)and(tip > 80):
         sio_content2=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+='<p><font color="red">可以卖出一部分</font></p>'
     elif (tip < 25):
         sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{moneylist[tip//9]}</font> 元</p>'
+        sio_content1+=f'<p>买入 <font color="green">{moneylist[int(tip)//9]}</font> 元</p>'
     else:
         sio_content3=f'<p>{state} <font color="black"><small>{tip}%</small></font></p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
