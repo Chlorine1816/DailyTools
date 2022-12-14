@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import numpy as np
 from tqdm.contrib.concurrent import process_map
 import random
+from bisect import bisect_left
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47'}
 
@@ -119,25 +120,16 @@ def get_fund2(fund_id):
     return (name,False)
 
 def pd_jz(lj_data,jz):
-    quantile=np.quantile
-    q1=np.min(lj_data)
-    q2=quantile(lj_data,0.25)
-    q3=quantile(lj_data,0.50)
-    q4=quantile(lj_data,0.75)
-    q5=np.max(lj_data)
-
-    if (jz >= q5):
-        return ('📈',-15)
-    elif (jz > q4):
-        return ('🍎🍎🍎',-8)
-    elif (jz > q3):
-        return ('🍎🍎🍏',0)
-    elif (jz > q2):
-        return ('🍎🍏🍏',0)
-    elif (jz > q1):
-        return ('🍏🍏🍏',10)
+    lj_data.sort()
+    num = round(bisect_left(lj_data,jz)/len(lj_data)*100,1)
+    if num < 25:
+        return ('🍏🍏🍏',num)
+    elif num < 50:
+        return ('🍎🍏🍏',num)
+    elif num < 75:
+        return ('🍎🍎🍏',num)
     else:
-        return ('📉',20)
+        return ('🍎🍎🍎',num)
 
 def working(code):
     data=get_his(code) #获取历史净值
@@ -156,20 +148,20 @@ def working(code):
         lj_data=np.append(lj_data,today_lj) #前1季度累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
-    state,tip2=pd_jz(lj_data,today_lj)
+    state,tip=pd_jz(lj_data,today_lj)
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (tip2 < 0):
-        sio_content2=f'<p>{state} </p>'
+    if (tip > 75):
+        sio_content2=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p>卖出<font color="red"> {round(abs(tip2)/(dwjz+zf),1)} </font>份</p>'
-    elif (tip2 > 0):
-        sio_content1=f'<p>{state} </p>'
+        sio_content2+=f'<p>卖出<font color="red"> {round((tip-75)/(dwjz+zf),1)} </font>份</p>'
+    elif (tip < 25):
+        sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{tip2}</font> 元</p>'
+        sio_content1+=f'<p>买入 <font color="green">{max(25-tip,10)}</font> 元</p>'
     else:
-        sio_content3=f'<p>{state} </p>'
+        sio_content3=f'<p>{state} <font color="black"><small>{tip}%</small></font></p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content3 += '<p>再等等看吧</p>'
 

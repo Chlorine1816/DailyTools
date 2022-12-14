@@ -120,44 +120,30 @@ def get_fund2(fund_id):
 
 def pd_jz(lj_data,jz):
     quantile=np.quantile
-    q1=round(np.min(lj_data),4) + 0.0002
-    q2=round(quantile(lj_data,0.25),4) 
-    q3=round(quantile(lj_data,0.50),4) 
-    q4=round(quantile(lj_data,0.75),4) 
-    q5=round(np.max(lj_data),4) - 0.0002
+    q1=np.min(lj_data)
+    q2=quantile(lj_data,0.25)
+    q3=quantile(lj_data,0.50)
+    q4=quantile(lj_data,0.75)
+    q5=np.max(lj_data)
 
     if (jz >= q5):
-        return ('📈',-2)
+        return ('📈',-15)
     elif (jz > q4):
-        return ('🍎🍎🍎',-1)
+        return ('🍎🍎🍎',-8)
     elif (jz > q3):
         return ('🍎🍎🍏',0)
     elif (jz > q2):
-        return ('🍎🍏🍏',10)
+        return ('🍎🍏🍏',0)
     elif (jz > q1):
-        return ('🍏🍏🍏',20)
+        return ('🍏🍏🍏',10)
     else:
-        return ('📉',25)
-
-def get_color(ljjz_data):
-    mean=np.mean
-    mean5=round(mean(ljjz_data[-5:]),4) #前5天净值均值
-    mean10=round(mean(ljjz_data[-10:]),4)#前10天净值均值
-    mean20=round(mean(ljjz_data[-20:]),4)#前20天净值均值
-
-    return(min(mean5,mean10,mean20),max(mean5,mean10,mean20))
-
-def get_num(ljjz_data):
-    num1=sum(ljjz_data[-9:-4])-sum(ljjz_data[-4:])
-    num2=sum(ljjz_data[-19:-9])-sum(ljjz_data[-9:])
-    return(min(num1,num2),max(num1,num2))
+        return ('📉',20)
 
 def working(code):
     data=get_his(code) #获取历史净值
     name,gszf=get_fund2(code) #获取当日 涨幅
     dwjz=data['最新单位净值'].values[-1]
     lj_data=data['最新累计净值'].values  
-    days=lj_data.shape[0] #历史数据天数
 
     if gszf==False :
         gszf=0
@@ -170,18 +156,15 @@ def working(code):
         lj_data=np.append(lj_data,today_lj) #前1季度累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
-    num_down,num_up=get_num(lj_data) #求大幅跌涨累计净值
-    num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
-
     state,tip2=pd_jz(lj_data,today_lj)
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (today_lj >= max(num_max20,num_up))and(tip2 <= 0):
+    if (tip2 < 0):
         sio_content2=f'<p>{state} </p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p>卖出<font color="red"> {round((10 - tip2)/(dwjz+zf),1)} </font>份</p>'
-    elif (today_lj <= min(num_min20,num_down) + 0.0002)and(tip2 > 0):
+        sio_content2+=f'<p>卖出<font color="red"> {round(abs(tip2)/(dwjz+zf),1)} </font>份</p>'
+    elif (tip2 > 0):
         sio_content1=f'<p>{state} </p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{tip2}</font> 元</p>'
