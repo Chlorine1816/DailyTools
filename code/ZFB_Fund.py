@@ -162,17 +162,17 @@ def working(code):
     sio_content2=''
     sio_content3=''
     if (tip > 80)and(today_lj > num_max20):
-        sio_content2=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
-        sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p>卖出<font color="red"> {round((tip-80)/(dwjz+zf),1)} </font>份</p>'
+        sio_content2=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content2+=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
+        sio_content2+=f'<p>卖出<font color="red"> {round((tip-80)*0.9/(dwjz+zf),1)} </font>份</p>'
     elif (tip < 25)and(today_lj < num_min20):
-        sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
-        sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content1=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content1+=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{max(25-tip,10)}</font> 元</p>'
     else:
-        sio_content3=f'<p>{state} <font color="black"><small>{tip}%</small></font></p>'
-        sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content3 += '<p>再等等看吧</p>'
+        sio_content3=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content3+=f'<p>{state} <font color="black"><small>{tip}%</small></font></p>'
+        sio_content3+='<p>再等等看吧</p>'
 
     return (sio_content1,sio_content2,sio_content3)
 
