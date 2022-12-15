@@ -168,7 +168,7 @@ def working(code):
     elif (tip < 25)and(today_lj < num_min20):
         sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{max(25.1-tip,10)}</font> 元</p>'
+        sio_content1+=f'<p>买入 <font color="green">{max(25-tip,10)}</font> 元</p>'
     else:
         sio_content3=f'<p>{state} <font color="black"><small>{tip}%</small></font></p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
