@@ -99,11 +99,11 @@ def get_fund_name(fund_id):
 def pd_jz(ljjz_data,ljjz,sio_content):
     ljjz_data.sort()
     num = round(bisect_right(ljjz_data,ljjz)/len(ljjz_data)*100,1)
-    if num < 25:
+    if num < 20:
         sio_content+=f'<p>🍏🍏🍏 <font color="green"><small>{num}%</small></font></p>'
     elif num < 50:
         sio_content+=f'<p>🍎🍏🍏 <font color="black"><small>{num}%</small></font></p>'
-    elif num < 75:
+    elif num < 80:
         sio_content+=f'<p>🍎🍎🍏 <font color="black"><small>{num}%</small></font></p>'
     else:
         sio_content+=f'<p>🍎🍎🍎 <font color="red"><small>{num}%</small></font></p>'    
