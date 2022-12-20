@@ -92,9 +92,8 @@ def get_fund_name(fund_id):
     bf=BeautifulSoup(html,'lxml')
     jz=bf.find_all('div',class_='bs_jz')
     jz=BeautifulSoup(str(jz),'lxml')
-    #名称
-    name=jz.find_all('h4',class_='title')[0].text
-    return (name)
+
+    return jz.find_all('h4',class_='title')[0].text
 
 def pd_jz(ljjz_data,ljjz,sio_content):
     ljjz_data.sort()
@@ -118,7 +117,7 @@ def get_color(ljjz_data):
 
 def working(code):
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
-    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-365*24*3600))
+    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-180*24*3600))
     data=get_his(code=code,sdate=sdate,edate=edate)
     jjmc=get_fund_name(code)
 
