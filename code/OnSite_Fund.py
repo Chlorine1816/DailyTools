@@ -117,7 +117,7 @@ def get_color(ljjz_data):
 
 def working(code):
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
-    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-180*24*3600))
+    sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-365*24*3600))
     data=get_his(code=code,sdate=sdate,edate=edate)
     jjmc=get_fund_name(code)
 
