@@ -122,11 +122,11 @@ def get_fund2(fund_id):
 def pd_jz(lj_data,jz):
     lj_data.sort()
     num = round(bisect_right(lj_data,jz)/len(lj_data)*100,1)
-    if num < 25:
+    if num < 20:
         return ('🍏🍏🍏',num)
     elif num < 50:
         return ('🍎🍏🍏',num)
-    elif num < 75:
+    elif num < 80:
         return ('🍎🍎🍏',num)
     else:
         return ('🍎🍎🍎',num)
@@ -161,11 +161,11 @@ def working(code):
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (tip > 80)and(today_lj > num_max20):
+    if (tip > 80)and(today_lj <= num_max20):
         sio_content2=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+=f'<p>卖出<font color="red"> {round(max(tip-80,8)*0.9/(dwjz+zf),1)} </font>份</p>'
-    elif (tip < 25)and(today_lj < num_min20):
+    elif (tip < 20):
         sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{round(max(26-tip,10),1)}</font> 元</p>'
