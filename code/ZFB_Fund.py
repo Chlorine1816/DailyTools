@@ -64,7 +64,7 @@ def get_daily_sentence():
 def get_his(fund_id):
     time.sleep(random.randint(1,2)+random.random())
     #近1季度
-    url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
+    url=f'https://www.dayfund.cn/fundvalue/{fund_id}_y.html'
     r=requests.get(url,headers=headers,timeout=22)
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
     df=pd.DataFrame(df)
