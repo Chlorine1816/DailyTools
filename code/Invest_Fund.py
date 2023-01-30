@@ -121,11 +121,11 @@ def get_fund2(fund_id):
 def pd_jz(lj_data,jz):
     lj_data.sort()
     num = round(bisect_right(lj_data,jz)/len(lj_data)*100,1)
-    if num < 25:
+    if num < 20:
         return ('🍏🍏🍏',num)
     elif num < 50:
         return ('🍎🍏🍏',num)
-    elif num < 75:
+    elif num < 80:
         return ('🍎🍎🍏',num)
     else:
         return ('🍎🍎🍎',num)
@@ -159,14 +159,14 @@ def working(code,moneylist):
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (today_lj > num_max20)and(tip > 80):
+    if (today_lj >= num_max20)and(tip > 90):
         sio_content2=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+='<p><font color="red">可以卖出一部分</font></p>'
-    elif (today_lj < num_min20)and(tip < 25):
+    elif (tip < 20):
         sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{moneylist[int(tip)//9]}</font> 元</p>'
+        sio_content1+=f'<p>买入 <font color="green">{moneylist[int(tip)//7]}</font> 元</p>'
     else:
         sio_content3=f'<p>{state} <font color="black"><small>{tip}%</small></font></p>'
         sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
