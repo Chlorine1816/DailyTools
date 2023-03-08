@@ -7,14 +7,17 @@ on:
     - cron: 20 3,6 * * MON-FRI
 
 jobs:
-  checkin:
+  run-tool:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@main
 
     - name: Setup Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         # 选择要使用的 node 版本
         node-version: '16'
