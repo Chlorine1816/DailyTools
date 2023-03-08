@@ -34,16 +34,4 @@ jobs:
         TOUSER: ${{secrets.TOUSER}}
         MEDIA: ${{secrets.CTMEDIA}}
       run: |
-        python ./code/ZFB_Fund.py >/dev/null 2>error.log 2>&1 &
-
-    - name: Upload log
-      uses: actions/upload-artifact@v3
-      with:
-        name: errorlog
-        path: error.log
-        retention-days: 3
-    
-    #- name: Display log
-    #  uses: actions/download-artifact@v3
-    #  with:
-    #    name: errorlog
+        python ./code/ZFB_Fund.py
