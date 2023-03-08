@@ -9,7 +9,6 @@ on:
 jobs:
   checkin:
     runs-on: ubuntu-latest
-    #container: node:16.16.0
 
     steps:
     - uses: actions/checkout@v3
