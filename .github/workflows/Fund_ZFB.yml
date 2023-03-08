@@ -17,7 +17,7 @@ jobs:
 	    with:
 		    name: public
 		    path: public
-		    retention-days: 3 # <= 这里可以设置保留天数
+		    retention-days: 5 # <= 这里可以设置保留天数
 
     - uses: actions/checkout@v3
 
