@@ -14,13 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Upload artifacts
-	    uses: actions/upload-artifact@v3
-	    with:
-		    name: public
-		    path: public
-		    retention-days: 3
-
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
