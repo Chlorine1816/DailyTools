@@ -11,16 +11,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: npm install,build,test
+      run: |
+        npm install
+        npm run build --if-present
+        npm test
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v3
       with:
-        python-version: '3.10'
-        cache: 'pip'
+        python-version: '3.8'
 
-    - run: pip install -r requirements.txt
-    - run: pip test
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip3 install -r requirements.txt
 
     - name: working
       env:
@@ -29,5 +37,17 @@ jobs:
         CORPSECRET: ${{secrets.CTSECRET}}
         TOUSER: ${{secrets.TOUSER}}
         MEDIA: ${{secrets.CTMEDIA}}
-      run:
-        python3 ./code/ZFB_Fund.py
+      run: |
+        python3 ./code/ZFB_Fund.py > run_log.txt
+
+    - name: Upload log
+      uses: actions/upload-artifact@v3
+      with:
+        name: log
+        path: run_log.txt
+        retention-days: 3
+    
+    - name: Display log
+      uses: actions/download-artifact@v3
+      with:
+        name: log
