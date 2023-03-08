@@ -9,7 +9,7 @@ on:
 jobs:
   checkin:
     runs-on: ubuntu-latest
-    container: node:16.16.0
+    #container: node:16.16.0
 
     steps:
     - uses: actions/checkout@v3
@@ -17,12 +17,12 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: 3.8
+        python-version: 3.8.10
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip3 install -r requirements.txt
       
     - name: working
       env:
@@ -32,4 +32,4 @@ jobs:
         TOUSER: ${{secrets.TOUSER}}
         MEDIA: ${{secrets.CTMEDIA}}
       run:
-        python ./code/ZFB_Fund.py
+        python3 ./code/ZFB_Fund.py
