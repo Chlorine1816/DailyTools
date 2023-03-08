@@ -12,10 +12,17 @@ jobs:
     container: node:16.16.0
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Upload artifacts
+	    uses: actions/upload-artifact@v3
+	    with:
+		    name: public
+		    path: public
+		    retention-days: 3 # <= 这里可以设置保留天数
+
+    - uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.8
 
