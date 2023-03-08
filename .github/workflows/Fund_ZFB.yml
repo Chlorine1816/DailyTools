@@ -14,12 +14,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: npm install,build,test
-      run: |
-        npm install
-        npm run build --if-present
-        npm test
-
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
@@ -30,7 +24,7 @@ jobs:
         python -m pip install --upgrade pip
         pip3 install -r requirements.txt
 
-    - name: working
+    - name: Run py
       env:
         CORPID: ${{secrets.CORPID}}
         AGENTID: ${{secrets.CTID}}
