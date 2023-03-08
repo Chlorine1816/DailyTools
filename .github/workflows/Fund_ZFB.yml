@@ -9,6 +9,7 @@ on:
 jobs:
   run-tool:
     runs-on: ubuntu-latest
+    environment: Fund
 
     steps:
     - uses: actions/checkout@v3
