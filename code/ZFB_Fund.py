@@ -93,8 +93,8 @@ class ZFB:
         self.content3.put(sio_content)
 
 def main():
-  df=pd.read_excel('./Data/ZFB_FundList.xlsx',dtype={'ID': 'string'})
-  zfb=ZFB(df['ID'].tolist())
+  df=pd.read_excel('./dailytools/Data/ZFB_FundList.xlsx',dtype={'ID': 'string'})
+  zfb=ZFB(df['ID'].tolist()[:6])
   zfb.working()
   content=''
   while not zfb.content1.empty():
