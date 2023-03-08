@@ -7,11 +7,12 @@ from need.SendMess import Robot
 from need.FundValues import FundV
 from queue import Queue
 import time
+import os
 
 class ZFB:
 
   def __init__(self,code_list):
-    self.R=Robot('ZFB Fund (GitHub)','Chlorine')
+    self.R=Robot('ZFB Fund (GitHub)',os.environ['CORPID'],os.environ['AGENTID'],os.environ['CORPSECRET'],os.environ['MEDIA'],'Chlorine')
     self.fund_list=Queue()
     self.content1=Queue()
     self.content2=Queue()

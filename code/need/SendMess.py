@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-  
 import requests
-import os
 import json
 import time
 
@@ -8,17 +7,16 @@ class Robot:
 
   headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47'}
 
-  def __init__(self,title,touser):
+  def __init__(self,title,corpid,agentid,corpsecret,media_id,touser):
     #图文图文消息的标题
     self.title=title
     
-    self.corpid=os.environ['CORPID']  #公司id
-    self.agentid=os.environ['AGENTID']  #机器人id
-    self.corpsecret=os.environ['CORPSECRET']  #机器人secret
-    self.media_id=os.environ['MEDIA'] #图片id
-    #self.touser=os.environ['TOUSER']  #接收id
-
+    self.corpid=corpid
+    self.agentid=agentid
+    self.corpsecret=corpsecret
+    self.media_id=media_id
     self.touser=touser
+
     self.digest = time.strftime('%Y-%m-%d UTC(%H:%M)', time.localtime()) + '\n'
     self.daily=self.get_daily_sentence()
 
