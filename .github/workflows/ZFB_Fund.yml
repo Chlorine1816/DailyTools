@@ -1,3 +1,4 @@
+#工作名字
 name: ZFB_Fund
 
 on: 
@@ -7,14 +8,13 @@ on:
     - cron: 20 3,6 * * MON-FRI
 
 jobs:
-  run-tool:
+  checkin:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v2
         with:
           python-version: 3.8
 
@@ -23,12 +23,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ./requirements.txt
       
-      - name: Working
-        env:
-          CORPID: ${{secrets.CORPID}}
-          AGENTID: ${{secrets.CTID}}
-          CORPSECRET: ${{secrets.CTSECRET}}
-          TOUSER: ${{secrets.TOUSER}}
-          MEDIA: ${{secrets.CTMEDIA}}
-        run: 
+      - name: Checkin
+        run: |
           python ./code/ZFB_Fund.py
+       
+  env:
+  #设置环节变量
+    CORPID: ${{secrets.CORPID}}
+    AGENTID: ${{secrets.CTID}}
+    CORPSECRET: ${{secrets.CTSECRET}}
+    TOUSER: ${{secrets.TOUSER}}
+    MEDIA: ${{secrets.CTMEDIA}}
