@@ -23,13 +23,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r ./requirements.txt
       
-    - name: Checkin
-      run: |
+    - name: working
+      env:
+        CORPID: ${{secrets.CORPID}}
+        AGENTID: ${{secrets.CTID}}
+        CORPSECRET: ${{secrets.CTSECRET}}
+        TOUSER: ${{secrets.TOUSER}}
+        MEDIA: ${{secrets.CTMEDIA}}
+      run:
         python ./code/ZFB_Fund.py
-       
-  env:
-    CORPID: ${{secrets.CORPID}}
-    AGENTID: ${{secrets.CTID}}
-    CORPSECRET: ${{secrets.CTSECRET}}
-    TOUSER: ${{secrets.TOUSER}}
-    MEDIA: ${{secrets.CTMEDIA}}
