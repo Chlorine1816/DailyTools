@@ -8,7 +8,9 @@ on:
 jobs:
   run-tool:
     runs-on: ubuntu-latest
-    #container: node:16.16.0
+    strategy:
+      matrix:
+        node-version: [16.x]
     
     steps:
       - name: Checkout code
