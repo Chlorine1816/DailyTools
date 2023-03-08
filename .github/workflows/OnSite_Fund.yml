@@ -8,6 +8,8 @@ on:
 jobs:
   run-tool:
     runs-on: ubuntu-latest
+    container: node:16.16.0
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
