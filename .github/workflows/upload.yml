@@ -2,7 +2,6 @@ name: Share data between jobs
 
 on: 
   workflow_dispatch:
-  push:
 
 jobs:
   job_1:
@@ -17,6 +16,7 @@ jobs:
         with:
           name: homework
           path: math-homework.txt
+          retention-days: 3
 
   job_2:
     name: Multiply by 9
