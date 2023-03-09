@@ -15,7 +15,6 @@
 ## Code
 - WB_Search ： 微博热搜
 - BD_API ： 百度热搜
-- TY_Pan ： 天翼云盘签到 
 - ZFB_Fund ： ZFB基金
 - OnSite_Fund： 场内基金
 - Invest_Fund: 定投基金
