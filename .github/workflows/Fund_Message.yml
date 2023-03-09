@@ -1,4 +1,4 @@
-name: Fund_ZFB
+name: Fund_Message
 
 on: 
   push:
@@ -35,3 +35,4 @@ jobs:
         MEDIA: ${{secrets.CTMEDIA}}
       run: |
         python ./code/ZFB_Fund.py
+        python ./code/Invest_Fund.py
