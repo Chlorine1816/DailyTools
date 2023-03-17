@@ -158,11 +158,11 @@ def working(code,moneylist):
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (today_lj <= num_max20)and(tip > 85):
+    if (today_lj >= num_max20)and(tip > 90):
         sio_content2=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
         sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content2+='<p><font color="red">可以卖出一部分</font></p>'
-    elif (tip < 20)and(today_lj >= num_min20):
+    elif (tip < 20)and(today_lj <= num_min20):
         sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
         sio_content1+=f'<p>买入 <font color="green">{moneylist[int(tip)//7]}</font> 元</p>'
