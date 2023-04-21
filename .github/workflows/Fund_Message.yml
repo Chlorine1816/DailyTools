@@ -32,6 +32,5 @@ jobs:
         CORPSECRET: ${{secrets.CTSECRET}}
         TOUSER: ${{secrets.TOUSER}}
         MEDIA: ${{secrets.CTMEDIA}}
-      run: |
+      run: 
         python ./code/ZFB_Fund.py
-        python ./code/Invest_Fund.py
