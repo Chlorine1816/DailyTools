@@ -134,7 +134,13 @@ def get_color(ljjz_data):
     mean5=round(mean(ljjz_data[-5:]),4) #前5天净值均值
     mean10=round(mean(ljjz_data[-10:]),4)#前10天净值均值
     mean20=round(mean(ljjz_data[-20:]),4)#前20天净值均值
-    return(min(mean5,mean10,mean20),max(mean5,mean10,mean20))
+
+    if (mean5 <= mean10 <= mean20):
+        return 'green'
+    elif (mean5 >= mean10 >= mean20):
+        return 'red'
+    else:
+        return 'black'
 
 def working(code,moneylist):
     data=get_his(code)
@@ -152,23 +158,23 @@ def working(code,moneylist):
         lj_data=np.append(lj_data,today_lj) #前1季度累计净值+当日估值
         color='red' if gszf > 0 else 'green'
 
-    num_min20,num_max20=get_color(lj_data) #求近20天均值极值点
+    today_color=get_color(lj_data) #近20天涨幅情况
 
     state,tip=pd_jz(lj_data,today_lj)
     sio_content1=''
     sio_content2=''
     sio_content3=''
-    if (today_lj >= num_max20)and(tip > 90):
-        sio_content2=f'<p>{state} <font color="red"><small>{tip}%</small></font></p>'
-        sio_content2+=f'<p><font color="red"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+='<p><font color="red">可以卖出一部分</font></p>'
-    elif (tip < 20)and(today_lj <= num_min20):
-        sio_content1=f'<p>{state} <font color="green"><small>{tip}%</small></font></p>'
-        sio_content1+=f'<p><font color="green"><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{moneylist[int(tip)//7]}</font> 元</p>'
+    if (tip > 80)and(today_color=='black'):
+        sio_content2=f'<p>{state} <font color=black><small>{tip}%</small></font></p>'
+        sio_content2+=f'<p><font color=red><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content2+='<p><font color=red>可以卖出一部分</font></p>'
+    elif (tip < 20)and(today_color=='black'):
+        sio_content1=f'<p>{state} <font color=black><small>{tip}%</small></font></p>'
+        sio_content1+=f'<p><font color=green><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content1+=f'<p>买入 <font color=green>{moneylist[int(tip)//7]}</font> 元</p>'
     else:
-        sio_content3=f'<p>{state} <font color="black"><small>{tip}%</small></font></p>'
-        sio_content3+=f'<p>{name}<font color="{color}"><small> {gszf}%</small></font></p>'
+        sio_content3=f'<p>{state} <font color={today_color}><small>{tip}%</small></font></p>'
+        sio_content3+=f'<p>{name}<font color={color}><small> {gszf}%</small></font></p>'
         sio_content3+='<p>再等等看吧</p>'
 
     return (sio_content1,sio_content2,sio_content3)
