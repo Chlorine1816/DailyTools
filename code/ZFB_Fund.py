@@ -181,7 +181,6 @@ def working(code):
     else:
         sio_content3=f'<p>{state} <font color={today_color}><small>{tip}%</small></font></p>'
         sio_content3+=f'<p>{name}<font color={color}><small> {gszf}%</small></font></p>'
-        sio_content3+='<p>再等等看吧</p>'
 
     return (sio_content1,sio_content2,sio_content3)
 
