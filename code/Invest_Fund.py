@@ -63,7 +63,10 @@ def get_daily_sentence():
         return(f'Happy every day !\n')
 
 def get_his(fund_id):
-    url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
+    #近1季
+    #url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
+    #近1年
+    url=f'https://www.dayfund.cn/fundvalue/{fund_id}_y.html'
     r=requests.get(url,headers=headers,timeout=22)
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
     df=pd.DataFrame(df)
@@ -171,7 +174,7 @@ def working(code,moneylist):
     elif (tip < 20)and(today_color=='black'):
         sio_content1=f'<p>{state} <font color=black><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color=green><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color=green>{moneylist[int(tip)//7]}</font> 元</p>'
+        sio_content1+=f'<p>买入 <font color=green>{moneylist[int(tip/7)]}</font> 元</p>'
     else:
         sio_content3=f'<p>{state} <font color={today_color}><small>{tip}%</small></font></p>'
         sio_content3+=f'<p>{name}<font color={color}><small> {gszf}%</small></font></p>'
