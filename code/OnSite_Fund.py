@@ -120,23 +120,23 @@ def working(code):
     sdate=time.strftime("%Y-%m-%d", time.localtime(time.time()-365*24*3600))
     data=get_his(code=code,sdate=sdate,edate=edate)
     jjmc=get_fund_name(code)
-
+    num20=data['累计净值'].quantile(q=0.2) # 累计净值分位数
     jzrq=data['净值日期'].values[-1]
-    dwjz=data['单位净值'].values[-1]
-    ljjz=data['累计净值'].values[-1]
-    cache1,cache2=get_color(data['累计净值'].values) #求近20天均值极值点
+    difference=data['累计净值'].values[-1]-data['单位净值'].values[-1] # 累计与单位的差值
+    min20,max20=get_color(data['累计净值'].values) #求近20天累计均值极值点
 
-    cache1=round(dwjz+(cache1-ljjz),3)
-    cache2=round(dwjz+(cache2-ljjz),3)
+    min20=round(min20-difference,3)
+    max20=round(max20-difference,3)
+    num20=round(num20-difference,3)
 
     sio_content=f'<p><strong>{jzrq}</strong></p>'
     sio_content+=f'<p><strong>{jjmc}</strong></p>'
-    sio_content=pd_jz(data['累计净值'].values,ljjz,sio_content)
+    sio_content=pd_jz(data['累计净值'].values,data['累计净值'].values[-1],sio_content)
 
-    sio_content+=f'<p>📈{cache2}</p>'
-    sio_content+=f'<p>📉{cache1}</p>'
+    dict_jz={min20:'📉',max20:'📈',num20:'🔥'}
+    for i in sorted(dict_jz,reverse=True):
+        sio_content+=f'<p>{dict_jz[i]}{i}</p>'
 
-    print(sio_content)
     return sio_content
 
 def try_many_times(code):
