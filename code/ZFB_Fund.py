@@ -64,7 +64,9 @@ def get_daily_sentence():
 def get_his(fund_id):
     time.sleep(random.randint(1,2)+random.random())
     #近1季度
-    url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
+    #url=f'https://www.dayfund.cn/fundvalue/{fund_id}_q.html'
+    #近1年
+    url=f'https://www.dayfund.cn/fundvalue/{fund_id}_y.html'
     r=requests.get(url,headers=headers,timeout=22)
     df=pd.read_html(r.text,encoding='utf-8',header=0)[0]
     df=pd.DataFrame(df)
@@ -171,11 +173,11 @@ def working(code):
     if (tip > 80)and(today_color=='black'):
         sio_content2=f'<p>{state} <font color=black><small>{tip}%</small></font></p>'
         sio_content2+=f'<p><font color=red><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content2+=f'<p>卖出<font color=red> {round(max(tip-85,5)*0.88/(dwjz+zf),1)} </font>份</p>'
+        sio_content2+=f'<p>卖出<font color=red> {round(5/(dwjz+zf),1)} </font>份</p>'
     elif (tip < 20)and(today_color=='black'):
         sio_content1=f'<p>{state} <font color=black><small>{tip}%</small></font></p>'
         sio_content1+=f'<p><font color=green><strong>{name}</strong></font><font color="{color}"><small> {gszf}%</small></font></p>'
-        sio_content1+=f'<p>买入 <font color="green">{round(max(26-tip,10),1)}</font> 元</p>'
+        sio_content1+=f'<p>买入 <font color="green">10</font> 元</p>'
     else:
         sio_content3=f'<p>{state} <font color={today_color}><small>{tip}%</small></font></p>'
         sio_content3+=f'<p>{name}<font color={color}><small> {gszf}%</small></font></p>'
