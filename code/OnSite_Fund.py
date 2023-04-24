@@ -2,10 +2,11 @@
 import time,requests,os,json,re
 import pandas as pd
 import numpy as np
-from tqdm.contrib.concurrent import process_map
+#from tqdm.contrib.concurrent import process_map
 import random
 from bisect import bisect_right
 from bs4 import BeautifulSoup
+from multiprocessing.pool import ThreadPool
 
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.36'}
 
@@ -95,18 +96,21 @@ def get_fund_name(fund_id):
 
     return jz.find_all('h4',class_='title')[0].text
 
-def pd_jz(ljjz_data,ljjz,sio_content):
+def pd_jz(ljjz_data,ljjz):
     ljjz_data.sort()
     num = round(bisect_right(ljjz_data,ljjz)/len(ljjz_data)*100,1)
     if num < 20:
-        sio_content+=f'<p>🍏🍏🍏 <font color="green"><small>{num}%</small></font></p>'
+        sio_content=f'<p>🍏🍏🍏 <font color=green><small>{num}%</small></font></p>'
+        return sio_content,'green'
     elif num < 50:
-        sio_content+=f'<p>🍎🍏🍏 <font color="black"><small>{num}%</small></font></p>'
+        sio_content=f'<p>🍎🍏🍏 <font color=black><small>{num}%</small></font></p>'
+        return sio_content,'black'
     elif num < 80:
-        sio_content+=f'<p>🍎🍎🍏 <font color="black"><small>{num}%</small></font></p>'
+        sio_content=f'<p>🍎🍎🍏 <font color=black><small>{num}%</small></font></p>'
+        return sio_content,'black'
     else:
-        sio_content+=f'<p>🍎🍎🍎 <font color="red"><small>{num}%</small></font></p>'    
-    return sio_content,num
+        sio_content=f'<p>🍎🍎🍎 <font color=red><small>{num}%</small></font></p>'    
+        return sio_content,'red'
 
 def get_color(ljjz_data):
     mean=np.mean
@@ -129,11 +133,12 @@ def working(code):
     max20=round(max20-difference,3)
     #num20=round(num20-difference,3)
 
+    SioC,tip=pd_jz(data['累计净值'].values,data['累计净值'].values[-1])
     sio_content=f'<p><strong>{jzrq}</strong></p>'
-    sio_content+=f'<p><strong>{jjmc}</strong></p>'
-    sio_content,tip=pd_jz(data['累计净值'].values,data['累计净值'].values[-1],sio_content)
+    sio_content+=f'<p><strong><font color={tip}>{jjmc}</font></strong></p>'
+    sio_content+=SioC
 
-    if 20 < tip < 80 :
+    if tip == 'black':
         return sio_content
     
     dict_jz={min20:'📉',max20:'📈',data['单位净值'].values[-1]:'🚩'}
@@ -157,7 +162,8 @@ def main():
     fund_list=pd.read_excel('./data/OnSite_FundList.xlsx',dtype={'ID': 'string'})
 
     fund_list=fund_list['ID'].tolist()
-    t = process_map(try_many_times, fund_list, max_workers=5)
+    #t = process_map(try_many_times, fund_list, max_workers=5)
+    t=list(ThreadPool(6).imap(try_many_times,fund_list))
     sio_content = ''.join(t)
     sio_digest = time.strftime('%Y-%m-%d UTC(%H:%M)', time.localtime()) + '\n'
     sio_digest=f'{sio_digest}{get_daily_sentence()}⏱ {round((time.perf_counter()-start)/60,1)} 分钟'
