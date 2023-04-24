@@ -106,7 +106,7 @@ def pd_jz(ljjz_data,ljjz,sio_content):
         sio_content+=f'<p>🍎🍎🍏 <font color="black"><small>{num}%</small></font></p>'
     else:
         sio_content+=f'<p>🍎🍎🍎 <font color="red"><small>{num}%</small></font></p>'    
-    return sio_content
+    return sio_content,num
 
 def get_color(ljjz_data):
     mean=np.mean
@@ -131,8 +131,11 @@ def working(code):
 
     sio_content=f'<p><strong>{jzrq}</strong></p>'
     sio_content+=f'<p><strong>{jjmc}</strong></p>'
-    sio_content=pd_jz(data['累计净值'].values,data['累计净值'].values[-1],sio_content)
+    sio_content,tip=pd_jz(data['累计净值'].values,data['累计净值'].values[-1],sio_content)
 
+    if 20 < tip < 80 :
+        return sio_content
+    
     dict_jz={min20:'📉',max20:'📈',data['单位净值'].values[-1]:'🚩'}
     for i in sorted(dict_jz,reverse=True):
         sio_content+=f'<p>{dict_jz[i]}{i}</p>'
