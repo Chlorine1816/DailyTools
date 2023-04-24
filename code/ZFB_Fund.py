@@ -3,7 +3,7 @@ import time,requests,os,json
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
-from tqdm.contrib.concurrent import process_map
+from multiprocessing.pool import ThreadPool
 import random
 from bisect import bisect_right
 
@@ -198,7 +198,7 @@ def main():
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/ZFB_FundList.xlsx',dtype={'ID': 'string'})
     fund_list=fund_list['ID'].tolist()
-    t = process_map(try_many_times, fund_list, max_workers=5)
+    t=list(ThreadPool(6).imap(try_many_times,fund_list))
     content1=''
     content2=''
     content3=''

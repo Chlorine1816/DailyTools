@@ -2,7 +2,6 @@
 import time,requests,os,json,re
 import pandas as pd
 import numpy as np
-#from tqdm.contrib.concurrent import process_map
 import random
 from bisect import bisect_right
 from bs4 import BeautifulSoup
@@ -160,9 +159,7 @@ def try_many_times(code):
 def main():
     start=time.perf_counter()
     fund_list=pd.read_excel('./data/OnSite_FundList.xlsx',dtype={'ID': 'string'})
-
     fund_list=fund_list['ID'].tolist()
-    #t = process_map(try_many_times, fund_list, max_workers=5)
     t=list(ThreadPool(6).imap(try_many_times,fund_list))
     sio_content = ''.join(t)
     sio_digest = time.strftime('%Y-%m-%d UTC(%H:%M)', time.localtime()) + '\n'

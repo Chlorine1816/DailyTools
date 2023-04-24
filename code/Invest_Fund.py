@@ -3,7 +3,7 @@ import time,requests,os,json
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
-from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool
 import random
 from bisect import bisect_right
 
@@ -200,17 +200,14 @@ def main():
     Three=fund_list['Three'].values
     Four=fund_list['Four'].values
 
-    pool=Pool(5)
+    pool=ThreadPool(6)
     pool_data_list=[]
     for i,num in enumerate(code_list):
         moneylist=[Zero[i],One[i],Two[i],Three[i],Four[i]]
         pool_data_list.append(pool.apply_async(try_many_times,args=(num,moneylist)))
 
-    print('- - - Start - - -',flush=True)
     pool.close()
     pool.join()
-    print('- - - End - - -',flush=True)
-    print('Get the Values ...',flush=True)
 
     content1=''
     content2=''
