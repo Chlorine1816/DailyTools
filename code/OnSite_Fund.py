@@ -113,10 +113,10 @@ def pd_jz(ljjz_data,ljjz):
 
 def get_color(ljjz_data):
     mean=np.mean
-    mean5=round(mean(ljjz_data[-5:]),3) #前5天净值均值
-    mean10=round(mean(ljjz_data[-10:]),3)#前10天净值均值
-    mean20=round(mean(ljjz_data[-20:]),3)#前20天净值均值
-    return (min(mean5,mean10,mean20),max(mean5,mean10,mean20))
+    ma5=round(mean(ljjz_data[-5:]),3) #前5天净值均值
+    ma10=round(mean(ljjz_data[-10:]),3)#前10天净值均值
+    ma20=round(mean(ljjz_data[-20:]),3)#前20天净值均值
+    return (min(ma5,ma10,ma20),max(ma5,ma10,ma20))
 
 def working(code):
     edate=time.strftime("%Y-%m-%d", time.localtime(time.time()))
@@ -134,12 +134,15 @@ def working(code):
 
     SioC,tip=pd_jz(data['累计净值'].values,data['累计净值'].values[-1])
     sio_content=f'<p><strong>{jzrq}</strong></p>'
-    sio_content+=f'<p><strong><font color={tip}>{jjmc}</font></strong></p>'
-    sio_content+=SioC
 
-    if tip == 'black':
+    if tip=='black':
+        sio_content+=f'<p><font color={tip}>{jjmc}</font></p>'
         return sio_content
-    
+    else:
+        sio_content+=f'<p><strong><font color={tip}>{jjmc}</font></strong></p>'
+        sio_content+=SioC
+
+        
     dict_jz={min20:'📉',max20:'📈',data['单位净值'].values[-1]:'🚩'}
     for i in sorted(dict_jz,reverse=True):
         sio_content+=f'<p>{dict_jz[i]}{i}</p>'
