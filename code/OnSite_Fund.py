@@ -133,15 +133,13 @@ def working(code):
     #num20=round(num20-difference,3)
 
     SioC,tip=pd_jz(data['累计净值'].values,data['累计净值'].values[-1])
-    sio_content=f'<p><strong>{jzrq}</strong></p>'
+    sio_content=f'<p><strong>{jzrq}</strong></p>{SioC}'
 
     if tip=='black':
         sio_content+=f'<p><font color={tip}>{jjmc}</font></p>'
         return sio_content
     else:
         sio_content+=f'<p><strong><font color={tip}>{jjmc}</font></strong></p>'
-        sio_content+=SioC
-
         
     dict_jz={min20:'📉',max20:'📈',data['单位净值'].values[-1]:'🚩'}
     for i in sorted(dict_jz,reverse=True):
