@@ -141,7 +141,7 @@ def working(code):
     else:
         sio_content+=f'<p><strong><font color={tip}>{jjmc}</font></strong></p>'
         
-    dict_jz={min20:'📉',max20:'📈',data['单位净值'].values[-1]:'🚩'}
+    dict_jz={min20:'📉',max20:'📈',round(data['单位净值'].values[-1],3):'🚩'}
     for i in sorted(dict_jz,reverse=True):
         sio_content+=f'<p>{dict_jz[i]}{i}</p>'
 
