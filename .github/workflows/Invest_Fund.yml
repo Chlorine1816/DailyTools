@@ -1,7 +1,6 @@
-name: Fund_Message
+name: Invest_Fund
 
 on: 
-  push:
   workflow_dispatch:
   schedule:
     - cron: 20 3,6 * * MON-FRI
@@ -33,6 +32,5 @@ jobs:
         CORPSECRET: ${{secrets.CTSECRET}}
         TOUSER: ${{secrets.TOUSER}}
         MEDIA: ${{secrets.CTMEDIA}}
-      run: |
-        python ./code/ZFB_Fund.py
+      run: 
         python ./code/Invest_Fund.py

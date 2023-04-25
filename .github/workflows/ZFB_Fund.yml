@@ -1,0 +1,37 @@
+name: ZFB_Fund
+
+on: 
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: 20 3,6 * * MON-FRI
+
+jobs:
+  run-tool:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run py
+      env:
+        CORPID: ${{secrets.CORPID}}
+        AGENTID: ${{secrets.CTID}}
+        CORPSECRET: ${{secrets.CTSECRET}}
+        TOUSER: ${{secrets.TOUSER}}
+        MEDIA: ${{secrets.CTMEDIA}}
+      run: 
+        python ./code/ZFB_Fund.py
