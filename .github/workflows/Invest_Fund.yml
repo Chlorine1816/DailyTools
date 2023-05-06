@@ -30,7 +30,6 @@ jobs:
         CORPID: ${{secrets.CORPID}}
         AGENTID: ${{secrets.CTID}}
         CORPSECRET: ${{secrets.CTSECRET}}
-        TOUSER: ${{secrets.TOUSER}}
         MEDIA: ${{secrets.CTMEDIA}}
       run: 
         python ./code/Invest_Fund.py
