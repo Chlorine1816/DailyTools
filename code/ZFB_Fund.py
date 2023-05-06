@@ -16,7 +16,12 @@ media_id=os.environ['MEDIA'] #图片id
 #touser=os.environ['TOUSER']  #接收id
 touser='Chlorine'
 
-print(corpid,agentid,corpsecret,media_id)
+corpid='ww769b80d6894f26f9'
+agentid='1000002'
+corpsecret='U_Qr5lEZHbrABlku75bRZDhCyUNuE1xfo_74jpalXwI'
+touser='Chlorine'
+media_id='2IRqHSKf4nHvDiN4_fnxpKLTHUC3kTnqvrxO2ulHbgWo'
+
 #图文图文消息的标题
 title='ZFB Fund (GitHub)'
 
